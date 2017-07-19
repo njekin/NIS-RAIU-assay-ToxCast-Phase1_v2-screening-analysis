@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R</title>
+  <meta name="description" content="Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R">
+  <meta name="generator" content="bookdown 0.3.20 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R" />
+  
+  
+  
+
+<meta name="author" content="Jun Wang">
+
+
+<meta name="date" content="2017-07-19">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="single-conc-analysis.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<link href="libs/plotlyjs-1.16.3/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotlyjs-1.16.3/plotly-latest.min.js"></script>
+<script src="libs/plotly-binding-4.5.6/plotly.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html"><i class="fa fa-check"></i><b>2</b> Data Import and Preprocessing</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#preprocess-single-concentration-data"><i class="fa fa-check"></i><b>2.1</b> Preprocess Single-Concentration Data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentration"><i class="fa fa-check"></i><b>2.1.1</b> Update Testing Concentration</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-sinlge-con-level0-file-with-updated-concentration"><i class="fa fa-check"></i><b>2.1.2</b> Export Sinlge-Con level0 file with updated concentration</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#import-and-preprocess-multi-concentration-data"><i class="fa fa-check"></i><b>2.2</b> Import and Preprocess Multi-Concentration Data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#functions-for-data-retrieving"><i class="fa fa-check"></i><b>2.2.1</b> Functions for data retrieving</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#parse-all-excel-data-files-and-generate-tidy-table"><i class="fa fa-check"></i><b>2.2.2</b> Parse all excel data files and generate tidy table</a></li>
+<li class="chapter" data-level="2.2.3" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentrations"><i class="fa fa-check"></i><b>2.2.3</b> Update Testing Concentrations</a></li>
+<li class="chapter" data-level="2.2.4" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-multi-conc-data-to-file"><i class="fa fa-check"></i><b>2.2.4</b> Export Multi-conc data to file</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html"><i class="fa fa-check"></i><b>3</b> Single-Conc Analysis</a><ul>
+<li class="chapter" data-level="3.1" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#define-basic-assay-info"><i class="fa fa-check"></i><b>3.1</b> Define basic assay info</a></li>
+<li class="chapter" data-level="3.2" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#data-import"><i class="fa fa-check"></i><b>3.2</b> Data Import</a></li>
+<li class="chapter" data-level="3.3" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#normalization"><i class="fa fa-check"></i><b>3.3</b> Normalization</a></li>
+<li class="chapter" data-level="3.4" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#threshold-of-significance"><i class="fa fa-check"></i><b>3.4</b> Threshold of Significance</a></li>
+<li class="chapter" data-level="3.5" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#qc-of-single-conc-assay"><i class="fa fa-check"></i><b>3.5</b> QC of Single-conc assay</a></li>
+<li class="chapter" data-level="3.6" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#qc-summary-of-single-con-assay"><i class="fa fa-check"></i><b>3.6</b> QC Summary of Single-Con assay</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#single-con-positive-control-qc"><i class="fa fa-check"></i><b>3.6.1</b> Single-Con Positive Control QC</a></li>
+<li class="chapter" data-level="3.6.2" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#single-con-controls"><i class="fa fa-check"></i><b>3.6.2</b> Single-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#visualize-the-single-concentration-data"><i class="fa fa-check"></i><b>3.7</b> Visualize the single concentration data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html"><i class="fa fa-check"></i><b>4</b> Multi-Conc Analysis</a><ul>
+<li class="chapter" data-level="4.1" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#import-mc-data"><i class="fa fa-check"></i><b>4.1</b> Import MC data</a></li>
+<li class="chapter" data-level="4.2" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#normalization-1"><i class="fa fa-check"></i><b>4.2</b> Normalization</a></li>
+<li class="chapter" data-level="4.3" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#bmad-of-mc"><i class="fa fa-check"></i><b>4.3</b> 3bMAD of MC</a></li>
+<li class="chapter" data-level="4.4" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#multi-con-qc"><i class="fa fa-check"></i><b>4.4</b> Multi-Con QC</a></li>
+<li class="chapter" data-level="4.5" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#multi-con-controls"><i class="fa fa-check"></i><b>4.5</b> Multi-Con Controls</a></li>
+<li class="chapter" data-level="4.6" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#dose-response-modeling"><i class="fa fa-check"></i><b>4.6</b> Dose-response modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="rank-chemicals.html"><a href="rank-chemicals.html"><i class="fa fa-check"></i><b>5</b> Rank Chemicals</a><ul>
+<li class="chapter" data-level="5.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#results-table-for-publication"><i class="fa fa-check"></i><b>5.1</b> Results Table for publication</a></li>
+<li class="chapter" data-level="5.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#visualize-ranking-metrics"><i class="fa fa-check"></i><b>5.2</b> Visualize ranking metrics</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html"><i class="fa fa-check"></i><b>6</b> ToxCast Internal Replicates</a><ul>
+<li class="chapter" data-level="6.0.1" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#single-con-internal-replicate-performance"><i class="fa fa-check"></i><b>6.0.1</b> Single-con internal Replicate performance</a></li>
+<li class="chapter" data-level="6.0.2" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#multi-con-internal-controls-replication-performance"><i class="fa fa-check"></i><b>6.0.2</b> Multi-con internal controls replication performance</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html"><i class="fa fa-check"></i><b>7</b> Export Dose-Response Curve</a><ul>
+<li class="chapter" data-level="7.1" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#make-plots"><i class="fa fa-check"></i><b>7.1</b> Make plots</a></li>
+<li class="chapter" data-level="7.2" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#export-as-pdf-file"><i class="fa fa-check"></i><b>7.2</b> Export as PDF file</a></li>
+<li class="chapter" data-level="7.3" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#export-png-of-multi-plots"><i class="fa fa-check"></i><b>7.3</b> Export PNG of multi-plots</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="interactive-dose-response-plots.html"><a href="interactive-dose-response-plots.html"><i class="fa fa-check"></i><b>8</b> Interactive Dose-Response Plots</a></li>
+<li class="chapter" data-level="9" data-path="source.html"><a href="source.html"><i class="fa fa-check"></i><b>9</b> R source code in <code>ToxPlot</code> package</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-import-and-preprocessing" class="section level1">
+<h1><span class="header-section-number">2</span> Data Import and Preprocessing</h1>
+<p>This section preprocess and import raw data (in separate excel .xlsx files provided by Dan Hallinger) into R.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>())
+<span class="kw">library</span>(plotly)
+<span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(ggthemes)
+<span class="kw">library</span>(stringr)
+<span class="kw">library</span>(readxl)
+<span class="kw">library</span>(devtools)
+<span class="kw">load_all</span>(<span class="st">&quot;../../toxplot&quot;</span>)
+<span class="kw">session_info</span>()</code></pre></div>
+<pre><code>##  setting  value                       
+##  version  R version 3.3.0 (2016-05-03)
+##  system   x86_64, mingw32             
+##  ui       RTerm                       
+##  language (EN)                        
+##  collate  English_United States.1252  
+##  tz       America/New_York            
+##  date     2017-07-19                  
+## 
+##  package      * version  date       source                           
+##  assertthat     0.1      2013-12-06 CRAN (R 3.3.1)                   
+##  backports      1.0.5    2017-01-18 CRAN (R 3.3.2)                   
+##  base64enc      0.1-3    2015-07-28 CRAN (R 3.3.1)                   
+##  bookdown       0.3.20   2017-05-15 Github (rstudio/bookdown@86026cf)
+##  car            2.1-3    2016-08-11 CRAN (R 3.3.1)                   
+##  chron          2.3-47   2015-06-24 CRAN (R 3.3.1)                   
+##  codetools      0.2-15   2016-10-05 CRAN (R 3.3.2)                   
+##  colorspace     1.3-0    2016-11-10 CRAN (R 3.3.2)                   
+##  commonmark     1.2      2017-03-01 CRAN (R 3.3.3)                   
+##  crayon         1.3.2    2016-06-28 CRAN (R 3.3.2)                   
+##  data.table     1.9.6    2015-09-19 CRAN (R 3.3.1)                   
+##  DBI            0.5-1    2016-09-10 CRAN (R 3.3.1)                   
+##  devtools     * 1.12.0   2016-06-24 CRAN (R 3.3.1)                   
+##  digest         0.6.12   2017-01-27 CRAN (R 3.3.3)                   
+##  dplyr        * 0.5.0    2016-06-24 CRAN (R 3.3.1)                   
+##  drc            3.0-1    2016-08-30 CRAN (R 3.3.1)                   
+##  evaluate       0.10     2016-10-11 CRAN (R 3.3.2)                   
+##  ggplot2      * 2.2.0    2016-11-11 CRAN (R 3.3.2)                   
+##  ggthemes     * 3.2.0    2016-07-11 CRAN (R 3.3.1)                   
+##  gtable         0.2.0    2016-02-26 CRAN (R 3.3.1)                   
+##  gtools         3.5.0    2015-05-29 CRAN (R 3.3.1)                   
+##  htmltools      0.3.6    2017-04-28 CRAN (R 3.3.3)                   
+##  htmlwidgets    0.8      2016-11-09 CRAN (R 3.3.2)                   
+##  httr           1.2.1    2016-07-03 CRAN (R 3.3.1)                   
+##  jsonlite       1.4      2017-04-08 CRAN (R 3.3.3)                   
+##  knitr          1.15.20  2017-05-15 Github (yihui/knitr@f3a490b)     
+##  lattice        0.20-34  2016-09-06 CRAN (R 3.3.2)                   
+##  lazyeval       0.2.0    2016-06-12 CRAN (R 3.3.1)                   
+##  lme4           1.1-12   2016-04-16 CRAN (R 3.3.1)                   
+##  magrittr       1.5      2014-11-22 CRAN (R 3.3.1)                   
+##  MASS           7.3-45   2016-04-21 CRAN (R 3.3.0)                   
+##  Matrix         1.2-7.1  2016-09-01 CRAN (R 3.3.2)                   
+##  MatrixModels   0.4-1    2015-08-22 CRAN (R 3.3.1)                   
+##  memoise        1.0.0    2016-01-29 CRAN (R 3.3.1)                   
+##  mgcv           1.8-16   2016-11-07 CRAN (R 3.3.2)                   
+##  minqa          1.2.4    2014-10-09 CRAN (R 3.3.1)                   
+##  multcomp       1.4-6    2016-07-14 CRAN (R 3.3.1)                   
+##  munsell        0.4.3    2016-02-13 CRAN (R 3.3.1)                   
+##  mvtnorm        1.0-5    2016-02-02 CRAN (R 3.3.1)                   
+##  nlme           3.1-128  2016-05-10 CRAN (R 3.3.2)                   
+##  nloptr         1.0.4    2014-08-04 CRAN (R 3.3.1)                   
+##  nnet           7.3-12   2016-02-02 CRAN (R 3.3.0)                   
+##  numDeriv       2016.8-1 2016-08-27 CRAN (R 3.3.1)                   
+##  pbkrtest       0.4-6    2016-01-27 CRAN (R 3.3.1)                   
+##  plotly       * 4.5.6    2016-11-12 CRAN (R 3.3.2)                   
+##  plotrix        3.6-3    2016-07-21 CRAN (R 3.3.1)                   
+##  plyr           1.8.4    2016-06-08 CRAN (R 3.3.1)                   
+##  purrr        * 0.2.2    2016-06-18 CRAN (R 3.3.1)                   
+##  quantreg       5.29     2016-09-04 CRAN (R 3.3.1)                   
+##  R6             2.2.2    2017-06-17 CRAN (R 3.3.3)                   
+##  RColorBrewer   1.1-2    2014-12-07 CRAN (R 3.3.1)                   
+##  Rcpp           0.12.8   2016-11-17 CRAN (R 3.3.2)                   
+##  readr        * 1.0.0    2016-08-03 CRAN (R 3.3.1)                   
+##  readxl       * 0.1.1    2016-03-28 CRAN (R 3.3.1)                   
+##  rmarkdown      1.5      2017-04-26 CRAN (R 3.3.3)                   
+##  RMySQL         0.10.9   2016-05-08 CRAN (R 3.3.1)                   
+##  roxygen2       6.0.1    2017-02-06 CRAN (R 3.3.3)                   
+##  rprojroot      1.2      2017-01-16 CRAN (R 3.3.2)                   
+##  RSQLite        1.0.0    2014-10-25 CRAN (R 3.3.1)                   
+##  rstudioapi     0.6      2016-06-27 CRAN (R 3.3.1)                   
+##  sandwich       2.3-4    2015-09-24 CRAN (R 3.3.1)                   
+##  scales         0.4.1    2016-11-09 CRAN (R 3.3.2)                   
+##  SparseM        1.74     2016-11-10 CRAN (R 3.3.2)                   
+##  stringi        1.1.2    2016-10-01 CRAN (R 3.3.1)                   
+##  stringr      * 1.2.0    2017-02-18 CRAN (R 3.3.3)                   
+##  survival       2.40-1   2016-10-30 CRAN (R 3.3.2)                   
+##  tcpl           1.2.2    2016-05-18 CRAN (R 3.3.3)                   
+##  testthat       1.0.2    2016-04-23 CRAN (R 3.3.3)                   
+##  TH.data        1.0-7    2016-01-28 CRAN (R 3.3.1)                   
+##  tibble       * 1.2      2016-08-26 CRAN (R 3.3.1)                   
+##  tidyr        * 0.6.0    2016-08-12 CRAN (R 3.3.1)                   
+##  tidyverse    * 1.0.0    2016-09-09 CRAN (R 3.3.2)                   
+##  toxplot      * 0.1.0    &lt;NA&gt;       local                            
+##  viridisLite    0.1.3    2016-03-12 CRAN (R 3.3.1)                   
+##  withr          1.0.2    2016-06-20 CRAN (R 3.3.1)                   
+##  xml2           1.0.0    2016-06-24 CRAN (R 3.3.2)                   
+##  yaml           2.1.14   2016-11-12 CRAN (R 3.3.2)                   
+##  zoo            1.7-13   2016-05-03 CRAN (R 3.3.1)</code></pre>
+<div id="preprocess-single-concentration-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Preprocess Single-Concentration Data</h2>
+<p>For single concentration data, Dan Hallinger has already gathered all the data and made the level0 compatible file already in .xlsx (see file ./raw data files/sc data from Dan.xlsx).<br />
+Here just need to do some clean up to make the data ready for analysis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_sc &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;./raw data files/sc data from Dan.xlsx&quot;</span>, <span class="dt">sheet =</span> <span class="dv">2</span> )
+<span class="co"># rename columns, following ToxCast Pipeline naming requirement.</span>
+<span class="kw">names</span>(dt_sc) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pid&quot;</span>, <span class="st">&quot;rowi&quot;</span>, <span class="st">&quot;coli&quot;</span>, <span class="st">&quot;spid&quot;</span>, <span class="st">&quot;conc&quot;</span>, <span class="st">&quot;unit&quot;</span>, <span class="st">&quot;rep1&quot;</span>, <span class="st">&quot;rep2&quot;</span>, <span class="st">&quot;rep3&quot;</span>)
+
+dt_sc %&lt;&gt;%<span class="st"> </span><span class="kw">gather</span>(rep, rval, rep1:rep3) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">apid =</span> <span class="kw">paste</span>(pid, rep, <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>),
+         <span class="dt">wllq =</span> 1L, 
+         <span class="dt">acsn =</span> <span class="st">&quot;raiu&quot;</span>, 
+         <span class="dt">assay =</span> <span class="st">&quot;RAIU&quot;</span>,
+         <span class="dt">srcf =</span> <span class="st">&quot;NIS_ph1_v2_sc_lvl0_for_tcpl.csv&quot;</span>
+         ) %&gt;%<span class="st"> </span>
+<span class="st">  </span>dplyr::<span class="kw">select</span>(apid, <span class="kw">everything</span>())
+  
+
+<span class="co">#head(dt_sc, 2)</span>
+
+<span class="co"># add well type</span>
+d1 &lt;-<span class="st"> </span>dt_sc %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="kw">grepl</span>(<span class="st">&quot;^TP*&quot;</span>, dt_sc$spid)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wllt =</span> <span class="st">&quot;t&quot;</span>)
+
+<span class="co"># clean up spid. </span>
+
+non_t &lt;-<span class="st"> </span>dt_sc %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">grepl</span>(<span class="st">&quot;^TP*&quot;</span>, dt_sc$spid)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">separate</span>(spid, <span class="kw">c</span>(<span class="st">&quot;delete&quot;</span>, <span class="st">&quot;spid&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span>dplyr::<span class="kw">select</span>(-delete)
+
+<span class="co"># continue assign well type</span>
+d2 &lt;-<span class="st"> </span>non_t %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(spid ==<span class="st"> &quot;NaNO3&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wllt =</span> <span class="st">&quot;pr_ec80&quot;</span>)
+d3 &lt;-<span class="st"> </span>non_t %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(spid ==<span class="st"> &quot;NaClO4&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wllt =</span> <span class="st">&quot;pr&quot;</span>)
+d4 &lt;-<span class="st"> </span>non_t %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(spid ==<span class="st"> &quot;2,4-D&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wllt =</span> <span class="st">&quot;nrc&quot;</span>)
+d5 &lt;-<span class="st"> </span>non_t %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(spid ==<span class="st"> &quot;DMSO&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wllt =</span> <span class="st">&quot;n&quot;</span>)
+d6 &lt;-<span class="st"> </span>non_t %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(spid ==<span class="st"> &quot;NaSCN&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wllt =</span> <span class="st">&quot;pr_ec20&quot;</span>)
+
+dt_sc_update &lt;-<span class="st"> </span><span class="kw">rbind</span>(d1, d2, d3, d4, d5,d6)
+
+<span class="co"># convert concentration as numeric</span>
+dt_sc_update$conc &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(dt_sc_update$conc)
+
+<span class="co"># convert row id from letters to numbers</span>
+dt_sc_update$rowi &lt;-<span class="st"> </span>stringr::<span class="kw">str_replace_all</span>(dt_sc_update$rowi, <span class="kw">c</span>(<span class="st">&quot;A&quot;</span> =<span class="st"> &quot;1&quot;</span>, 
+                                                                   <span class="st">&quot;B&quot;</span> =<span class="st"> &quot;2&quot;</span>,
+                                                                   <span class="st">&quot;C&quot;</span> =<span class="st"> &quot;3&quot;</span>,
+                                                                   <span class="st">&quot;D&quot;</span> =<span class="st"> &quot;4&quot;</span>, 
+                                                                   <span class="st">&quot;E&quot;</span> =<span class="st"> &quot;5&quot;</span>, 
+                                                                   <span class="st">&quot;F&quot;</span> =<span class="st"> &quot;6&quot;</span>,
+                                                                   <span class="st">&quot;G&quot;</span> =<span class="st"> &quot;7&quot;</span>, 
+                                                                   <span class="st">&quot;H&quot;</span> =<span class="st"> &quot;8&quot;</span>))</code></pre></div>
+<div id="update-testing-concentration" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Update Testing Concentration</h3>
+<p>After we finished the testing, NCCT provided the actual aliquot_concentration in the chemical unblind file, which contains the actual CAS number, chemical name corresponding to each sample id. Some chemicals were not delivered as 20mM as we initially requested. Therefore it is necessary to update the level 0 file with the actual concentration.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ===================================</span>
+<span class="co"># import unblinded chemical name, aliquoted_concentration, cas number and rename the col names to keep only chnm, casn, spid, conc.</span>
+
+spid_chnm_table &lt;-
+<span class="kw">read_excel</span>(<span class="st">&quot;./raw data files/EPA_11700_EPA-SLaws_ph1v2_150ul_20170125_key.xlsx&quot;</span>)
+
+spid_chnm_table &lt;-
+<span class="st">    </span>spid_chnm_table %&gt;%<span class="st"> </span>dplyr::<span class="kw">select</span>(EPA_Sample_ID, Aliquot_Concentration, CASRN, Preferred_Name)
+<span class="co">#rename the column title to be compatible with tcpl package.</span>
+<span class="kw">names</span>(spid_chnm_table) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;spid&quot;</span>, <span class="st">&quot;aliquot_conc&quot;</span>, <span class="st">&quot;casn&quot;</span>, <span class="st">&quot;chnm&quot;</span>)
+
+<span class="co">#calculate the actual cocnentration tested in single-con screening</span>
+<span class="co">#the unit will be convert from mM to Molar</span>
+spid_chnm_table &lt;-<span class="st"> </span>spid_chnm_table %&gt;%
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">test_conc =</span> aliquot_conc /<span class="st"> </span><span class="fl">2E5</span>)
+
+<span class="co"># convert to data.table format (only necessary for using tcpl package)</span>
+<span class="co"># spid_chnm_table &lt;- data.table(spid_chnm_table)</span>
+
+
+<span class="co"># update singel-con level0 data frame with updated concentration</span>
+<span class="co"># the concentration unit is converted from uM to M.</span>
+s1 &lt;-<span class="st"> </span><span class="kw">filter</span>(dt_sc_update, wllt ==<span class="st"> &quot;t&quot;</span>)
+s2 &lt;-<span class="st"> </span><span class="kw">filter</span>(dt_sc_update, wllt !=<span class="st"> &quot;t&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">conc =</span> conc /<span class="st"> </span><span class="fl">1E6</span>, 
+           <span class="dt">unit =</span> <span class="st">&quot;M&quot;</span>)
+s1 &lt;-
+<span class="st">    </span><span class="kw">left_join</span>(s1, dplyr::<span class="kw">select</span>(spid_chnm_table, spid, test_conc), <span class="dt">by =</span> <span class="st">&quot;spid&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">conc =</span> test_conc,
+           <span class="dt">unit =</span> <span class="st">&quot;M&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span>dplyr::<span class="kw">select</span>(-test_conc)
+
+
+dt_sc_update &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(s2, s1)
+<span class="co"># sc_lv0_update &lt;- data.table(sc_lv0_update)</span></code></pre></div>
+</div>
+<div id="export-sinlge-con-level0-file-with-updated-concentration" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Export Sinlge-Con level0 file with updated concentration</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># export to .csv file</span>
+<span class="kw">write_csv</span>(dt_sc_update, <span class="st">&quot;./input data files/NIS_ph1_v2_sc_lvl0_for_tcpl.csv&quot;</span> )</code></pre></div>
+</div>
+</div>
+<div id="import-and-preprocess-multi-concentration-data" class="section level2">
+<h2><span class="header-section-number">2.2</span> Import and Preprocess Multi-Concentration Data</h2>
+<p>For multi-concentration data, Dan Hallinger made the .xlsx file as the summary file of all three bioreplicates of RAIU/cytotox assay. Therefore to read the data into R, this code needs to specify the row and column position of the data on the excel sheet.</p>
+<p>To make the parsing succesful, make sure the excel data file (for example: “Combined RAIU Data (MC Plate 1).xlsx”, see fig below) contains three bioreplicates of the raw readings in 96well layout, with the first one range from Row 1-9, 2nd one from row 11-19, 3rd one from row 21-29. The 12 columns of the 96 well should start from Column C to N. On row 30, col D-M, list sample_id of the chemicals tested. on row 1,2,3 of col O, list MC or SC, Plate number, RAIU or Cytotox repsectively.</p>
+<p>The screenshot below shows how the data should be organized and labelled:</p>
+<div class="figure">
+<img src="images/layout.png" alt="summary file layout" />
+<p class="caption">summary file layout</p>
+</div>
+<div id="functions-for-data-retrieving" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Functions for data retrieving</h3>
+<p>To properly read the raw data into R and ToxCast pipline compatible level 0 file, three functions named: <code>read_parse</code>, <code>create_platemap</code>, and <code>annotate_data</code> are written and described below.</p>
+<div id="read_parse-function-to-read-and-parse-excel-data-file" class="section level4">
+<h4><span class="header-section-number">2.2.1.1</span> <code>read_parse</code> function to read and parse excel data file</h4>
+<p>This function takes the data file name as the argument, and returns a list object containing all assay info and readouts.</p>
+<p><strong>Notice the row index used here is different from what is in the xlsx file, this is because when <code>read_excel</code> read in the file, blank rows are automatically deleted. Therefore row 28, instead of row 30 contains the correct sample_ID.</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">read_parse &lt;-<span class="st"> </span>function(file_name) {
+    d &lt;-<span class="st"> </span><span class="kw">read_excel</span>(file_name, <span class="dt">sheet =</span><span class="dv">1</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)
+    d[] &lt;-<span class="st"> </span><span class="kw">lapply</span>(d, as.character)  <span class="co">#convert all columns to character</span>
+    rep1 &lt;-<span class="st"> </span><span class="kw">data.matrix</span>(d[<span class="dv">2</span>:<span class="dv">9</span>,<span class="dv">3</span>:<span class="dv">14</span>])
+    rep2 &lt;-<span class="st"> </span><span class="kw">data.matrix</span>(d[<span class="dv">11</span>:<span class="dv">18</span>,<span class="dv">3</span>:<span class="dv">14</span>])
+    rep3 &lt;-<span class="st"> </span><span class="kw">data.matrix</span>(d[<span class="dv">20</span>:<span class="dv">27</span>,<span class="dv">3</span>:<span class="dv">14</span>])
+    assay_form &lt;-d[[<span class="dv">1</span>,<span class="dv">15</span>]]   <span class="co">#MC or SC (multicon or single con)   </span>
+    
+    <span class="co">#plate 1,2,3 and go on, this is plate id Dan Hallinger assigned, </span>
+    <span class="co">#for the same plate id and assay_form, the plate layout is the same,</span>
+    <span class="co">#whether its raiu or cytotox.</span>
+    plate_id &lt;-<span class="st"> </span>d[[<span class="dv">2</span>,<span class="dv">15</span>]]   
+    
+    <span class="co">#name of the assay, RAIU or Cytotox</span>
+    <span class="co">#assay_plate_id &lt;- paste(d[[1,15]], d[[2,15]], sep=&quot;_&quot;)   </span>
+    <span class="co">#plate_id and assay_type should merge together, such as mc_plate1</span>
+    assay_name &lt;-<span class="st"> </span>d[[<span class="dv">3</span>,<span class="dv">15</span>]]  
+    <span class="co">#this is the sample_id used to identify each tested chemical(blinded id)</span>
+    sample_id &lt;-<span class="st"> </span>d[<span class="dv">28</span>,<span class="dv">4</span>:<span class="dv">13</span>, drop=<span class="ot">TRUE</span>]  
+    if (<span class="kw">is.na</span>(assay_form)||<span class="st"> </span><span class="kw">is.na</span>(plate_id)||<span class="kw">is.na</span>(assay_name)||<span class="kw">is.na</span>(sample_id)) {
+        <span class="kw">stop</span>(<span class="st">&quot;missing info for assay type, plate id or sample id!</span><span class="ch">\n</span><span class="st"> Go back and check your .xlsx data file.&quot;</span>)
+        } else {
+            results &lt;-<span class="st"> </span><span class="kw">list</span>(assay_name, assay_form, plate_id, sample_id, rep1, rep2, rep3) 
+            }
+    <span class="kw">return</span>(results)
+}</code></pre></div>
+</div>
+<div id="create_platemap-function-to-create-the-assay-plate-map-with-correct-sample_id" class="section level4">
+<h4><span class="header-section-number">2.2.1.2</span> <code>create_platemap</code> function to create the assay plate map with correct sample_ID</h4>
+<p>To add info for each well of the assay, I created a plate map .csv file with 3 blocks of 96-well layout providing:</p>
+<ul>
+<li>chemical names</li>
+<li>concentration (unit: M)</li>
+<li>well type(type of control or sample)</li>
+</ul>
+<p>The file for multi concetration assay is named mc_platemap.csv.<br />
+To read single concentration results, similar plate map needs to be created and named as sc_platemap.csv</p>
+<p>The screen shot below is the mc_platemap used in NIS phase 1 data.<br />
+<img src="images/mcmap.png" alt="mc_platemap" /></p>
+<p>Note that there are NAs in the name map (row 1-8), these positions will be filled with the correct sample_id in the processing.</p>
+<p>The code below is the function to parse the plate map (for mc or sc) csv file, and fill in the sample_id in to the right position in 96well layout.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">create_platemap &lt;-<span class="st"> </span>function(map_file, sample_id) {
+    <span class="co">#check validity of sample_id</span>
+    if (!<span class="kw">complete.cases</span>(sample_id)) {<span class="kw">stop</span>(<span class="st">&quot;missing sample_id, check data file.&quot;</span>)}
+    <span class="co">#readin chemical name map</span>
+    name_map &lt;-<span class="st"> </span><span class="kw">read.table</span>(map_file, <span class="dt">sep=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nrows=</span><span class="dv">8</span>, <span class="dt">na.strings=</span><span class="st">&quot;na&quot;</span>,<span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)
+    <span class="co">#readin concentration map</span>
+    conc_map &lt;-<span class="st"> </span><span class="kw">read.table</span>(map_file, <span class="dt">sep=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nrows=</span><span class="dv">8</span>, <span class="dt">skip=</span><span class="dv">8</span>, <span class="dt">na.strings=</span><span class="st">&quot;na&quot;</span>) 
+    <span class="co">#readin welltype map</span>
+    welltype_map &lt;-<span class="st"> </span><span class="kw">read.table</span>(map_file, <span class="dt">sep=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nrows=</span><span class="dv">8</span>, <span class="dt">skip=</span><span class="dv">16</span>, <span class="dt">na.strings=</span><span class="st">&quot;na&quot;</span>, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)
+    <span class="co">#fill in the NAs in name_map with the correct sample_id that was read from the assay data file(.xlsx) </span>
+    <span class="co">#The loop here fills NAs on the mc_platemap</span>
+    for (i in <span class="dv">1</span>:<span class="dv">10</span>) {
+        name_map[<span class="dv">2</span>:<span class="dv">7</span>,i<span class="dv">+1</span>] &lt;-<span class="st"> </span><span class="kw">rep</span>(sample_id[[i]],<span class="dv">6</span>)
+        i &lt;-<span class="st"> </span>i<span class="dv">+1</span>
+    }
+    <span class="co">#put all three map together in a list.</span>
+    map &lt;-<span class="st"> </span><span class="kw">list</span>(name_map, conc_map, welltype_map)
+    <span class="kw">return</span>(map)
+}</code></pre></div>
+</div>
+<div id="annotate_data-function-to-convert-all-data-into-tidy-tabular-form-level-0-compatible" class="section level4">
+<h4><span class="header-section-number">2.2.1.3</span> <code>annotate_data</code> function to convert all data into tidy tabular form (level 0 compatible)</h4>
+<p>This function requires 1) the proper assay map generated by <code>create_platemap</code> function, 2) parsed data generated by <code>read_parse</code> function.</p>
+<p>The function convert all the data into a dataframe with columns of:</p>
+<ul>
+<li>assay: name of the assay. cytotox or raiu</li>
+<li>apid: assay plate id. apid shoud be a unique id for each 96 well plate, can distinguish replicate, but doesn’t distinguish Cytotox and RAIU assay</li>
+<li>pid: plate id. used to represent mother plate id, doesn’t distinguish replicate,nor Cytotox or RAIU assay.</li>
+<li>spid: sample ID, the TP*** ID assigned by NCCT representing each tested chemical sample</li>
+<li>rowi: row position on 96 well plate</li>
+<li>coli: column position on 96 well plate</li>
+<li>repi: replicate id, (1 to 3)</li>
+<li>conc: molar concentration (M)</li>
+<li>wllt: well type. define whether a well contains a control or a test sample</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annotate_data &lt;-<span class="st"> </span>function(map, results) {
+    name_map &lt;-<span class="st"> </span>map[[<span class="dv">1</span>]]
+    conc_map &lt;-<span class="st"> </span>map[[<span class="dv">2</span>]]
+    welltype_map &lt;-<span class="st"> </span>map[[<span class="dv">3</span>]]
+    assay_name &lt;-<span class="st"> </span>results[[<span class="dv">1</span>]]
+    assay_form &lt;-<span class="st"> </span>results[[<span class="dv">2</span>]]
+    plate_id &lt;-<span class="st"> </span>results[[<span class="dv">3</span>]]
+    <span class="co">#sample_id &lt;- results[[4]]</span>
+    rep1 &lt;-<span class="st"> </span>results[[<span class="dv">5</span>]]
+    rep2 &lt;-<span class="st"> </span>results[[<span class="dv">6</span>]]
+    rep3 &lt;-<span class="st"> </span>results[[<span class="dv">7</span>]]
+    
+    <span class="co">#initialize empty dataframe</span>
+    d &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
+    <span class="co">#loop through 96 wells to gather all variables together</span>
+    for (i in <span class="dv">1</span>:<span class="dv">8</span>) {
+        for (j in <span class="dv">1</span>:<span class="dv">12</span>) {
+            t &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">assay=</span>assay_name, 
+                            <span class="dt">pid=</span>plate_id,
+                            <span class="dt">spid=</span>name_map[[i,j]],
+                            <span class="dt">rowi=</span>i,
+                            <span class="dt">coli=</span>j,
+                            <span class="dt">rep1=</span>rep1[i,j],
+                            <span class="dt">rep2=</span>rep2[i,j],
+                            <span class="dt">rep3=</span>rep3[i,j],
+                            <span class="dt">conc=</span>conc_map[[i,j]],
+                            <span class="dt">wllt=</span>welltype_map[[i,j]]
+                            )
+            d &lt;-<span class="st"> </span><span class="kw">rbind</span>(d,t)        
+            j &lt;-<span class="st"> </span>j<span class="dv">+1</span>
+        }
+        i &lt;-<span class="st"> </span>i<span class="dv">+1</span>
+    }
+    <span class="co">#sort rows by sample_id, then concentration</span>
+    d &lt;-<span class="st"> </span><span class="kw">arrange</span>(d, spid, <span class="kw">desc</span>(conc))
+    <span class="kw">return</span>(d)
+}</code></pre></div>
+</div>
+</div>
+<div id="parse-all-excel-data-files-and-generate-tidy-table" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Parse all excel data files and generate tidy table</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">file_directory &lt;-<span class="st"> &quot;./raw data files/phase 1 mc data/&quot;</span>
+flist &lt;-<span class="st"> </span><span class="kw">list.files</span>(file_directory)
+<span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;A total of&quot;</span>,<span class="kw">length</span>(flist), <span class="st">&quot;files in the directory to be read:&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;A total of 36 files in the directory to be read:&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(flist)</code></pre></div>
+<pre><code>##  [1] &quot;Combined Cytotox Data (MC Plate 1).xlsx&quot; 
+##  [2] &quot;Combined Cytotox Data (MC Plate 10).xlsx&quot;
+##  [3] &quot;Combined Cytotox Data (MC Plate 11).xlsx&quot;
+##  [4] &quot;Combined Cytotox Data (MC Plate 12).xlsx&quot;
+##  [5] &quot;Combined Cytotox Data (MC Plate 13).xlsx&quot;
+##  [6] &quot;Combined Cytotox Data (MC Plate 14).xlsx&quot;
+##  [7] &quot;Combined Cytotox Data (MC Plate 15).xlsx&quot;
+##  [8] &quot;Combined Cytotox Data (MC Plate 16).xlsx&quot;
+##  [9] &quot;Combined Cytotox Data (MC Plate 17).xlsx&quot;
+## [10] &quot;Combined Cytotox Data (MC Plate 18).xlsx&quot;
+## [11] &quot;Combined Cytotox Data (MC Plate 2).xlsx&quot; 
+## [12] &quot;Combined Cytotox Data (MC Plate 3).xlsx&quot; 
+## [13] &quot;Combined Cytotox Data (MC Plate 4).xlsx&quot; 
+## [14] &quot;Combined Cytotox Data (MC Plate 5).xlsx&quot; 
+## [15] &quot;Combined Cytotox Data (MC Plate 6).xlsx&quot; 
+## [16] &quot;Combined Cytotox Data (MC Plate 7).xlsx&quot; 
+## [17] &quot;Combined Cytotox Data (MC Plate 8).xlsx&quot; 
+## [18] &quot;Combined Cytotox Data (MC Plate 9).xlsx&quot; 
+## [19] &quot;Combined RAIU Data (MC Plate 1).xlsx&quot;    
+## [20] &quot;Combined RAIU Data (MC Plate 10).xlsx&quot;   
+## [21] &quot;Combined RAIU Data (MC Plate 11).xlsx&quot;   
+## [22] &quot;Combined RAIU Data (MC Plate 12).xlsx&quot;   
+## [23] &quot;Combined RAIU Data (MC Plate 13).xlsx&quot;   
+## [24] &quot;Combined RAIU Data (MC Plate 14).xlsx&quot;   
+## [25] &quot;Combined RAIU Data (MC Plate 15).xlsx&quot;   
+## [26] &quot;Combined RAIU Data (MC Plate 16).xlsx&quot;   
+## [27] &quot;Combined RAIU Data (MC Plate 17).xlsx&quot;   
+## [28] &quot;Combined RAIU Data (MC Plate 18).xlsx&quot;   
+## [29] &quot;Combined RAIU Data (MC Plate 2).xlsx&quot;    
+## [30] &quot;Combined RAIU Data (MC Plate 3).xlsx&quot;    
+## [31] &quot;Combined RAIU Data (MC Plate 4).xlsx&quot;    
+## [32] &quot;Combined RAIU Data (MC Plate 5).xlsx&quot;    
+## [33] &quot;Combined RAIU Data (MC Plate 6).xlsx&quot;    
+## [34] &quot;Combined RAIU Data (MC Plate 7).xlsx&quot;    
+## [35] &quot;Combined RAIU Data (MC Plate 8).xlsx&quot;    
+## [36] &quot;Combined RAIU Data (MC Plate 9).xlsx&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#combine directory and file name</span>
+fl &lt;-<span class="st"> </span><span class="kw">paste</span>(file_directory, flist, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
+<span class="co">#name of plate map file</span>
+map_file  &lt;-<span class="st"> &quot;./raw data files/mc_platemap.csv&quot;</span>
+
+<span class="co"># read all files</span>
+df_mc &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
+for (i in <span class="dv">1</span>:<span class="kw">length</span>(fl)) {
+    results &lt;-<span class="st"> </span><span class="kw">read_parse</span>(fl[[i]])
+    <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Reading file&quot;</span>, i, <span class="st">&quot;:&quot;</span>, flist[[i]]))
+    <span class="co">#print(sapply(results[1:4], paste, sep=&quot; &quot;))</span>
+    sample_id &lt;-<span class="st"> </span>results[[<span class="dv">4</span>]]
+    map &lt;-<span class="st"> </span><span class="kw">create_platemap</span>(map_file, sample_id)
+    temp &lt;-<span class="st"> </span><span class="kw">annotate_data</span>(map, results)
+    df_mc &lt;-<span class="st"> </span><span class="kw">rbind</span>(df_mc, temp)
+
+    i &lt;-<span class="st"> </span>i<span class="dv">+1</span>
+}</code></pre></div>
+<pre><code>## [1] &quot;Reading file 1 : Combined Cytotox Data (MC Plate 1).xlsx&quot;
+## [1] &quot;Reading file 2 : Combined Cytotox Data (MC Plate 10).xlsx&quot;
+## [1] &quot;Reading file 3 : Combined Cytotox Data (MC Plate 11).xlsx&quot;
+## [1] &quot;Reading file 4 : Combined Cytotox Data (MC Plate 12).xlsx&quot;
+## [1] &quot;Reading file 5 : Combined Cytotox Data (MC Plate 13).xlsx&quot;
+## [1] &quot;Reading file 6 : Combined Cytotox Data (MC Plate 14).xlsx&quot;
+## [1] &quot;Reading file 7 : Combined Cytotox Data (MC Plate 15).xlsx&quot;
+## [1] &quot;Reading file 8 : Combined Cytotox Data (MC Plate 16).xlsx&quot;
+## [1] &quot;Reading file 9 : Combined Cytotox Data (MC Plate 17).xlsx&quot;
+## [1] &quot;Reading file 10 : Combined Cytotox Data (MC Plate 18).xlsx&quot;
+## [1] &quot;Reading file 11 : Combined Cytotox Data (MC Plate 2).xlsx&quot;
+## [1] &quot;Reading file 12 : Combined Cytotox Data (MC Plate 3).xlsx&quot;
+## [1] &quot;Reading file 13 : Combined Cytotox Data (MC Plate 4).xlsx&quot;
+## [1] &quot;Reading file 14 : Combined Cytotox Data (MC Plate 5).xlsx&quot;
+## [1] &quot;Reading file 15 : Combined Cytotox Data (MC Plate 6).xlsx&quot;
+## [1] &quot;Reading file 16 : Combined Cytotox Data (MC Plate 7).xlsx&quot;
+## [1] &quot;Reading file 17 : Combined Cytotox Data (MC Plate 8).xlsx&quot;
+## [1] &quot;Reading file 18 : Combined Cytotox Data (MC Plate 9).xlsx&quot;
+## [1] &quot;Reading file 19 : Combined RAIU Data (MC Plate 1).xlsx&quot;
+## [1] &quot;Reading file 20 : Combined RAIU Data (MC Plate 10).xlsx&quot;
+## [1] &quot;Reading file 21 : Combined RAIU Data (MC Plate 11).xlsx&quot;
+## [1] &quot;Reading file 22 : Combined RAIU Data (MC Plate 12).xlsx&quot;
+## [1] &quot;Reading file 23 : Combined RAIU Data (MC Plate 13).xlsx&quot;
+## [1] &quot;Reading file 24 : Combined RAIU Data (MC Plate 14).xlsx&quot;
+## [1] &quot;Reading file 25 : Combined RAIU Data (MC Plate 15).xlsx&quot;
+## [1] &quot;Reading file 26 : Combined RAIU Data (MC Plate 16).xlsx&quot;
+## [1] &quot;Reading file 27 : Combined RAIU Data (MC Plate 17).xlsx&quot;
+## [1] &quot;Reading file 28 : Combined RAIU Data (MC Plate 18).xlsx&quot;
+## [1] &quot;Reading file 29 : Combined RAIU Data (MC Plate 2).xlsx&quot;
+## [1] &quot;Reading file 30 : Combined RAIU Data (MC Plate 3).xlsx&quot;
+## [1] &quot;Reading file 31 : Combined RAIU Data (MC Plate 4).xlsx&quot;
+## [1] &quot;Reading file 32 : Combined RAIU Data (MC Plate 5).xlsx&quot;
+## [1] &quot;Reading file 33 : Combined RAIU Data (MC Plate 6).xlsx&quot;
+## [1] &quot;Reading file 34 : Combined RAIU Data (MC Plate 7).xlsx&quot;
+## [1] &quot;Reading file 35 : Combined RAIU Data (MC Plate 8).xlsx&quot;
+## [1] &quot;Reading file 36 : Combined RAIU Data (MC Plate 9).xlsx&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># add info columns</span>
+df_mc &lt;-<span class="st"> </span>df_mc %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">acsn =</span> stringr::<span class="kw">str_to_lower</span>(assay),
+         <span class="dt">wllq =</span> 1L,
+         <span class="dt">unit =</span> <span class="st">&#39;M&#39;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">gather</span>(rep, rval, rep1:rep3) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">apid =</span> <span class="kw">paste</span>(pid, rep, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</code></pre></div>
+</div>
+<div id="update-testing-concentrations" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Update Testing Concentrations</h3>
+<p>After we finished the testing, NCCT provided the actual aliquot_concentration in the chemical unblind file, which contains the actual CAS number, chemical name corresponding to each sample id. Some chemicals were not delivered as 20mM as we initially requested due to solubility limit. Therefore it is necessary to update the level 0 file with the actual concentration.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mc_conc_ratio &lt;-<span class="st"> </span>spid_chnm_table %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">conc_ratio =</span> aliquot_conc/<span class="fl">2E5</span>/<span class="fl">1E-4</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span>dplyr::<span class="kw">select</span>(spid, conc_ratio)
+
+<span class="co"># update cyto data  </span>
+<span class="co">#iterate through each spid to get the updated conc.</span>
+mc_t_cyto &lt;-<span class="st"> </span>df_mc %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(assay ==<span class="st"> &quot;Cytotox&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(wllt ==<span class="st"> &quot;t&quot;</span>) 
+mc_non_t_cyto &lt;-<span class="st"> </span>df_mc %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(assay ==<span class="st"> &quot;Cytotox&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(wllt !=<span class="st"> &quot;t&quot;</span>)  
+
+mc_t_cyto_update &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
+for (id in <span class="kw">unique</span>(mc_t_cyto$spid)) {
+  <span class="co">#print(id)</span>
+    d_spid &lt;-<span class="st"> </span><span class="kw">filter</span>(mc_t_cyto, spid ==<span class="st"> </span>id)
+    ratio &lt;-<span class="st"> </span><span class="kw">filter</span>(mc_conc_ratio, spid ==<span class="st"> </span>id)[[<span class="dv">2</span>]]
+    d_spid &lt;-<span class="st"> </span>d_spid %&gt;%<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">conc =</span> conc *<span class="st"> </span>ratio)
+    mc_t_cyto_update &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(mc_t_cyto_update, d_spid)
+}
+<span class="co"># Here is the udpated mc_lvl0 data table. </span>
+mc_lvl0_cyto_update &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(mc_non_t_cyto, mc_t_cyto_update)
+<span class="co"># mc_lvl0_cyto_update &lt;- data.table(mc_lvl0_cyto_update)</span>
+
+
+<span class="co">#update raiu data</span>
+mc_t_raiu &lt;-<span class="st"> </span>df_mc %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(assay ==<span class="st"> &quot;RAIU&quot;</span>) %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(wllt ==<span class="st"> &quot;t&quot;</span>)
+mc_non_t_raiu &lt;-<span class="st"> </span>df_mc %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(assay ==<span class="st"> &quot;RAIU&quot;</span>) %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(wllt !=<span class="st"> &quot;t&quot;</span>)  
+
+mc_t_raiu_update &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
+for (id in <span class="kw">unique</span>(mc_t_raiu$spid)) {
+    <span class="co">#print(id)</span>
+    d_spid &lt;-<span class="st"> </span><span class="kw">filter</span>(mc_t_raiu, spid ==<span class="st"> </span>id)
+    ratio &lt;-<span class="st"> </span><span class="kw">filter</span>(mc_conc_ratio, spid ==<span class="st"> </span>id)[[<span class="dv">2</span>]]
+    d_spid &lt;-<span class="st"> </span>d_spid %&gt;%<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">conc =</span> conc *<span class="st"> </span>ratio)
+    mc_t_raiu_update &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(mc_t_raiu_update, d_spid)
+}
+<span class="co">#Here is the udpated mc_lvl0 data table. </span>
+mc_lvl0_raiu_update &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(mc_non_t_raiu, mc_t_raiu_update)
+<span class="co"># mc_lvl0_raiu_update &lt;- data.table(mc_lvl0_raiu_update)</span></code></pre></div>
+</div>
+<div id="export-multi-conc-data-to-file" class="section level3">
+<h3><span class="header-section-number">2.2.4</span> Export Multi-conc data to file</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mc_lvl0_raiu_update %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">srcf =</span> <span class="st">&quot;NIS_ph1_v2_mc_lvl0_for_tcpl_raiu.csv&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">write_csv</span>(<span class="st">&quot;./input data files/NIS_ph1_v2_mc_lvl0_for_tcpl_raiu.csv&quot;</span>)
+
+mc_lvl0_cyto_update %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">srcf =</span> <span class="st">&quot;NIS_ph1_v2_mc_lvl0_for_tcpl_cytotox.csv&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">write_csv</span>(<span class="st">&quot;./input data files/NIS_ph1_v2_mc_lvl0_for_tcpl_cytotox.csv&quot;</span>)</code></pre></div>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="single-conc-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

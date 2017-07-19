@@ -1,0 +1,986 @@
+# Single-Conc Analysis
+
+
+## Define basic assay info
+
+```{r}
+  #define the names of the primary and toxicity assay.
+  #names should match what's provided in the <assay> column of the input dataframe
+assay_info <- list(
+  prim_assay = "RAIU",
+  toxi_assay = "Cytotox"
+)
+```
+
+## Data Import
+```{r, message=FALSE}
+
+dt_sc <- read_csv("./input data files/NIS_ph1_v2_sc_lvl0_for_tcpl.csv")
+
+```
+
+## Normalization
+Each sample well is normalized as percentage of the DMSO median on each plate.   
+
+```{r normalization_sc, cache=TRUE}
+
+dt_sc_norm <- toxplot::normalize_per_plate(dt_sc, nctrl = "DMSO")
+
+```
+
+
+## Threshold of Significance
+Now calculating 3bMAD and 3sigma value for the DMSO control in the single concentration assay as a whole.
+
+```{r}
+
+sig_cutoff_sc <- dt_sc_norm %>% 
+    filter(spid == "DMSO") %>% 
+    summarize(bMAD = mad(nval_median, na.rm=TRUE),
+              three_bMAD = 3*mad(nval_median, na.rm=TRUE)) 
+knitr::kable(sig_cutoff_sc, digits = 2) 
+
+```
+
+
+## QC of Single-conc assay
+
+Assay quality control measures were calculated by each 96-well plate.  
+
+To assesss the quality of assay for each 96 well plate, the following metrics were used:  
+
+* CV of DMSO controls 
+* Z' score 
+
+The negative control DMSO wells' raw readings were used to calculate mean, standard deviation and CV for each plate.  
+Z' score and SSMD were calculated for each plate as well using the raw data of DMSO negative control, RAIU or cytotox positive control readings. Note the positive control values are taken from the highest concentration wells, which represent the maximum RAIU inhibition or toxic inhibition observed on the positive control chemicals.   
+
+Z' factor is calculated as follows:  
+$$Z'=1-\frac{3\sigma_{positive\ control} + 3\sigma_{DMSO\ control}}{|\mu_{positive\ control} - \mu_{DMSO\ control}|}$$    
+
+**Note that in Z' calculation, because we only had one well of cytotox positive control, therefore sigma wasn't calculatable. Hence the Z' calculated for cytotox is unusable.**
+
+
+```{r}
+
+# Note the calculation is based on raw/unnormalized data. 
+# verified: calculation results is the same using either raw or normalized data. 
+
+
+qc_sc <- qc_per_plate(dt_sc_norm, assay_info, resp = "nval_median")
+
+qplot(unique_id, CV_DMSO, data = qc_sc$qc, color = assay) +
+    ggtitle("CV of DMSO in Single-Con Assay") +
+    xlab("Assay Plate ID") +
+    scale_x_discrete(labels = NULL) +
+    theme_bw()
+
+qplot(unique_id, Z_prime, data = qc_sc$qc, color = assay) +
+    ggtitle("Z' in Single-Con Assay") +
+    xlab("Assay Plate ID") +
+    scale_x_discrete(labels = NULL) +
+    theme_bw()
+
+```
+
+##QC Summary of Single-Con assay
+
+```{r, message=FALSE, warning=FALSE}
+library(psych)
+
+qc_sc_t <- qc_sc$qc %>%
+    dplyr::select(CV_DMSO, Z_prime) %>%
+    describe
+knitr::kable(qc_sc_t, digits = 2,  caption = "Summary Single-Con Assay QC Metrics")
+
+```
+
+
+All single-con QC metrics in a table:  
+
+```{r sc_qc table, echo=TRUE, message=FALSE, warning=FALSE}
+knitr::kable(dplyr::select(qc_sc$qc, apid, CV_DMSO, Z_prime),
+             digits = 2,
+             col.names = c("Plate", "CV of DMSO", "Z'"),
+             caption = "QC metrics in Single-Conc Screening")
+
+```
+
+### Single-Con Positive Control QC
+```{r}
+
+## model single-con controls on each plate
+sc_pos_raiu <- dt_sc_norm %>% 
+    filter(spid == "NaClO4") %>% 
+    mutate(spid = paste(spid, apid)) # change spid to distinguish NaClO4 on each plate. 
+
+
+sc_raiu_pos_md <- toxplot::fit_curve_tcpl(sc_pos_raiu, assay_info = list(prim_assay = "RAIU", toxi_assay = NULL))
+sc_raiu_pos_sum <- toxplot::summary_tcpl(sc_raiu_pos_md)
+
+##plot absIC50 and AC50 for pos controls together
+st <- sc_raiu_pos_sum %>% 
+    dplyr::select(AC50_prim, absEC50_prim, spid) %>% 
+    rename(AC50 = AC50_prim, absEC50 = absEC50_prim) %>% 
+    gather(key=Metric, value= value, AC50, absEC50)
+
+ggplot(st, aes(spid, value)) +
+    geom_point(aes(color=Metric), alpha=0.8, size=3)+
+    #facet_grid(Metric~., scale="free")+
+    scale_x_discrete(labels=NULL)+
+    ggtitle("AC50 & absEC50 of Positive Control(NaClO4) in Single-Con Assay")+
+    xlab("Assay Plate ID") +
+    ylab("Concentration (logM)") +
+    theme(plot.title = element_text(hjust=0.5)) +
+    theme_bw() 
+    #theme(legend.position = "none") 
+
+#summary
+library(psych)
+sc_pos_sum_raiu <- sc_raiu_pos_sum %>%
+    dplyr::select(AC50_prim, absEC50_prim) %>% 
+    rename(AC50=AC50_prim, absEC50 = absEC50_prim) %>% 
+    describe
+knitr::kable(sc_pos_sum_raiu, digits = 2,  caption="Summary of single-con RAIU positive control IC50s")
+
+
+```
+
+### Single-Con Controls
+```{r}
+
+#only take the NaClO4 wells at 1E-4M
+s1 <- dt_sc_norm %>% filter(wllt!="t", spid!="NaClO4")
+s2 <- dt_sc_norm %>% filter(spid=="NaClO4", conc== 1E-4)
+s3 <- bind_rows(s1, s2)
+
+sc_ctrl_sum <- s3 %>% 
+    filter(wllt !="t") %>% 
+    mutate(resp=nval_median) %>% 
+    #rename("NaClO4(1E-4M)F"=NaClO4) %>% 
+    group_by(spid) %>% 
+    summarize(mean = mean(resp),
+              sd = sd(resp),
+              min = min(resp),
+              max = max(resp),
+              CV = sd/mean*100)
+knitr::kable(sc_ctrl_sum, digits =2, caption="Single-Con control summary stats")
+
+
+##plot all sc controls
+
+
+ggplot(filter(s3, wllt !="t"), aes(apid, nval_median)) + 
+    geom_point(aes(color=apid),alpha=0.6) + 
+    facet_grid(spid~.) +
+    scale_y_continuous(limits= c(-20,140), breaks= seq(from=-20, to=140, by=20)) + 
+    #scale_x_discrete(breaks=NULL)+
+    scale_x_discrete(labels=NULL)+
+    ylab("Normalized Response") +
+    xlab("Assay Plate ID")+
+    ggtitle("Response of controls in 15 Single-Con assay plates")+
+    theme_bw()+
+    theme(legend.position = "none") +
+    theme(plot.title=element_text(hjust=0.5))
+
+```
+
+
+
+## Visualize the single concentration data
+
+A total of 310 chemical samples was tested in the single-con and 169 were further tested in multi-concentration.    
+The plot below showed the median, max, and min value for each tested chemical, and coloring shows which chemical were carried on to the multi-con assay. Because the assay has 3 replicates, so all three replicate's data are actually plotted in this figure.   
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#calculate median, max and min value
+sc_median <- dt_sc_norm %>% ungroup() %>% filter(str_detect(dt_sc_norm$spid, "^TP*")) %>% 
+    mutate(welltype = "sample") %>%
+    group_by(pid, spid) %>%
+    summarize(
+        median = median(nval_median),
+        up_range = max(nval_median),
+        lo_range = min(nval_median),
+        range = max(nval_median) - min(nval_median)
+    ) %>%
+    ungroup() %>%
+    mutate(mc_test = ifelse(median < 80, "yes", "No")) %>%
+    arrange(median)
+    
+
+
+##Plot single con median+range plot. 
+library(RColorBrewer)
+
+#png('./output plots for SOT poster/single-con.png', units="px",  width=1000*12.5, height=700*12.5, res=900)
+
+ggplot(sc_median, aes(x=reorder(spid, -median), y=median, color=mc_test)) +
+    geom_point(size=1.5, alpha=0.6) +
+    geom_errorbar(aes(ymax=up_range, ymin=lo_range), alpha=1) +
+    xlab("Chemicals, ordered by increasing iodide uptake inhibition") +
+    ylab("Iodide Uptake (% of control)")+scale_x_discrete(breaks=NULL) +
+    #ggtitle("Median and Response of Test Chemicals")+
+    geom_hline(yintercept = 80, linetype="dashed", color="violetred1") +
+    geom_hline(yintercept = 100, alpha=0.8) +
+    geom_text(data = NULL, x = 270, y = 102, label = "DMSO Control", color = "grey30")+
+        geom_text(data = NULL, x = 270, y = 82, label = "20% Inhibition", color = "grey30")+
+    scale_y_continuous(breaks = seq(from = 0, to =100, by=20))+
+    scale_color_brewer(palette="Set1", name= "Multi-Conc\nAssay", labels= c("No", "Yes")) +
+    theme_few(base_size = 15) 
+
+#dev.off()
+```
+
+
+Get the spid of the 169 chemicals entering multi-con test. 
+```{r, message=FALSE, warning=FALSE}
+
+dt_mc <- read_csv("./input data files/NIS_ph1_v2_mc_lvl0_for_tcpl_raiu.csv", na = "NA")
+mc_chem_list <- unique(dt_mc$spid)[-(1:6)]
+
+
+ls169 <- sc_median %>% 
+    filter(mc_test=="yes") %>% 
+    dplyr::select(spid)
+
+ls11 <- data.frame(mc_chem_list) %>% 
+    mutate(flag = (mc_chem_list %in% ls169$spid)) %>% 
+    filter(flag==FALSE) %>% 
+    dplyr::select(mc_chem_list) %>% rename(spid=mc_chem_list)
+
+
+
+```
+
+
+# Multi-Conc Analysis 
+
+## Import MC data
+```{r, message=FALSE, warning=FALSE}
+
+# import unblinded chemical name, aliquoted_concentration, cas number and rename the col names to keep only chnm, casn, spid, conc.
+
+spid_chnm_table <- read_excel("./raw data files/EPA_11700_EPA-SLaws_ph1v2_150ul_20170125_key.xlsx")
+
+spid_chnm_table <- spid_chnm_table %>% dplyr::select(EPA_Sample_ID, CASRN, Preferred_Name)
+# rename the column title to be compatible with tcpl package. 
+names(spid_chnm_table) <- c("spid", "casn", "chnm")
+
+# Import MC data (look at the 169 chemicals)
+mc_lvl0_raiu_update <- 
+    read_csv("./input data files/NIS_ph1_v2_mc_lvl0_for_tcpl_raiu.csv") %>%
+    filter(!(spid %in% ls11$spid))
+
+mc_lvl0_cyto_update <- 
+    read_csv("./input data files/NIS_ph1_v2_mc_lvl0_for_tcpl_cytotox.csv") %>% 
+    filter(!(spid %in% ls11$spid))
+
+dt_mc <- bind_rows(mc_lvl0_cyto_update, mc_lvl0_raiu_update)
+```
+
+## Normalization
+
+Normalize raw response to the median of DMSO controls, calculated per plate.  
+```{r}
+dt_mc_norm <- toxplot::normalize_per_plate(dt_mc)
+
+```
+## 3bMAD of MC
+
+
+```{r}
+#create concentration index
+dt_mc_norm <- dt_mc_norm %>% 
+    group_by(spid) %>% 
+    mutate(cndx = generate_index(conc)) %>% 
+    ungroup
+
+##
+sig_mc <- dt_mc_norm %>% 
+  mutate(neg_nval_median= 100 - nval_median) %>% 
+  group_by(assay) %>% 
+  filter(wllt == "t") %>% 
+  filter(cndx == 1 | cndx == 2) %>%    
+  summarise(bMAD = mad(neg_nval_median, na.rm = TRUE),
+            three_bMAD=3*mad(neg_nval_median, na.rm = TRUE)) 
+knitr::kable(sig_mc, digits =2)
+
+```
+
+
+
+## Multi-Con QC
+```{r, message=FALSE, warning=FALSE}
+
+#~~~~~~~~~~model mc controls~~~~~~~~~~~~~~~~~
+
+##extract mc related data frame
+d_pos_cyto <- dt_mc_norm %>% filter(assay == "Cytotox", wllt== "pc")
+d_pos_raiu <- dt_mc_norm %>% filter(assay == "RAIU", wllt=="pr")
+
+d_neg_cyto <- dt_mc_norm %>% filter(assay == "Cytotox", wllt=="nrc")
+d_neg_raiu <- dt_mc_norm %>% filter(assay == "RAIU", wllt=="nrc")
+d_ec80_raiu <- dt_mc_norm %>% filter(assay == "RAIU", wllt=="pr_ec80")
+d_ec20_raiu <- dt_mc_norm %>% filter(assay == "RAIU", wllt=="pr_ec20")
+
+
+
+##plot all DCNQ in multi-con
+g_cyto_pos <- qplot(data=d_pos_cyto, x=log10(conc), y=nval_median) +
+    labs(
+        #title = paste("SPID: " , spid, "\nNAME: ", chnm, "\nCAS NO: ", casn, sep = ""),
+        x = "Concentration (logM)",
+        y = "% Control Activity"
+    ) +
+    geom_point(
+        color = "#F8766D",
+        shape = 1,
+        alpha = 0.5,
+        size = 1.8
+    ) +
+    coord_fixed(
+        ylim = c(0, 125),
+        xlim = c(-9, -4),
+        ratio = 2 / 70
+    ) +
+    scale_y_continuous(breaks = seq(
+        from = 0,
+        to = 120,
+        by = 20
+    )) +
+    theme_bw() +
+    # scale_color_manual(values=c("red","blue"))+
+    theme(legend.title = element_blank())+
+    theme(plot.title=element_text(hjust=0.5))
+g_cyto_pos
+
+# png('./output plots for SOT poster/DCNQ.png', units="px", width=512*12.5, height=306*12.5, res=900)
+# g_cyto_pos
+# dev.off()
+
+
+
+##plot all NaClO4 in multi-con
+g_raiu_pos <- qplot(data=d_pos_raiu, x=log10(conc), y=nval_median) +
+    labs(
+        #title = paste("SPID: " , spid, "\nNAME: ", chnm, "\nCAS NO: ", casn, sep = ""),
+        x = "Concentration (logM)",
+        y = "% Control Activity"
+    ) +
+    geom_point(
+        #position="jitter",
+        color = "#00BFC4",
+        shape = 1,
+        alpha = 0.5,
+        size = 1
+    ) +
+    #geom_smooth(color = "#00BFC4")+
+    coord_fixed(
+        ylim = c(0, 125),
+        xlim = c(-9, -4),
+        ratio = 2 / 70
+    ) +
+    scale_y_continuous(breaks = seq(
+        from = 0,
+        to = 120,
+        by = 20
+    )) +
+    theme_bw() +
+    # scale_color_manual(values=c("red","blue"))+
+    theme(legend.title = element_blank())+
+    theme(plot.title=element_text(hjust=0.5))
+print(g_raiu_pos)
+
+
+# Obtain AC50 adn absEC50 for the positive controls
+
+d_pos_raiu <- mutate(d_pos_raiu, spid = paste(spid, apid, sep = "_"))
+pos_raiu_md <- toxplot::fit_curve_tcpl(df = d_pos_raiu,
+                                 assay_info = list(prim_assay = "RAIU", toxi_assay = NULL))
+raiu_pos_tbl <- toxplot::summary_tcpl(pos_raiu_md)
+
+
+d_pos_cyto <- mutate(d_pos_cyto, spid = paste(spid, apid, sep = "_"))
+pos_cyto_md <- toxplot::fit_curve_tcpl(df = d_pos_cyto,
+                                 assay_info = list(prim_assay = NULL, toxi_assay = "Cytotox"))
+cyto_pos_tbl <- toxplot::summary_tcpl(pos_cyto_md) 
+
+
+pos_tbl <- bind_rows(cyto_pos_tbl, raiu_pos_tbl)  #this is the modelling results for all mc positive 
+```
+
+summarizing EC50s of positive controls in multi-con assay.
+```{r}
+
+
+##summarizing EC50s of positive controls.
+library(psych)
+pos_sum_raiu <- raiu_pos_tbl %>%
+    dplyr::select(AC50_prim, absEC50_prim) %>% 
+    describe
+
+pos_sum_cyto <- cyto_pos_tbl %>%
+    dplyr::select(AC50_toxi, absEC50_toxi) %>% 
+    describe
+
+
+knitr::kable(pos_sum_raiu, digits = 2,  caption="Summary of RAIU positive control IC50s")
+knitr::kable(pos_sum_cyto, digits = 2,  caption="Summary of Cytotox positive control IC50s")
+
+
+```
+
+
+## Multi-Con Controls
+
+Visualize all controls in MC, NaClO4 and DCNQ are plotted using the 1E-4M concentration wells.
+
+```{r}
+
+m3 <- dt_mc_norm %>% 
+    filter(!wllt %in% c("t")) %>% 
+    filter(!(spid %in% c("NaClO4", "DCNQ")))
+
+m4 <- dt_mc_norm %>% 
+    filter(spid %in% c("NaClO4", "DCNQ")) %>% 
+    filter(conc == 1e-4)
+
+m31 <- bind_rows(m3, m4)
+
+## facet plots of all controls' data points
+ggplot(m31, aes(apid, nval_median)) + 
+    geom_point(aes(color=apid),alpha=0.7) + 
+    facet_grid(spid~assay) +
+    scale_y_continuous(limits= c(-20,140), breaks= seq(from=-20, to=140, by=20)) + 
+    #scale_x_discrete(breaks=NULL)+
+    scale_x_discrete(labels=NULL)+
+    ylab("% Control Activity") +
+    xlab("Assay Plate ID")+
+    ggtitle("Response of controls in all 54 assay plates")+
+    theme_bw()+
+    theme(legend.position = "none",
+          plot.title=element_text(hjust=0.5))
+
+##print the control stats table. 
+mc_ctrl_sum <- m31 %>% 
+    filter(wllt != "t") %>% 
+    #mutate(assay= if_else(aeid==1, "Cytotox", "RAIU")) %>%  #add "assay" variable
+    mutate(resp=nval_median) %>% 
+    group_by(assay, spid) %>% 
+    summarize(mean = mean(resp),
+              sd = sd(resp),
+              min = min(resp),
+              max = max(resp),
+              CV = sd/mean*100)
+knitr::kable(mc_ctrl_sum, digits = 2, caption = "Multi-Conc Control Summary Stats")
+
+
+```
+
+
+## Dose-response modeling
+
+The model used here is the Hill model provided in `tcpl` R package. 
+
+$$f(x) = \frac{tp}{1+10^{(ga-x)gw}}$$  
+  
+Where x is the log concentration, tp is the top asymptote, ga is the AC50 (the log concentration where the modeled activity equals 50% of the top asymptote), and gw is the hill coefficient. The Hill model provided in the tcpl R package constrains the three parameters as following:  
+
+* (1)	0 ≤ tp ≤ 1.2 times the maximum response value  
+* (2)	(minimum log concentration minus 2) ≤ ga ≤ (maximum log concentration plus 0.5)  
+* (3)	0.3 ≤ gw ≤ 8   
+
+---
+
+The  modelling is done using a wrapper function `fit_curve_tcpl` in `ToxPlot` package, which serve as an convenient interface to use the `tcplFit` function in the `tcpl` package, and returns a list object containing all data and modeling results.
+
+
+```{r, message=TRUE, warning=TRUE}
+mc_model <- fit_curve_tcpl(df = filter(dt_mc_norm, wllt == "t"), 
+                           assay_info = list(prim_assay = "RAIU", toxi_assay = "Cytotox"), 
+                           prim_cutoff = 23.8, toxi_cutoff = 17.7)
+
+```
+
+
+
+
+# Rank Chemicals
+
+To prioritize the chemicals for potential NIS inhibition activity, a ranking score was calculated using two metrics that take into account the potential confounding impact of cytotoxicity on identifying RAIU inhibition activity: 1) toxicity-adjusted area (TAA) and 2) the difference of median responses of RAIU and cytotoxicity at maximum tested concentration (Median-Difference). TAA was defined by the maximum concentration vertical line (right border), the significant threshold horizontal line for RAIU assay (top border), and the dose-response curves of RAIU and cell viability results. The numeric value of TAA is penalized when a chemical demonstrates strong cytotoxicity. Median-Difference was calculated using the median of cell viability responses minus the median of RAIU responses at the maximum testing concentration (usually 100 µM). Larger separations between RAIU and cytotoxicity are reflected in larger Median-Difference values. TAA and Median-Difference were each separately rescaled from 0 to 100 and then summed to obtain a chemical ranking score ranging from 0 – 200. For chemicals with no RAIU response, TAA is assigned as 0 as well.
+
+![Demonstration of TAA and Median-Difference](./images/ranking_score.png) 
+
+
+
+```{r, cache = TRUE}
+
+sum_tbl <- toxplot::rank_tcpl(mc_model, spid_chnm_table)
+#convert NAs in ranking_score to 0
+sum_tbl <- sum_tbl %>% 
+    mutate(ranking_score=ifelse(is.na(ranking_score), 0, ranking_score),
+           no_tox_flag = ifelse(is.na(AC50_toxi), "1", "0"))
+    
+tier1 <- sum_tbl %>% filter(ranking_score > 100) %>% 
+    mutate(Activity_Group = "> 100")
+tier2 <- sum_tbl %>% filter(ranking_score < 100 & ranking_score > 50) %>% 
+    mutate(Activity_Group = "50~100")
+tier3 <- sum_tbl %>% filter(ranking_score < 50) %>% 
+    mutate(Activity_Group = "< 50")  
+sum_tbl_update <- bind_rows(tier1, tier2, tier3) 
+sum_tbl_update$Activity_Group %>% table
+
+```
+
+## Results Table for publication
+
+```{r}
+
+multi_results <- sum_tbl_update %>% 
+    dplyr::select(spid, chnm, casn, AC50_prim, absEC50_prim, cyto_lim, ranking_score)
+ 
+## merge sum-tbl with spid_chnm_table, to include all single and multi-con results
+spid_chnm_table <-
+read_excel("./raw data files/EPA_11700_EPA-SLaws_ph1v2_150ul_20170125_key.xlsx")
+
+spid_chnm_table <-
+    spid_chnm_table %>% dplyr::select(EPA_Sample_ID, Aliquot_Concentration, CASRN, Preferred_Name)
+#rename the column title to be compatible with tcpl package.
+names(spid_chnm_table) <- c("spid", "aliquot_conc", "casn", "chnm")
+
+#calculate the actual cocnentration tested in single-con screening
+#the unit will be convert from mM to Molar
+spid_chnm_table <- spid_chnm_table %>%
+    mutate(test_conc = aliquot_conc / 2E5)
+colnames(spid_chnm_table)
+single_con_results <- spid_chnm_table %>% 
+    mutate(hitc = ifelse(spid %in% ls169$spid, "+", "-"))
+
+final_sum_tbl <- full_join(single_con_results, multi_results, by = c("spid", "chnm", "casn")) %>% 
+    dplyr::select(spid, chnm, casn, test_conc, hitc, everything()) %>% 
+    dplyr::select(-aliquot_conc) %>% 
+    arrange(desc(ranking_score), desc(hitc)) 
+
+colnames(final_sum_tbl) <- c("SPID", "Chemical", "CAS NO.", "Max Conc(M)", "Hit Call", "AC50", "absEC50", "Cytotox Point", "Ranking Score")
+
+knitr::kable(final_sum_tbl, caption = "List of chemicals and screening results" )
+#write.csv(final_sum_tbl, "./output data files/sum_tble_for_paper.csv")
+
+
+```
+
+
+## Visualize ranking metrics
+
+
+```{r}
+
+#plot ranking score.
+# 
+# png('./output plots for SOT poster/ranking_score_for_paper_alt.png', units="px",  width=500*12.5, height=400*12.5, res=900)
+
+ggplot(sum_tbl_update, aes(color=as.factor(no_tox_flag))  ) +
+    geom_point(aes(x=reorder(spid, ranking_score), y= ranking_score, shape=Activity_Group), alpha = 1, size = 1) +
+    geom_hline(yintercept = 100, alpha = 0.8, size = 0.8, linetype = "dashed", color = "gray3") +
+    geom_hline(yintercept = 50, alpha = 0.8, size = 0.8, linetype = "dashed", color = "gray3") +
+    geom_rect(aes(xmin = 154, xmax= 170,  ymin = 100, ymax = +Inf), linetype =0, fill="gray80", alpha=0.1)+
+    geom_rect(aes(xmin = 86, xmax= 154,  ymin = 50, ymax = 100), linetype =0, fill ="gray80", alpha=0.1)+
+    geom_rect(aes(xmin = 0, xmax= 86,  ymin = 0, ymax = 50), linetype =0, fill ="gray80", alpha=0.1)+
+    geom_point(aes(x=reorder(spid, ranking_score), y= ranking_score, shape=Activity_Group), alpha = 1, size = 2) +
+    #ggtitle("Ranking Scores") + 
+    xlab("Chemicals, ordered by ranking scores") +
+    ylab("Ranking Score")+
+    theme_few() +
+    #scale_x_discrete(labels=NULL)+
+    theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), 
+          axis.text.y=element_text(size=rel(1.2)))+
+    scale_color_discrete(name ="Cytotoxicity",
+                          labels=c("+", "-")) +
+    scale_shape_discrete(breaks = c("> 100", "50~100", "< 50")) +
+    theme(axis.title = element_text(size = rel(1.2))) +
+    theme(plot.title = element_text(hjust=0.5)) +
+    theme(legend.justification = c(0,1), legend.position = c(0.01, 0.99)) #+
+    #theme(legend.background = element_rect(fill="gray90", size=.5, linetype="dotted"))
+# dev.off()
+```
+
+# ToxCast Internal Replicates
+
+### Single-con internal Replicate performance 
+ToxCast Ph1_v2 library included internal replicates. They are the same chemical but under different sample id, therefore tested blindly with each sample repliated three times. . 
+
+There are 12 chemicals been repeated, showed in the following table
+```{r}
+name_code <- spid_chnm_table %>% dplyr::select(spid, casn, chnm)
+#check which chemical is repeated in toxcast ph1_v2 library
+chnm_freq <- data.frame(table(name_code$chnm)) %>% arrange(desc(Freq))
+internal_rep <- head(chnm_freq, 12) 
+knitr::kable(internal_rep)
+```
+
+```{r}
+##add chnm to sc data
+sc_unblind <- left_join(dt_sc_norm, name_code, by= "spid")
+## get sc data for interval replicates
+sc_rep <- sc_unblind %>% dplyr::filter(chnm %in% internal_rep$Var1)
+sc_rep$chnm <- str_replace(sc_rep$chnm, "2,4-Dichlorophenoxyacetic acid", "2,4-D")
+
+library(RColorBrewer)
+# png('./output plots for SOT poster/internal_control_single_con.png', units="px",  width=600*8.33, height=400*8.33, res=600)
+ggplot(sc_rep, aes(x=reorder(chnm, -nval_median), y=nval_median) ) +
+    geom_point(size=3, alpha = 0.9, aes(shape=pid, color=chnm), position = position_jitter(width=0.5)) +
+    #geom_errorbar(aes(ymax=up_range, ymin=lo_range), alpha=1) +
+    xlab("") +
+    ylab("Iodide Uptake (% of Control)")+
+    geom_hline(yintercept = 80, linetype="dashed", color="violetred1") +
+    geom_hline(yintercept = 100, alpha=0.8) +
+    scale_y_continuous(breaks = seq(from = 0, to =100, by=20))+
+    #ggtitle("ToxCast Ph1_v2 Internal Replicates in Single-Con Screening")+
+    #scale_color_brewer(palette="Set1", name= "Multi-Conc\nAssay", labels= c("No", "Yes")) +
+    #scale_x_discrete(labels=NULL)+
+    #theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+    #labs(chnm = "Chemical\nName") +
+    theme_bw() +
+    theme(axis.text.x  = element_text(angle=35, vjust=1, hjust=1, size = rel(1.5)))+
+    theme(axis.title = element_text(size = rel(1.5)))+
+    theme(legend.position="none") +
+    theme(plot.margin = NULL)
+# dev.off()
+
+```
+
+### Multi-con internal controls replication performance
+
+```{r}
+##add chnm to mc data
+mc_unblind <- left_join(dt_mc_norm, name_code, by= c("spid"="spid"))
+
+##gettting reps's metrics
+mc_rep_sum <- 
+    sum_tbl %>% filter(chnm %in% internal_rep$Var1) 
+
+## getting range of ac50s
+mc_rep_sum %>% 
+    filter(!is.na(AC50_prim)) %>% 
+    group_by(chnm) %>% 
+    summarize(min = min(AC50_prim), 
+              max= max(AC50_prim), 
+              range = min - max) %>% 
+    arrange(desc(range)) %>% 
+    knitr::kable(digits = 2, caption = "Range of AC50 for internal replicates")
+
+# write_csv("./output data files/internal_rep_ac50_range.csv")
+
+##plot all points of ac50
+# png('./output plots for SOT poster/internal_rep_ac50s.png', units="px",  width=400*8.33, height=300*8.33, res=600)
+
+ggplot(mc_rep_sum, aes(x=reorder(chnm, AC50_prim), y=AC50_prim) ) +
+    geom_point(size=4, alpha = 1, aes(color=chnm),shape = 16) +
+    xlab("") +
+    ylab("AC50 (logM)")+
+    ylim(-6, -4)+
+    theme_bw() +
+    theme(axis.text.x  = element_text(angle=30, vjust=1, hjust=1, size = rel(1.5)),
+          axis.text.y = element_text(size = rel(1.2)),
+          legend.position = "none",
+          axis.title = element_text(size = rel(1.5)),
+          plot.margin = NULL)
+
+# dev.off()
+
+```
+
+
+
+# Export Dose-Response Curve 
+
+## Make plots
+```{r}
+#plot all
+allplot <- toxplot::plot_tcpl(mc_model, sum_tbl_update, spid_chnm_table)
+allplot[[1]]
+```
+
+
+## Export as PDF file
+```{r, eval = FALSE}
+# Export plots as pdf file
+save_plot_pdf(allplot,"./output plots/ranked_dose_response_plots.pdf")
+```
+
+## Export PNG of multi-plots
+Top ranked chemicals response curve put together in one plot. Exported in PNG format. 
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+
+# Multiple plot function
+#this is taken from http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+    library(grid)
+    
+    # Make a list from the ... arguments and plotlist
+    plots <- c(list(...), plotlist)
+    
+    numPlots = length(plots)
+    
+    # If layout is NULL, then use 'cols' to determine layout
+    if (is.null(layout)) {
+        # Make the panel
+        # ncol: Number of columns of plots
+        # nrow: Number of rows needed, calculated from # of cols
+        layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                         ncol = cols, nrow = ceiling(numPlots/cols))
+    }
+    
+    if (numPlots==1) {
+        print(plots[[1]])
+        
+    } else {
+        # Set up the page
+        grid.newpage()
+        pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+        
+        # Make each plot, in the correct location
+        for (i in 1:numPlots) {
+            # Get the i,j matrix positions of the regions that contain this subplot
+            matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+            
+            print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                            layout.pos.col = matchidx$col))
+        }
+    }
+}
+
+
+
+
+##plot with minimal text notation (EC50 values etc.)
+ap <- toxplot::plot_tcpl_minimal(mc_model, sum_tbl, spid_chnm_table)
+
+png('./output plots/taa_demo.png', units="px",  width=450*8.33, height=300*8.33, res=600)
+ap[[2]]
+dev.off()
+
+
+# 15 graphs from >100 group
+
+###
+png('./output plots/top15v5.png', units="px",  width=750*12.5, height=1000*12.5, res=900)
+multiplot(ap[[1]],ap[[2]],ap[[3]],
+          ap[[4]],ap[[5]],ap[[6]],
+          ap[[7]],ap[[8]],ap[[9]],
+          ap[[10]],ap[[11]],ap[[12]],
+          ap[[13]],ap[[14]],ap[[15]],
+          layout = matrix(c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15), nrow=5, byrow=TRUE))
+dev.off()
+####
+
+
+
+# six graphs from 50-100 group
+png('./output plots/50-100.png', units="px",  width=750*12.5, height=400*12.5, res=900)
+multiplot(ap[[16]],ap[[19]], ap[[20]], ap[[25]], ap[[38]], ap[[51]],   layout = matrix(c(1,2,3,4,5,6), nrow=2, byrow=TRUE))
+dev.off()
+# six graphs from <50 group
+png('./output plots/below50.png', units="px",  width=750*12.5, height=400*12.5, res=900)
+multiplot(ap[[83]],ap[[87]], ap[[89]], ap[[92]], ap[[116]], ap[[118]],  layout = matrix(c(1,2,3,4,5,6), nrow=2, byrow=TRUE))
+dev.off()
+
+# three graphs for no ranking scores
+png('./output plots/no_score.png', units="px",  width=750*12.5, height=200*12.5, res=900)
+multiplot(ap[[151]],ap[[156]], ap[[169]], layout = matrix(c(1,2,3), nrow=1, byrow=TRUE))
+dev.off()
+
+
+```
+
+
+
+# Interactive Dose-Response Plots
+
+The interactive plots below are generated using `plotly` package. Move mouse over to see the data points value.
+
+```{r, message=FALSE, warning=FALSE}
+
+ggplotly(allplot[[1]])
+ggplotly(allplot[[2]])
+ggplotly(allplot[[3]])
+ggplotly(allplot[[4]])
+ggplotly(allplot[[5]])
+ggplotly(allplot[[6]])
+ggplotly(allplot[[7]])
+ggplotly(allplot[[8]])
+ggplotly(allplot[[9]])
+ggplotly(allplot[[10]])
+ggplotly(allplot[[11]])
+ggplotly(allplot[[12]])
+ggplotly(allplot[[13]])
+ggplotly(allplot[[14]])
+ggplotly(allplot[[15]])
+ggplotly(allplot[[16]])
+ggplotly(allplot[[17]])
+ggplotly(allplot[[18]])
+ggplotly(allplot[[19]])
+ggplotly(allplot[[20]])
+ggplotly(allplot[[21]])
+ggplotly(allplot[[22]])
+ggplotly(allplot[[23]])
+ggplotly(allplot[[24]])
+ggplotly(allplot[[25]])
+ggplotly(allplot[[26]])
+ggplotly(allplot[[27]])
+ggplotly(allplot[[28]])
+ggplotly(allplot[[29]])
+ggplotly(allplot[[30]])
+ggplotly(allplot[[31]])
+ggplotly(allplot[[32]])
+ggplotly(allplot[[33]])
+ggplotly(allplot[[34]])
+ggplotly(allplot[[35]])
+ggplotly(allplot[[36]])
+ggplotly(allplot[[37]])
+ggplotly(allplot[[38]])
+ggplotly(allplot[[39]])
+ggplotly(allplot[[40]])
+ggplotly(allplot[[41]])
+ggplotly(allplot[[42]])
+ggplotly(allplot[[43]])
+ggplotly(allplot[[44]])
+ggplotly(allplot[[45]])
+ggplotly(allplot[[46]])
+ggplotly(allplot[[47]])
+ggplotly(allplot[[48]])
+ggplotly(allplot[[49]])
+ggplotly(allplot[[50]])
+ggplotly(allplot[[51]])
+ggplotly(allplot[[52]])
+ggplotly(allplot[[53]])
+ggplotly(allplot[[54]])
+ggplotly(allplot[[55]])
+ggplotly(allplot[[56]])
+ggplotly(allplot[[57]])
+ggplotly(allplot[[58]])
+ggplotly(allplot[[59]])
+ggplotly(allplot[[60]])
+ggplotly(allplot[[61]])
+ggplotly(allplot[[62]])
+ggplotly(allplot[[63]])
+ggplotly(allplot[[64]])
+ggplotly(allplot[[65]])
+ggplotly(allplot[[66]])
+ggplotly(allplot[[67]])
+ggplotly(allplot[[68]])
+ggplotly(allplot[[69]])
+ggplotly(allplot[[70]])
+ggplotly(allplot[[71]])
+ggplotly(allplot[[72]])
+ggplotly(allplot[[73]])
+ggplotly(allplot[[74]])
+ggplotly(allplot[[75]])
+ggplotly(allplot[[76]])
+ggplotly(allplot[[77]])
+ggplotly(allplot[[78]])
+ggplotly(allplot[[79]])
+ggplotly(allplot[[80]])
+ggplotly(allplot[[81]])
+ggplotly(allplot[[82]])
+ggplotly(allplot[[83]])
+ggplotly(allplot[[84]])
+ggplotly(allplot[[85]])
+ggplotly(allplot[[86]])
+ggplotly(allplot[[87]])
+ggplotly(allplot[[88]])
+ggplotly(allplot[[89]])
+ggplotly(allplot[[90]])
+ggplotly(allplot[[91]])
+ggplotly(allplot[[92]])
+ggplotly(allplot[[93]])
+ggplotly(allplot[[94]])
+ggplotly(allplot[[95]])
+ggplotly(allplot[[96]])
+ggplotly(allplot[[97]])
+ggplotly(allplot[[98]])
+ggplotly(allplot[[99]])
+ggplotly(allplot[[100]])
+ggplotly(allplot[[101]])
+ggplotly(allplot[[102]])
+ggplotly(allplot[[103]])
+ggplotly(allplot[[104]])
+ggplotly(allplot[[105]])
+ggplotly(allplot[[106]])
+ggplotly(allplot[[107]])
+ggplotly(allplot[[108]])
+ggplotly(allplot[[109]])
+ggplotly(allplot[[110]])
+ggplotly(allplot[[111]])
+ggplotly(allplot[[112]])
+ggplotly(allplot[[113]])
+ggplotly(allplot[[114]])
+ggplotly(allplot[[115]])
+ggplotly(allplot[[116]])
+ggplotly(allplot[[117]])
+ggplotly(allplot[[118]])
+ggplotly(allplot[[119]])
+ggplotly(allplot[[120]])
+ggplotly(allplot[[121]])
+ggplotly(allplot[[122]])
+ggplotly(allplot[[123]])
+ggplotly(allplot[[124]])
+ggplotly(allplot[[125]])
+ggplotly(allplot[[126]])
+ggplotly(allplot[[127]])
+ggplotly(allplot[[128]])
+ggplotly(allplot[[129]])
+ggplotly(allplot[[130]])
+ggplotly(allplot[[131]])
+ggplotly(allplot[[132]])
+ggplotly(allplot[[133]])
+ggplotly(allplot[[134]])
+ggplotly(allplot[[135]])
+ggplotly(allplot[[136]])
+ggplotly(allplot[[137]])
+ggplotly(allplot[[138]])
+ggplotly(allplot[[139]])
+ggplotly(allplot[[140]])
+ggplotly(allplot[[141]])
+ggplotly(allplot[[142]])
+ggplotly(allplot[[143]])
+ggplotly(allplot[[144]])
+ggplotly(allplot[[145]])
+ggplotly(allplot[[146]])
+ggplotly(allplot[[147]])
+ggplotly(allplot[[148]])
+ggplotly(allplot[[149]])
+ggplotly(allplot[[150]])
+ggplotly(allplot[[151]])
+ggplotly(allplot[[152]])
+ggplotly(allplot[[153]])
+ggplotly(allplot[[154]])
+ggplotly(allplot[[155]])
+ggplotly(allplot[[156]])
+ggplotly(allplot[[157]])
+ggplotly(allplot[[158]])
+ggplotly(allplot[[159]])
+ggplotly(allplot[[160]])
+ggplotly(allplot[[161]])
+ggplotly(allplot[[162]])
+ggplotly(allplot[[163]])
+ggplotly(allplot[[164]])
+ggplotly(allplot[[165]])
+ggplotly(allplot[[166]])
+ggplotly(allplot[[167]])
+ggplotly(allplot[[168]])
+ggplotly(allplot[[169]])
+
+
+```
+
+

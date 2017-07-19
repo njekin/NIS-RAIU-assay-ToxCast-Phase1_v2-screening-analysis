@@ -1,0 +1,3755 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R</title>
+  <meta name="description" content="Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R">
+  <meta name="generator" content="bookdown 0.3.20 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R" />
+  
+  
+  
+
+<meta name="author" content="Jun Wang">
+
+
+<meta name="date" content="2017-07-19">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="multi-conc-analysis.html">
+<link rel="next" href="toxcast-internal-replicates.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<link href="libs/plotlyjs-1.16.3/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotlyjs-1.16.3/plotly-latest.min.js"></script>
+<script src="libs/plotly-binding-4.5.6/plotly.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html"><i class="fa fa-check"></i><b>2</b> Data Import and Preprocessing</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#preprocess-single-concentration-data"><i class="fa fa-check"></i><b>2.1</b> Preprocess Single-Concentration Data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentration"><i class="fa fa-check"></i><b>2.1.1</b> Update Testing Concentration</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-sinlge-con-level0-file-with-updated-concentration"><i class="fa fa-check"></i><b>2.1.2</b> Export Sinlge-Con level0 file with updated concentration</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#import-and-preprocess-multi-concentration-data"><i class="fa fa-check"></i><b>2.2</b> Import and Preprocess Multi-Concentration Data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#functions-for-data-retrieving"><i class="fa fa-check"></i><b>2.2.1</b> Functions for data retrieving</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#parse-all-excel-data-files-and-generate-tidy-table"><i class="fa fa-check"></i><b>2.2.2</b> Parse all excel data files and generate tidy table</a></li>
+<li class="chapter" data-level="2.2.3" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentrations"><i class="fa fa-check"></i><b>2.2.3</b> Update Testing Concentrations</a></li>
+<li class="chapter" data-level="2.2.4" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-multi-conc-data-to-file"><i class="fa fa-check"></i><b>2.2.4</b> Export Multi-conc data to file</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html"><i class="fa fa-check"></i><b>3</b> Single-Conc Analysis</a><ul>
+<li class="chapter" data-level="3.1" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#define-basic-assay-info"><i class="fa fa-check"></i><b>3.1</b> Define basic assay info</a></li>
+<li class="chapter" data-level="3.2" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#data-import"><i class="fa fa-check"></i><b>3.2</b> Data Import</a></li>
+<li class="chapter" data-level="3.3" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#normalization"><i class="fa fa-check"></i><b>3.3</b> Normalization</a></li>
+<li class="chapter" data-level="3.4" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#threshold-of-significance"><i class="fa fa-check"></i><b>3.4</b> Threshold of Significance</a></li>
+<li class="chapter" data-level="3.5" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#qc-of-single-conc-assay"><i class="fa fa-check"></i><b>3.5</b> QC of Single-conc assay</a></li>
+<li class="chapter" data-level="3.6" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#qc-summary-of-single-con-assay"><i class="fa fa-check"></i><b>3.6</b> QC Summary of Single-Con assay</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#single-con-positive-control-qc"><i class="fa fa-check"></i><b>3.6.1</b> Single-Con Positive Control QC</a></li>
+<li class="chapter" data-level="3.6.2" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#single-con-controls"><i class="fa fa-check"></i><b>3.6.2</b> Single-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="single-conc-analysis.html"><a href="single-conc-analysis.html#visualize-the-single-concentration-data"><i class="fa fa-check"></i><b>3.7</b> Visualize the single concentration data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html"><i class="fa fa-check"></i><b>4</b> Multi-Conc Analysis</a><ul>
+<li class="chapter" data-level="4.1" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#import-mc-data"><i class="fa fa-check"></i><b>4.1</b> Import MC data</a></li>
+<li class="chapter" data-level="4.2" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#normalization-1"><i class="fa fa-check"></i><b>4.2</b> Normalization</a></li>
+<li class="chapter" data-level="4.3" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#bmad-of-mc"><i class="fa fa-check"></i><b>4.3</b> 3bMAD of MC</a></li>
+<li class="chapter" data-level="4.4" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#multi-con-qc"><i class="fa fa-check"></i><b>4.4</b> Multi-Con QC</a></li>
+<li class="chapter" data-level="4.5" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#multi-con-controls"><i class="fa fa-check"></i><b>4.5</b> Multi-Con Controls</a></li>
+<li class="chapter" data-level="4.6" data-path="multi-conc-analysis.html"><a href="multi-conc-analysis.html#dose-response-modeling"><i class="fa fa-check"></i><b>4.6</b> Dose-response modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="rank-chemicals.html"><a href="rank-chemicals.html"><i class="fa fa-check"></i><b>5</b> Rank Chemicals</a><ul>
+<li class="chapter" data-level="5.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#results-table-for-publication"><i class="fa fa-check"></i><b>5.1</b> Results Table for publication</a></li>
+<li class="chapter" data-level="5.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#visualize-ranking-metrics"><i class="fa fa-check"></i><b>5.2</b> Visualize ranking metrics</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html"><i class="fa fa-check"></i><b>6</b> ToxCast Internal Replicates</a><ul>
+<li class="chapter" data-level="6.0.1" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#single-con-internal-replicate-performance"><i class="fa fa-check"></i><b>6.0.1</b> Single-con internal Replicate performance</a></li>
+<li class="chapter" data-level="6.0.2" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#multi-con-internal-controls-replication-performance"><i class="fa fa-check"></i><b>6.0.2</b> Multi-con internal controls replication performance</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html"><i class="fa fa-check"></i><b>7</b> Export Dose-Response Curve</a><ul>
+<li class="chapter" data-level="7.1" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#make-plots"><i class="fa fa-check"></i><b>7.1</b> Make plots</a></li>
+<li class="chapter" data-level="7.2" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#export-as-pdf-file"><i class="fa fa-check"></i><b>7.2</b> Export as PDF file</a></li>
+<li class="chapter" data-level="7.3" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#export-png-of-multi-plots"><i class="fa fa-check"></i><b>7.3</b> Export PNG of multi-plots</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="interactive-dose-response-plots.html"><a href="interactive-dose-response-plots.html"><i class="fa fa-check"></i><b>8</b> Interactive Dose-Response Plots</a></li>
+<li class="chapter" data-level="9" data-path="source.html"><a href="source.html"><i class="fa fa-check"></i><b>9</b> R source code in <code>ToxPlot</code> package</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analysis of ToxCast Ph1_v2 Chemical Screening Results from NIS RAIU bioassay in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="rank-chemicals" class="section level1">
+<h1><span class="header-section-number">5</span> Rank Chemicals</h1>
+<p>To prioritize the chemicals for potential NIS inhibition activity, a ranking score was calculated using two metrics that take into account the potential confounding impact of cytotoxicity on identifying RAIU inhibition activity: 1) toxicity-adjusted area (TAA) and 2) the difference of median responses of RAIU and cytotoxicity at maximum tested concentration (Median-Difference). TAA was defined by the maximum concentration vertical line (right border), the significant threshold horizontal line for RAIU assay (top border), and the dose-response curves of RAIU and cell viability results. The numeric value of TAA is penalized when a chemical demonstrates strong cytotoxicity. Median-Difference was calculated using the median of cell viability responses minus the median of RAIU responses at the maximum testing concentration (usually 100 µM). Larger separations between RAIU and cytotoxicity are reflected in larger Median-Difference values. TAA and Median-Difference were each separately rescaled from 0 to 100 and then summed to obtain a chemical ranking score ranging from 0 – 200. For chemicals with no RAIU response, TAA is assigned as 0 as well.</p>
+<div class="figure">
+<img src="images/ranking_score.png" alt="Demonstration of TAA and Median-Difference" />
+<p class="caption">Demonstration of TAA and Median-Difference</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sum_tbl &lt;-<span class="st"> </span>toxplot::<span class="kw">rank_tcpl</span>(mc_model, spid_chnm_table)
+<span class="co">#convert NAs in ranking_score to 0</span>
+sum_tbl &lt;-<span class="st"> </span>sum_tbl %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">ranking_score=</span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(ranking_score), <span class="dv">0</span>, ranking_score),
+           <span class="dt">no_tox_flag =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(AC50_toxi), <span class="st">&quot;1&quot;</span>, <span class="st">&quot;0&quot;</span>))
+    
+tier1 &lt;-<span class="st"> </span>sum_tbl %&gt;%<span class="st"> </span><span class="kw">filter</span>(ranking_score &gt;<span class="st"> </span><span class="dv">100</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Activity_Group =</span> <span class="st">&quot;&gt; 100&quot;</span>)
+tier2 &lt;-<span class="st"> </span>sum_tbl %&gt;%<span class="st"> </span><span class="kw">filter</span>(ranking_score &lt;<span class="st"> </span><span class="dv">100</span> &amp;<span class="st"> </span>ranking_score &gt;<span class="st"> </span><span class="dv">50</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Activity_Group =</span> <span class="st">&quot;50~100&quot;</span>)
+tier3 &lt;-<span class="st"> </span>sum_tbl %&gt;%<span class="st"> </span><span class="kw">filter</span>(ranking_score &lt;<span class="st"> </span><span class="dv">50</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Activity_Group =</span> <span class="st">&quot;&lt; 50&quot;</span>)  
+sum_tbl_update &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(tier1, tier2, tier3) 
+sum_tbl_update$Activity_Group %&gt;%<span class="st"> </span>table</code></pre></div>
+<pre><code>## .
+##   &lt; 50  &gt; 100 50~100 
+##     84     15     70</code></pre>
+<div id="results-table-for-publication" class="section level2">
+<h2><span class="header-section-number">5.1</span> Results Table for publication</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_results &lt;-<span class="st"> </span>sum_tbl_update %&gt;%<span class="st"> </span>
+<span class="st">    </span>dplyr::<span class="kw">select</span>(spid, chnm, casn, AC50_prim, absEC50_prim, cyto_lim, ranking_score)
+ 
+## merge sum-tbl with spid_chnm_table, to include all single and multi-con results
+spid_chnm_table &lt;-
+<span class="kw">read_excel</span>(<span class="st">&quot;./raw data files/EPA_11700_EPA-SLaws_ph1v2_150ul_20170125_key.xlsx&quot;</span>)
+
+spid_chnm_table &lt;-
+<span class="st">    </span>spid_chnm_table %&gt;%<span class="st"> </span>dplyr::<span class="kw">select</span>(EPA_Sample_ID, Aliquot_Concentration, CASRN, Preferred_Name)
+<span class="co">#rename the column title to be compatible with tcpl package.</span>
+<span class="kw">names</span>(spid_chnm_table) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;spid&quot;</span>, <span class="st">&quot;aliquot_conc&quot;</span>, <span class="st">&quot;casn&quot;</span>, <span class="st">&quot;chnm&quot;</span>)
+
+<span class="co">#calculate the actual cocnentration tested in single-con screening</span>
+<span class="co">#the unit will be convert from mM to Molar</span>
+spid_chnm_table &lt;-<span class="st"> </span>spid_chnm_table %&gt;%
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">test_conc =</span> aliquot_conc /<span class="st"> </span><span class="fl">2E5</span>)
+<span class="kw">colnames</span>(spid_chnm_table)</code></pre></div>
+<pre><code>## [1] &quot;spid&quot;         &quot;aliquot_conc&quot; &quot;casn&quot;         &quot;chnm&quot;        
+## [5] &quot;test_conc&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">single_con_results &lt;-<span class="st"> </span>spid_chnm_table %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">hitc =</span> <span class="kw">ifelse</span>(spid %in%<span class="st"> </span>ls169$spid, <span class="st">&quot;+&quot;</span>, <span class="st">&quot;-&quot;</span>))
+
+final_sum_tbl &lt;-<span class="st"> </span><span class="kw">full_join</span>(single_con_results, multi_results, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;spid&quot;</span>, <span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;casn&quot;</span>)) %&gt;%<span class="st"> </span>
+<span class="st">    </span>dplyr::<span class="kw">select</span>(spid, chnm, casn, test_conc, hitc, <span class="kw">everything</span>()) %&gt;%<span class="st"> </span>
+<span class="st">    </span>dplyr::<span class="kw">select</span>(-aliquot_conc) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(ranking_score), <span class="kw">desc</span>(hitc)) </code></pre></div>
+<pre><code>## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+## factor and character vector, coercing into character vector
+
+## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+## factor and character vector, coercing into character vector
+
+## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+## factor and character vector, coercing into character vector</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(final_sum_tbl) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SPID&quot;</span>, <span class="st">&quot;Chemical&quot;</span>, <span class="st">&quot;CAS NO.&quot;</span>, <span class="st">&quot;Max Conc(M)&quot;</span>, <span class="st">&quot;Hit Call&quot;</span>, <span class="st">&quot;AC50&quot;</span>, <span class="st">&quot;absEC50&quot;</span>, <span class="st">&quot;Cytotox Point&quot;</span>, <span class="st">&quot;Ranking Score&quot;</span>)
+
+knitr::<span class="kw">kable</span>(final_sum_tbl, <span class="dt">caption =</span> <span class="st">&quot;List of chemicals and screening results&quot;</span> )</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-24">Table 5.1: </span>List of chemicals and screening results</caption>
+<thead>
+<tr class="header">
+<th align="left">SPID</th>
+<th align="left">Chemical</th>
+<th align="left">CAS NO.</th>
+<th align="right">Max Conc(M)</th>
+<th align="left">Hit Call</th>
+<th align="right">AC50</th>
+<th align="right">absEC50</th>
+<th align="right">Cytotox Point</th>
+<th align="right">Ranking Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TP0001500G04</td>
+<td align="left">Etoxazole</td>
+<td align="left">153233-91-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.917875</td>
+<td align="right">-5.882295</td>
+<td align="right">-4.323768</td>
+<td align="right">198.89505</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502E10</td>
+<td align="left">Triphenyltin hydroxide</td>
+<td align="left">76-87-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.386793</td>
+<td align="right">-5.388907</td>
+<td align="right">-5.168175</td>
+<td align="right">157.81647</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501D03</td>
+<td align="left">Niclosamide</td>
+<td align="left">50-65-7</td>
+<td align="right">5.0e-05</td>
+<td align="left">+</td>
+<td align="right">-6.954288</td>
+<td align="right">-6.787996</td>
+<td align="right">-6.912650</td>
+<td align="right">156.30635</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502G01</td>
+<td align="left">3-Iodo-2-propynyl-N-butylcarbamate</td>
+<td align="left">55406-53-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.089050</td>
+<td align="right">-5.301357</td>
+<td align="right">-4.794476</td>
+<td align="right">149.57745</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501E07</td>
+<td align="left">PFOS</td>
+<td align="left">1763-23-1</td>
+<td align="right">8.0e-05</td>
+<td align="left">+</td>
+<td align="right">-4.746544</td>
+<td align="right">-4.776923</td>
+<td align="right">-4.089537</td>
+<td align="right">132.33894</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498G01</td>
+<td align="left">PFOS</td>
+<td align="left">1763-23-1</td>
+<td align="right">8.0e-05</td>
+<td align="left">+</td>
+<td align="right">-4.722963</td>
+<td align="right">-4.740131</td>
+<td align="right">NA</td>
+<td align="right">130.89227</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501G03</td>
+<td align="left">Rotenone</td>
+<td align="left">83-79-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-7.149873</td>
+<td align="right">-6.219251</td>
+<td align="right">-7.301310</td>
+<td align="right">128.93977</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498B02</td>
+<td align="left">Cyprodinil</td>
+<td align="left">121552-61-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.428222</td>
+<td align="right">-4.429650</td>
+<td align="right">NA</td>
+<td align="right">124.89437</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501C09</td>
+<td align="left">Pyridaben</td>
+<td align="left">96489-71-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-8.635381</td>
+<td align="right">-7.488271</td>
+<td align="right">-7.594629</td>
+<td align="right">122.74859</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E11</td>
+<td align="left">Methoxyfenozide</td>
+<td align="left">161050-58-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.784047</td>
+<td align="right">-4.722900</td>
+<td align="right">-4.674597</td>
+<td align="right">114.28077</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500E05</td>
+<td align="left">2-(Thiocyanomethylthio)benzothiazole</td>
+<td align="left">21564-17-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.325152</td>
+<td align="right">-4.370695</td>
+<td align="right">-4.906797</td>
+<td align="right">106.38600</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500D09</td>
+<td align="left">Oxyfluorfen</td>
+<td align="left">42874-03-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.554565</td>
+<td align="right">-4.385772</td>
+<td align="right">NA</td>
+<td align="right">103.41865</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499D08</td>
+<td align="left">Captan</td>
+<td align="left">133-06-2</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-4.494527</td>
+<td align="right">-4.501728</td>
+<td align="right">-4.806263</td>
+<td align="right">101.03730</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502E07</td>
+<td align="left">Fluroxypyr-meptyl</td>
+<td align="left">81406-37-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.765877</td>
+<td align="right">-4.735046</td>
+<td align="right">-4.734349</td>
+<td align="right">100.76709</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502F03</td>
+<td align="left">Fipronil</td>
+<td align="left">120068-37-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.569726</td>
+<td align="right">-4.630450</td>
+<td align="right">-4.921500</td>
+<td align="right">100.05766</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499A01</td>
+<td align="left">Fenpyroximate (Z,E)</td>
+<td align="left">111812-58-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-6.788967</td>
+<td align="right">-6.072622</td>
+<td align="right">-7.089643</td>
+<td align="right">98.47111</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500D03</td>
+<td align="left">Cyhalofop-butyl</td>
+<td align="left">122008-85-9</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-5.469458</td>
+<td align="right">-4.749693</td>
+<td align="right">-5.069548</td>
+<td align="right">95.36544</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E07</td>
+<td align="left">Emamectin benzoate</td>
+<td align="left">155569-91-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.876405</td>
+<td align="right">-4.991496</td>
+<td align="right">-5.176755</td>
+<td align="right">91.56889</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498C01</td>
+<td align="left">Thiobencarb</td>
+<td align="left">28249-77-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.375865</td>
+<td align="right">-4.335303</td>
+<td align="right">-4.703088</td>
+<td align="right">89.59269</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499C08</td>
+<td align="left">Diphenylamine</td>
+<td align="left">122-39-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.739166</td>
+<td align="right">-4.281879</td>
+<td align="right">-5.587547</td>
+<td align="right">88.78634</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499G03</td>
+<td align="left">Folpet</td>
+<td align="left">133-07-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.934795</td>
+<td align="right">-4.916175</td>
+<td align="right">-5.645785</td>
+<td align="right">86.19727</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499E01</td>
+<td align="left">Cyazofamid</td>
+<td align="left">120116-88-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.593517</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">83.44112</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502F02</td>
+<td align="left">Zoxamide</td>
+<td align="left">156052-68-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.482617</td>
+<td align="right">-4.373413</td>
+<td align="right">-4.654392</td>
+<td align="right">83.02279</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499B03</td>
+<td align="left">Endosulfan</td>
+<td align="left">115-29-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.354861</td>
+<td align="right">-4.388845</td>
+<td align="right">-4.920472</td>
+<td align="right">82.75620</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498C04</td>
+<td align="left">Prometryn</td>
+<td align="left">7287-19-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.439092</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">81.92101</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501E01</td>
+<td align="left">Parathion</td>
+<td align="left">56-38-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.715121</td>
+<td align="right">-4.489069</td>
+<td align="right">-4.004493</td>
+<td align="right">80.55142</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498F01</td>
+<td align="left">Fenthion</td>
+<td align="left">55-38-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.401523</td>
+<td align="right">-4.176755</td>
+<td align="right">-3.719794</td>
+<td align="right">79.30221</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502F09</td>
+<td align="left">Clorophene</td>
+<td align="left">120-32-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.866817</td>
+<td align="right">-5.066953</td>
+<td align="right">-4.679209</td>
+<td align="right">79.04975</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500D07</td>
+<td align="left">Triclosan</td>
+<td align="left">3380-34-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.005832</td>
+<td align="right">-4.998903</td>
+<td align="right">-4.977714</td>
+<td align="right">78.36694</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499F10</td>
+<td align="left">Trifloxystrobin</td>
+<td align="left">141517-21-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.665385</td>
+<td align="right">-5.050069</td>
+<td align="right">-5.993146</td>
+<td align="right">77.29191</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499G11</td>
+<td align="left">Mancozeb</td>
+<td align="left">8018-01-7</td>
+<td align="right">5.0e-05</td>
+<td align="left">+</td>
+<td align="right">-4.918756</td>
+<td align="right">NA</td>
+<td align="right">-4.782648</td>
+<td align="right">76.45337</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502F04</td>
+<td align="left">Bifenazate</td>
+<td align="left">149877-41-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.418498</td>
+<td align="right">-4.389668</td>
+<td align="right">-4.865702</td>
+<td align="right">75.53728</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499G01</td>
+<td align="left">Triflumizole</td>
+<td align="left">68694-11-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.534215</td>
+<td align="right">-4.611400</td>
+<td align="right">-4.815895</td>
+<td align="right">74.75085</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499F01</td>
+<td align="left">Quinoxyfen</td>
+<td align="left">124495-18-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.468980</td>
+<td align="right">-4.440010</td>
+<td align="right">-4.844998</td>
+<td align="right">74.25642</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502B03</td>
+<td align="left">Methoxychlor</td>
+<td align="left">72-43-5</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-4.582086</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">73.73043</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502B10</td>
+<td align="left">Coumaphos</td>
+<td align="left">56-72-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.004331</td>
+<td align="right">-4.793280</td>
+<td align="right">-4.953740</td>
+<td align="right">72.68638</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498H12</td>
+<td align="left">Pyraclostrobin</td>
+<td align="left">175013-18-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-6.023311</td>
+<td align="right">-5.907278</td>
+<td align="right">-6.266554</td>
+<td align="right">71.93603</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501C11</td>
+<td align="left">Triclosan</td>
+<td align="left">3380-34-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.061147</td>
+<td align="right">-5.106920</td>
+<td align="right">-5.133652</td>
+<td align="right">71.93224</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502F07</td>
+<td align="left">Chlorpyrifos-methyl</td>
+<td align="left">5598-13-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.006926</td>
+<td align="right">NA</td>
+<td align="right">-5.154674</td>
+<td align="right">70.90923</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499C01</td>
+<td align="left">S-Bioallethrin</td>
+<td align="left">28434-00-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.418129</td>
+<td align="right">-4.367875</td>
+<td align="right">-4.618689</td>
+<td align="right">70.84260</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498D10</td>
+<td align="left">Fluoxastrobin</td>
+<td align="left">361377-29-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.945634</td>
+<td align="right">-4.842821</td>
+<td align="right">-5.629787</td>
+<td align="right">70.71389</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501E11</td>
+<td align="left">Prallethrin</td>
+<td align="left">23031-36-9</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-4.378198</td>
+<td align="right">-4.327905</td>
+<td align="right">-4.658628</td>
+<td align="right">70.62620</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499D01</td>
+<td align="left">Clorophene</td>
+<td align="left">120-32-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.643285</td>
+<td align="right">-4.750173</td>
+<td align="right">-4.690834</td>
+<td align="right">69.17505</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502G11</td>
+<td align="left">Fenoxaprop-ethyl</td>
+<td align="left">66441-23-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.533077</td>
+<td align="right">-4.087931</td>
+<td align="right">-5.044014</td>
+<td align="right">68.35947</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501D10</td>
+<td align="left">Fenoxycarb</td>
+<td align="left">72490-01-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.466442</td>
+<td align="right">-4.513679</td>
+<td align="right">-4.905288</td>
+<td align="right">67.95168</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499E10</td>
+<td align="left">Diclosulam</td>
+<td align="left">145701-21-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.819976</td>
+<td align="right">NA</td>
+<td align="right">-4.916144</td>
+<td align="right">67.62687</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500G01</td>
+<td align="left">Hexaconazole</td>
+<td align="left">79983-71-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.447531</td>
+<td align="right">-4.129806</td>
+<td align="right">-4.553569</td>
+<td align="right">67.58212</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498B11</td>
+<td align="left">Triclosan</td>
+<td align="left">3380-34-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.920792</td>
+<td align="right">-4.903281</td>
+<td align="right">-5.010935</td>
+<td align="right">67.42464</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498D08</td>
+<td align="left">Tebupirimfos</td>
+<td align="left">96182-53-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.613369</td>
+<td align="right">-4.416063</td>
+<td align="right">-4.542833</td>
+<td align="right">67.01025</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E08</td>
+<td align="left">Pyriproxyfen</td>
+<td align="left">95737-68-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.697759</td>
+<td align="right">-4.107290</td>
+<td align="right">-4.895898</td>
+<td align="right">66.38612</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500D05</td>
+<td align="left">Tebufenpyrad</td>
+<td align="left">119168-77-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.601627</td>
+<td align="right">-5.823582</td>
+<td align="right">-6.213856</td>
+<td align="right">65.70514</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498C09</td>
+<td align="left">Methylene bis(thiocyanate)</td>
+<td align="left">6317-18-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.661978</td>
+<td align="right">-4.785578</td>
+<td align="right">-4.859750</td>
+<td align="right">65.29440</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501C02</td>
+<td align="left">Abamectin</td>
+<td align="left">71751-41-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.330830</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">64.96933</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502C11</td>
+<td align="left">Carfentrazone-ethyl</td>
+<td align="left">128639-02-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.348750</td>
+<td align="right">-4.030628</td>
+<td align="right">-4.396945</td>
+<td align="right">64.67171</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498A01</td>
+<td align="left">Pirimiphos-methyl</td>
+<td align="left">29232-93-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.425981</td>
+<td align="right">NA</td>
+<td align="right">-4.173694</td>
+<td align="right">64.32158</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502G02</td>
+<td align="left">Dibutyl phthalate</td>
+<td align="left">84-74-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.543000</td>
+<td align="right">NA</td>
+<td align="right">-3.979128</td>
+<td align="right">64.27544</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502D03</td>
+<td align="left">Bisphenol A</td>
+<td align="left">80-05-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.359949</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">61.99300</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502D04</td>
+<td align="left">Diclofop-methyl</td>
+<td align="left">51338-27-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.485791</td>
+<td align="right">-4.122849</td>
+<td align="right">-4.507350</td>
+<td align="right">61.22602</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498B08</td>
+<td align="left">Dithiopyr</td>
+<td align="left">97886-45-8</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-4.651894</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">61.04116</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500G11</td>
+<td align="left">Dibutyl phthalate</td>
+<td align="left">84-74-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.527412</td>
+<td align="right">NA</td>
+<td align="right">-4.286569</td>
+<td align="right">60.84862</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498G03</td>
+<td align="left">Lactofen</td>
+<td align="left">77501-63-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.787662</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">59.80343</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500C09</td>
+<td align="left">Piperonyl butoxide</td>
+<td align="left">51-03-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.219289</td>
+<td align="right">NA</td>
+<td align="right">-4.866428</td>
+<td align="right">59.26321</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502G03</td>
+<td align="left">Cloprop</td>
+<td align="left">101-10-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.485123</td>
+<td align="right">NA</td>
+<td align="right">-3.445520</td>
+<td align="right">58.64951</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500B08</td>
+<td align="left">Buprofezin</td>
+<td align="left">69327-76-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.553142</td>
+<td align="right">-4.613160</td>
+<td align="right">-4.949792</td>
+<td align="right">58.35019</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498C10</td>
+<td align="left">Flutolanil</td>
+<td align="left">66332-96-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.495682</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">58.01977</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501G11</td>
+<td align="left">Phosalone</td>
+<td align="left">2310-17-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.462967</td>
+<td align="right">-4.352939</td>
+<td align="right">-4.592465</td>
+<td align="right">56.92719</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500G03</td>
+<td align="left">Cinmethylin</td>
+<td align="left">87818-31-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.227274</td>
+<td align="right">NA</td>
+<td align="right">-4.433089</td>
+<td align="right">56.85991</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499C09</td>
+<td align="left">Clodinafop-propargyl</td>
+<td align="left">105512-06-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.704279</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">56.48747</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502D09</td>
+<td align="left">Chlorpropham</td>
+<td align="left">101-21-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.424199</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">56.22445</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502F05</td>
+<td align="left">Allethrin</td>
+<td align="left">584-79-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.518584</td>
+<td align="right">-4.492677</td>
+<td align="right">-4.816444</td>
+<td align="right">55.70063</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501E03</td>
+<td align="left">Ethalfluralin</td>
+<td align="left">55283-68-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.164012</td>
+<td align="right">-4.925893</td>
+<td align="right">-5.928392</td>
+<td align="right">54.70279</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500G08</td>
+<td align="left">Fluazinam</td>
+<td align="left">79622-59-6</td>
+<td align="right">9.0e-05</td>
+<td align="left">+</td>
+<td align="right">-5.164429</td>
+<td align="right">-5.131896</td>
+<td align="right">-5.398316</td>
+<td align="right">54.42772</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501G10</td>
+<td align="left">Disulfoton</td>
+<td align="left">298-04-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.273303</td>
+<td align="right">NA</td>
+<td align="right">-4.443013</td>
+<td align="right">54.37874</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502B05</td>
+<td align="left">Flumiclorac-pentyl</td>
+<td align="left">87546-18-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.502850</td>
+<td align="right">-4.158574</td>
+<td align="right">-5.260426</td>
+<td align="right">54.35027</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502D11</td>
+<td align="left">Forchlorfenuron</td>
+<td align="left">68157-60-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.437610</td>
+<td align="right">-4.495482</td>
+<td align="right">-4.936864</td>
+<td align="right">54.10882</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500F07</td>
+<td align="left">Flumetralin</td>
+<td align="left">62924-70-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.329968</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">53.31230</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499D02</td>
+<td align="left">Tri-allate</td>
+<td align="left">2303-17-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.611375</td>
+<td align="right">-4.569784</td>
+<td align="right">-4.844154</td>
+<td align="right">52.29797</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500B09</td>
+<td align="left">Lindane</td>
+<td align="left">58-89-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.315567</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">52.08245</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501D02</td>
+<td align="left">Cyfluthrin</td>
+<td align="left">68359-37-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.572900</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">51.54972</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502G07</td>
+<td align="left">Imazalil</td>
+<td align="left">35554-44-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.501031</td>
+<td align="right">NA</td>
+<td align="right">-4.941015</td>
+<td align="right">51.50392</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502E02</td>
+<td align="left">Trifluralin</td>
+<td align="left">1582-09-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.950251</td>
+<td align="right">NA</td>
+<td align="right">-5.606686</td>
+<td align="right">51.28635</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499E11</td>
+<td align="left">Tetraconazole</td>
+<td align="left">112281-77-3</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-4.647793</td>
+<td align="right">-4.329864</td>
+<td align="right">-4.858258</td>
+<td align="right">51.17234</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500F09</td>
+<td align="left">Amitraz</td>
+<td align="left">33089-61-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.218560</td>
+<td align="right">NA</td>
+<td align="right">-4.941021</td>
+<td align="right">50.51574</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502B07</td>
+<td align="left">Azoxystrobin</td>
+<td align="left">131860-33-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.578673</td>
+<td align="right">-4.590906</td>
+<td align="right">-5.035290</td>
+<td align="right">50.33366</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502E08</td>
+<td align="left">Cypermethrin</td>
+<td align="left">52315-07-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.961956</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">50.09757</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500F11</td>
+<td align="left">Tebufenozide</td>
+<td align="left">112410-23-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.678973</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">49.83260</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502C07</td>
+<td align="left">Thiazopyr</td>
+<td align="left">117718-60-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.624605</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">49.40282</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500F01</td>
+<td align="left">Fluazifop-butyl</td>
+<td align="left">69806-50-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.357978</td>
+<td align="right">NA</td>
+<td align="right">-4.254881</td>
+<td align="right">49.35178</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501B01</td>
+<td align="left">Mancozeb</td>
+<td align="left">8018-01-7</td>
+<td align="right">5.0e-05</td>
+<td align="left">+</td>
+<td align="right">-4.753129</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">49.03371</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502F10</td>
+<td align="left">Fenarimol</td>
+<td align="left">60168-88-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.112799</td>
+<td align="right">NA</td>
+<td align="right">-1.666964</td>
+<td align="right">48.61100</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499B11</td>
+<td align="left">Allethrin</td>
+<td align="left">584-79-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.274368</td>
+<td align="right">-4.235121</td>
+<td align="right">-4.686300</td>
+<td align="right">48.11269</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498E08</td>
+<td align="left">Maneb</td>
+<td align="left">12427-38-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.365780</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">48.04741</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498D07</td>
+<td align="left">Flusilazole</td>
+<td align="left">85509-19-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.250040</td>
+<td align="right">-4.162035</td>
+<td align="right">-4.658604</td>
+<td align="right">47.84839</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E10</td>
+<td align="left">Diniconazole</td>
+<td align="left">83657-24-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.496984</td>
+<td align="right">-4.561101</td>
+<td align="right">-4.790259</td>
+<td align="right">46.86544</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499B01</td>
+<td align="left">Bisphenol A</td>
+<td align="left">80-05-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.352118</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">46.72788</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498G05</td>
+<td align="left">Ametryn</td>
+<td align="left">834-12-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.264521</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">46.25550</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499G10</td>
+<td align="left">Fluazifop-P-butyl</td>
+<td align="left">79241-46-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.405977</td>
+<td align="right">NA</td>
+<td align="right">-4.832645</td>
+<td align="right">46.17530</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501G09</td>
+<td align="left">Pendimethalin</td>
+<td align="left">40487-42-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.318049</td>
+<td align="right">NA</td>
+<td align="right">-4.359206</td>
+<td align="right">45.49740</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501F07</td>
+<td align="left">Fenitrothion</td>
+<td align="left">122-14-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.490233</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">44.91950</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502B04</td>
+<td align="left">Isazofos</td>
+<td align="left">42509-80-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.264610</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">44.87693</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498F05</td>
+<td align="left">Difenoconazole</td>
+<td align="left">119446-68-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.746232</td>
+<td align="right">-4.899832</td>
+<td align="right">-5.089741</td>
+<td align="right">44.53491</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502B01</td>
+<td align="left">Oxadiazon</td>
+<td align="left">19666-30-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.302734</td>
+<td align="right">NA</td>
+<td align="right">-4.428613</td>
+<td align="right">43.89953</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498D11</td>
+<td align="left">Hexythiazox</td>
+<td align="left">78587-05-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.456997</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">42.77619</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E09</td>
+<td align="left">Fenamidone</td>
+<td align="left">161326-34-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.286723</td>
+<td align="right">NA</td>
+<td align="right">-4.084374</td>
+<td align="right">42.76863</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502C04</td>
+<td align="left">Fluthiacet-methyl</td>
+<td align="left">117337-19-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.718633</td>
+<td align="right">NA</td>
+<td align="right">-3.584935</td>
+<td align="right">42.21656</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500B05</td>
+<td align="left">Famoxadone</td>
+<td align="left">131807-57-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.685089</td>
+<td align="right">-4.806942</td>
+<td align="right">-6.035026</td>
+<td align="right">41.82768</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502E04</td>
+<td align="left">Dicofol</td>
+<td align="left">115-32-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.537291</td>
+<td align="right">-4.605126</td>
+<td align="right">-4.722601</td>
+<td align="right">41.64215</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501F01</td>
+<td align="left">Azoxystrobin</td>
+<td align="left">131860-33-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.418804</td>
+<td align="right">-4.471264</td>
+<td align="right">-5.060528</td>
+<td align="right">41.52727</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498E01</td>
+<td align="left">Oryzalin</td>
+<td align="left">19044-88-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.379158</td>
+<td align="right">-4.166336</td>
+<td align="right">-4.625589</td>
+<td align="right">41.22042</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501E05</td>
+<td align="left">Thidiazuron</td>
+<td align="left">51707-55-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.443190</td>
+<td align="right">NA</td>
+<td align="right">-4.229707</td>
+<td align="right">40.94062</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500F02</td>
+<td align="left">Propargite</td>
+<td align="left">2312-35-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.399294</td>
+<td align="right">NA</td>
+<td align="right">-4.643757</td>
+<td align="right">40.59187</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501E02</td>
+<td align="left">2,2-Bis(4-hydroxyphenyl)-1,1,1-trichloroethane</td>
+<td align="left">2971-36-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.391825</td>
+<td align="right">-4.456372</td>
+<td align="right">-4.896186</td>
+<td align="right">40.29254</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502G09</td>
+<td align="left">Propiconazole</td>
+<td align="left">60207-90-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.394199</td>
+<td align="right">NA</td>
+<td align="right">-4.742466</td>
+<td align="right">39.46171</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498E11</td>
+<td align="left">Chlorethoxyfos</td>
+<td align="left">54593-83-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.408635</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">38.84735</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502G04</td>
+<td align="left">Thiodicarb</td>
+<td align="left">59669-26-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.906405</td>
+<td align="right">NA</td>
+<td align="right">-4.825890</td>
+<td align="right">37.67521</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500G09</td>
+<td align="left">Prodiamine</td>
+<td align="left">29091-21-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.489769</td>
+<td align="right">-4.517266</td>
+<td align="right">-4.802292</td>
+<td align="right">37.56636</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500D04</td>
+<td align="left">Ethofumesate</td>
+<td align="left">26225-79-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.516926</td>
+<td align="right">NA</td>
+<td align="right">-4.556534</td>
+<td align="right">37.55545</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498F07</td>
+<td align="left">Bensulide</td>
+<td align="left">741-58-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.424024</td>
+<td align="right">-4.432669</td>
+<td align="right">-4.830543</td>
+<td align="right">37.12226</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501D04</td>
+<td align="left">Bensulide</td>
+<td align="left">741-58-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.314508</td>
+<td align="right">-4.336374</td>
+<td align="right">-4.722241</td>
+<td align="right">36.62929</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500C04</td>
+<td align="left">Bisphenol A</td>
+<td align="left">80-05-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.298259</td>
+<td align="right">NA</td>
+<td align="right">-3.767297</td>
+<td align="right">35.78372</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500G05</td>
+<td align="left">Flumioxazin</td>
+<td align="left">103361-09-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.376734</td>
+<td align="right">-4.403418</td>
+<td align="right">-4.843280</td>
+<td align="right">34.33206</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502A01</td>
+<td align="left">Methidathion</td>
+<td align="left">950-37-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.415429</td>
+<td align="right">NA</td>
+<td align="right">-4.217891</td>
+<td align="right">34.02878</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498B05</td>
+<td align="left">Azoxystrobin</td>
+<td align="left">131860-33-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.392114</td>
+<td align="right">-4.393881</td>
+<td align="right">-5.014610</td>
+<td align="right">32.99518</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498B09</td>
+<td align="left">Butralin</td>
+<td align="left">33629-47-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.354818</td>
+<td align="right">NA</td>
+<td align="right">-4.673799</td>
+<td align="right">32.20198</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498D01</td>
+<td align="left">Dicloran</td>
+<td align="left">99-30-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.633254</td>
+<td align="right">NA</td>
+<td align="right">-5.025002</td>
+<td align="right">30.88790</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500D11</td>
+<td align="left">Oryzalin</td>
+<td align="left">19044-88-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.354023</td>
+<td align="right">NA</td>
+<td align="right">-4.595974</td>
+<td align="right">30.51859</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501B10</td>
+<td align="left">Fenbuconazole</td>
+<td align="left">114369-43-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.269334</td>
+<td align="right">-4.301289</td>
+<td align="right">-4.723135</td>
+<td align="right">29.12104</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499E09</td>
+<td align="left">Thiram</td>
+<td align="left">137-26-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.178637</td>
+<td align="right">-4.038221</td>
+<td align="right">-4.883205</td>
+<td align="right">28.30012</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500B02</td>
+<td align="left">Tetramethrin</td>
+<td align="left">7696-12-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.412682</td>
+<td align="right">-4.316145</td>
+<td align="right">-4.881640</td>
+<td align="right">28.19336</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498D05</td>
+<td align="left">Profenofos</td>
+<td align="left">41198-08-7</td>
+<td align="right">5.0e-05</td>
+<td align="left">+</td>
+<td align="right">-4.549520</td>
+<td align="right">NA</td>
+<td align="right">-4.903996</td>
+<td align="right">26.05988</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501D01</td>
+<td align="left">Quizalofop-ethyl</td>
+<td align="left">76578-14-8</td>
+<td align="right">8.5e-05</td>
+<td align="left">+</td>
+<td align="right">-4.421886</td>
+<td align="right">NA</td>
+<td align="right">-4.644524</td>
+<td align="right">23.65738</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498D03</td>
+<td align="left">Prochloraz</td>
+<td align="left">67747-09-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.183663</td>
+<td align="right">-4.124757</td>
+<td align="right">-4.685496</td>
+<td align="right">22.07180</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501C04</td>
+<td align="left">Milbemectin (mixture of 70% Milbemcin A4, 30% Milbemycin A3)</td>
+<td align="left">NOCAS_34742</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-4.221493</td>
+<td align="right">NA</td>
+<td align="right">-5.034050</td>
+<td align="right">22.02311</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499G02</td>
+<td align="left">Tribufos</td>
+<td align="left">78-48-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.943412</td>
+<td align="right">NA</td>
+<td align="right">-5.219940</td>
+<td align="right">19.13510</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498B07</td>
+<td align="left">Captafol</td>
+<td align="left">2425-06-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.453150</td>
+<td align="right">-4.486013</td>
+<td align="right">-5.061617</td>
+<td align="right">18.90617</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499C07</td>
+<td align="left">Benfluralin</td>
+<td align="left">1861-40-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.623759</td>
+<td align="right">NA</td>
+<td align="right">-4.774606</td>
+<td align="right">16.69547</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498D02</td>
+<td align="left">Chlorothalonil</td>
+<td align="left">1897-45-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.032396</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498G02</td>
+<td align="left">Propanil</td>
+<td align="left">709-98-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-3.879589</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498C03</td>
+<td align="left">Bromoxynil</td>
+<td align="left">1689-84-5</td>
+<td align="right">8.0e-05</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-5.220022</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498F03</td>
+<td align="left">Napropamide</td>
+<td align="left">15299-99-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498E04</td>
+<td align="left">Nitrapyrin</td>
+<td align="left">1929-82-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498G08</td>
+<td align="left">Propetamphos</td>
+<td align="left">31218-83-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498G09</td>
+<td align="left">Myclobutanil</td>
+<td align="left">88671-89-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498C11</td>
+<td align="left">Malathion</td>
+<td align="left">121-75-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.320582</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499E02</td>
+<td align="left">Resmethrin</td>
+<td align="left">10453-86-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.413103</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499E03</td>
+<td align="left">Fenpropathrin</td>
+<td align="left">39515-41-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499B05</td>
+<td align="left">Picloram</td>
+<td align="left">1918-02-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499B07</td>
+<td align="left">Fludioxonil</td>
+<td align="left">131341-86-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.164097</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500A01</td>
+<td align="left">Acibenzolar-S-methyl</td>
+<td align="left">135158-54-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E01</td>
+<td align="left">MGK-264</td>
+<td align="left">113-48-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.284419</td>
+<td align="right">NA</td>
+<td align="right">-4.728259</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500G02</td>
+<td align="left">Azinphos-methyl</td>
+<td align="left">86-50-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-3.983540</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500F03</td>
+<td align="left">Mancozeb</td>
+<td align="left">8018-01-7</td>
+<td align="right">5.0e-05</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500F04</td>
+<td align="left">Boscalid</td>
+<td align="left">188425-85-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-3.294023</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500C05</td>
+<td align="left">Butachlor</td>
+<td align="left">23184-66-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.360735</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500B07</td>
+<td align="left">Tefluthrin</td>
+<td align="left">79538-32-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500G07</td>
+<td align="left">Butafenacil</td>
+<td align="left">134605-64-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.038066</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501A01</td>
+<td align="left">Tralkoxydim</td>
+<td align="left">87820-88-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501C01</td>
+<td align="left">Pyraflufen-ethyl</td>
+<td align="left">129630-19-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.332647</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501G02</td>
+<td align="left">Prometon</td>
+<td align="left">1610-18-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501C03</td>
+<td align="left">Vinclozolin</td>
+<td align="left">50471-44-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501F04</td>
+<td align="left">2-Phenylphenol</td>
+<td align="left">90-43-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501G04</td>
+<td align="left">Clomazone</td>
+<td align="left">81777-89-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501B05</td>
+<td align="left">Flufenpyr-ethyl</td>
+<td align="left">188489-07-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501D05</td>
+<td align="left">Chlorpyrifos oxon</td>
+<td align="left">5598-15-2</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.004834</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501B08</td>
+<td align="left">Fenhexamid</td>
+<td align="left">126833-17-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-4.149207</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501B11</td>
+<td align="left">Cycloate</td>
+<td align="left">1134-23-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502E01</td>
+<td align="left">Naled</td>
+<td align="left">300-76-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502E03</td>
+<td align="left">Linuron</td>
+<td align="left">330-55-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502C09</td>
+<td align="left">EPTC</td>
+<td align="left">759-94-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498B01</td>
+<td align="left">Bifenthrin</td>
+<td align="left">82657-04-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498C02</td>
+<td align="left">Bentazone</td>
+<td align="left">25057-89-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498E02</td>
+<td align="left">Mesotrione</td>
+<td align="left">104206-82-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498F02</td>
+<td align="left">Esfenvalerate</td>
+<td align="left">66230-04-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498B03</td>
+<td align="left">Thiophanate-methyl</td>
+<td align="left">23564-05-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498E03</td>
+<td align="left">Trichlorfon</td>
+<td align="left">52-68-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498B04</td>
+<td align="left">Carbaryl</td>
+<td align="left">63-25-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498D04</td>
+<td align="left">2,4-Dichlorophenoxyacetic acid</td>
+<td align="left">94-75-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498F04</td>
+<td align="left">Boric acid</td>
+<td align="left">10043-35-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498G04</td>
+<td align="left">Dichlorprop</td>
+<td align="left">120-36-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498C05</td>
+<td align="left">Dicrotophos</td>
+<td align="left">141-66-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498E05</td>
+<td align="left">Butylate</td>
+<td align="left">2008-41-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498C07</td>
+<td align="left">Dimethylarsinic acid</td>
+<td align="left">75-60-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498E07</td>
+<td align="left">Dichlorvos</td>
+<td align="left">62-73-7</td>
+<td align="right">5.0e-05</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498G07</td>
+<td align="left">Malaoxon</td>
+<td align="left">1634-78-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498C08</td>
+<td align="left">Cyanazine</td>
+<td align="left">21725-46-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498F08</td>
+<td align="left">Methomyl</td>
+<td align="left">16752-77-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498D09</td>
+<td align="left">PFOA</td>
+<td align="left">335-67-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498E09</td>
+<td align="left">Propoxur</td>
+<td align="left">114-26-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498F09</td>
+<td align="left">Imazethapyr</td>
+<td align="left">81335-77-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498B10</td>
+<td align="left">Imidacloprid</td>
+<td align="left">138261-41-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498E10</td>
+<td align="left">Fenamiphos</td>
+<td align="left">22224-92-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498F10</td>
+<td align="left">Clopyralid</td>
+<td align="left">1702-17-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498G10</td>
+<td align="left">Metalaxyl</td>
+<td align="left">57837-19-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498F11</td>
+<td align="left">Monocrotophos</td>
+<td align="left">6923-22-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498G11</td>
+<td align="left">Indoxacarb</td>
+<td align="left">173584-44-6</td>
+<td align="right">8.0e-05</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499B02</td>
+<td align="left">Acephate</td>
+<td align="left">30560-19-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499C02</td>
+<td align="left">Anilazine</td>
+<td align="left">101-05-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499F02</td>
+<td align="left">Diuron</td>
+<td align="left">330-54-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499C03</td>
+<td align="left">Clofentezine</td>
+<td align="left">74115-24-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499D03</td>
+<td align="left">Methamidophos</td>
+<td align="left">10265-92-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499F03</td>
+<td align="left">Thiamethoxam</td>
+<td align="left">153719-23-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499B04</td>
+<td align="left">Formetanate hydrochloride</td>
+<td align="left">23422-53-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499C04</td>
+<td align="left">Fluometuron</td>
+<td align="left">2164-17-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499D04</td>
+<td align="left">Difenzoquat metilsulfate</td>
+<td align="left">43222-48-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499E04</td>
+<td align="left">Bendiocarb</td>
+<td align="left">22781-23-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499F04</td>
+<td align="left">Alachlor</td>
+<td align="left">15972-60-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499G04</td>
+<td align="left">Dimethenamid</td>
+<td align="left">87674-68-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499C05</td>
+<td align="left">2,4-Dichlorophenoxyacetic acid</td>
+<td align="left">94-75-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499D05</td>
+<td align="left">Ethylene thiourea</td>
+<td align="left">96-45-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499E05</td>
+<td align="left">Azamethiphos</td>
+<td align="left">35575-96-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499F05</td>
+<td align="left">Dazomet</td>
+<td align="left">533-74-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499G05</td>
+<td align="left">Pyrimethanil</td>
+<td align="left">53112-28-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499D07</td>
+<td align="left">Propyzamide</td>
+<td align="left">23950-58-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499E07</td>
+<td align="left">Triadimenol</td>
+<td align="left">55219-65-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499F07</td>
+<td align="left">Pirimicarb</td>
+<td align="left">23103-98-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499G07</td>
+<td align="left">Isoxaben</td>
+<td align="left">82558-50-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499B08</td>
+<td align="left">Acetochlor</td>
+<td align="left">34256-82-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499E08</td>
+<td align="left">Acifluorfen</td>
+<td align="left">50594-66-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499F08</td>
+<td align="left">Tepraloxydim</td>
+<td align="left">149979-41-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499G08</td>
+<td align="left">Clopyralid-olamine</td>
+<td align="left">57754-85-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499B09</td>
+<td align="left">2,4-DB</td>
+<td align="left">94-82-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499D09</td>
+<td align="left">Hexazinone</td>
+<td align="left">51235-04-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499F09</td>
+<td align="left">Tebuthiuron</td>
+<td align="left">34014-18-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499G09</td>
+<td align="left">Iprodione</td>
+<td align="left">36734-19-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499B10</td>
+<td align="left">Dicamba</td>
+<td align="left">1918-00-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499C10</td>
+<td align="left">Methyl parathion</td>
+<td align="left">298-00-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499D10</td>
+<td align="left">Fluroxypyr</td>
+<td align="left">69377-81-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499C11</td>
+<td align="left">Dimethomorph</td>
+<td align="left">110488-70-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499D11</td>
+<td align="left">Benomyl</td>
+<td align="left">17804-35-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499F11</td>
+<td align="left">Monomethyl phthalate</td>
+<td align="left">4376-18-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499H12</td>
+<td align="left">Diazinon</td>
+<td align="left">333-41-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500B01</td>
+<td align="left">Cyclanilide</td>
+<td align="left">113136-77-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500C01</td>
+<td align="left">Cyanamide</td>
+<td align="left">420-04-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500D01</td>
+<td align="left">Ethoprop</td>
+<td align="left">13194-48-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500C02</td>
+<td align="left">Penoxsulam</td>
+<td align="left">219714-96-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500D02</td>
+<td align="left">Clothianidin</td>
+<td align="left">210880-92-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500E02</td>
+<td align="left">Di(2-ethylhexyl) phthalate</td>
+<td align="left">117-81-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500B03</td>
+<td align="left">Acetamiprid</td>
+<td align="left">135410-20-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500C03</td>
+<td align="left">Novaluron</td>
+<td align="left">116714-46-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E03</td>
+<td align="left">Isoxaflutole</td>
+<td align="left">141112-29-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500B04</td>
+<td align="left">Imazamox</td>
+<td align="left">114311-32-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E04</td>
+<td align="left">Sulfentrazone</td>
+<td align="left">122836-35-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500F05</td>
+<td align="left">Cyproconazole</td>
+<td align="left">94361-06-5</td>
+<td align="right">9.5e-05</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500C07</td>
+<td align="left">Pymetrozine</td>
+<td align="left">123312-89-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500C08</td>
+<td align="left">Spiroxamine</td>
+<td align="left">118134-30-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500D08</td>
+<td align="left">Quinclorac</td>
+<td align="left">84087-01-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500F08</td>
+<td align="left">Triclopyr</td>
+<td align="left">55335-06-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500B10</td>
+<td align="left">Propamocarb hydrochloride</td>
+<td align="left">25606-41-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500C10</td>
+<td align="left">Monobutyl phthalate</td>
+<td align="left">131-70-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500D10</td>
+<td align="left">Pentachloronitrobenzene</td>
+<td align="left">82-68-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500F10</td>
+<td align="left">Flufenacet</td>
+<td align="left">142459-58-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500G10</td>
+<td align="left">Imazapyr</td>
+<td align="left">81334-34-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500B11</td>
+<td align="left">Trifloxysulfuron-sodium</td>
+<td align="left">199119-58-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500C11</td>
+<td align="left">Propazine</td>
+<td align="left">139-40-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500H12</td>
+<td align="left">Thiacloprid</td>
+<td align="left">111988-49-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501G01</td>
+<td align="left">2-Methoxyethanol</td>
+<td align="left">109-86-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501B02</td>
+<td align="left">Chloridazon</td>
+<td align="left">1698-60-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501F02</td>
+<td align="left">Asulam</td>
+<td align="left">3337-71-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501B03</td>
+<td align="left">Pyrithiobac-sodium</td>
+<td align="left">123343-16-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501F03</td>
+<td align="left">Deisopropylatrazine</td>
+<td align="left">1007-28-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501B04</td>
+<td align="left">Molinate</td>
+<td align="left">2212-67-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501E04</td>
+<td align="left">Oxytetracycline dihydrate</td>
+<td align="left">6153-64-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501C05</td>
+<td align="left">Spirodiclofen</td>
+<td align="left">148477-71-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501F05</td>
+<td align="left">Carboxin</td>
+<td align="left">5234-68-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501G05</td>
+<td align="left">Oxamyl</td>
+<td align="left">23135-22-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501B07</td>
+<td align="left">Symclosene</td>
+<td align="left">87-90-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501C07</td>
+<td align="left">Fosthiazate</td>
+<td align="left">98886-44-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501D07</td>
+<td align="left">Sethoxydim</td>
+<td align="left">74051-80-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501G07</td>
+<td align="left">Dimethoate</td>
+<td align="left">60-51-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501C08</td>
+<td align="left">MCPA</td>
+<td align="left">94-74-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501D08</td>
+<td align="left">Paclobutrazol</td>
+<td align="left">76738-62-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501E08</td>
+<td align="left">Dipropyl 2,5-pyridinedicarboxylate</td>
+<td align="left">136-45-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501F08</td>
+<td align="left">Methyl isothiocyanate</td>
+<td align="left">556-61-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501G08</td>
+<td align="left">DEET</td>
+<td align="left">134-62-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501B09</td>
+<td align="left">Cyromazine</td>
+<td align="left">66215-27-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501D09</td>
+<td align="left">Imazaquin</td>
+<td align="left">81335-37-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501E09</td>
+<td align="left">Metribuzin</td>
+<td align="left">21087-64-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501F09</td>
+<td align="left">Flumetsulam</td>
+<td align="left">98967-40-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501C10</td>
+<td align="left">Triadimefon</td>
+<td align="left">43121-43-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501E10</td>
+<td align="left">Metolachlor</td>
+<td align="left">51218-45-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501F10</td>
+<td align="left">Permethrin</td>
+<td align="left">52645-53-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501D11</td>
+<td align="left">Terbacil</td>
+<td align="left">5902-51-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501F11</td>
+<td align="left">Triadimenol</td>
+<td align="left">55219-65-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501H12</td>
+<td align="left">Etridiazole</td>
+<td align="left">2593-15-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502C01</td>
+<td align="left">Propoxycarbazone-sodium</td>
+<td align="left">181274-15-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502D01</td>
+<td align="left">Mevinphos</td>
+<td align="left">7786-34-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502F01</td>
+<td align="left">Bromacil</td>
+<td align="left">314-40-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502B02</td>
+<td align="left">Metam-sodium hydrate</td>
+<td align="left">6734-80-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502C02</td>
+<td align="left">2,4-Dichlorophenoxyacetic acid</td>
+<td align="left">94-75-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502D02</td>
+<td align="left">Thiabendazole</td>
+<td align="left">148-79-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502C03</td>
+<td align="left">Atrazine</td>
+<td align="left">1912-24-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502C05</td>
+<td align="left">2-Phenoxyethanol</td>
+<td align="left">122-99-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502D05</td>
+<td align="left">Icaridin</td>
+<td align="left">119515-38-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502E05</td>
+<td align="left">Imazapic</td>
+<td align="left">104098-48-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502G05</td>
+<td align="left">Aldicarb</td>
+<td align="left">116-06-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502D07</td>
+<td align="left">Triticonazole</td>
+<td align="left">131983-72-7</td>
+<td align="right">9.5e-05</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502B08</td>
+<td align="left">Diazoxon</td>
+<td align="left">962-58-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502C08</td>
+<td align="left">Maleic hydrazide</td>
+<td align="left">123-33-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502D08</td>
+<td align="left">Daminozide</td>
+<td align="left">1596-84-5</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502F08</td>
+<td align="left">Mepiquat chloride</td>
+<td align="left">24307-26-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502G08</td>
+<td align="left">Norflurazon</td>
+<td align="left">27314-13-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502B09</td>
+<td align="left">Chloroneb</td>
+<td align="left">2675-77-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502E09</td>
+<td align="left">Ethephon</td>
+<td align="left">16672-87-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502C10</td>
+<td align="left">Iodosulfuron-methyl-sodium</td>
+<td align="left">144550-36-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502D10</td>
+<td align="left">Simazine</td>
+<td align="left">122-34-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502G10</td>
+<td align="left">MEHP</td>
+<td align="left">4376-20-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502B11</td>
+<td align="left">Cymoxanil</td>
+<td align="left">57966-95-7</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502E11</td>
+<td align="left">Diquat dibromide monohydrate</td>
+<td align="left">6385-62-2</td>
+<td align="right">5.0e-05</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502F11</td>
+<td align="left">Dimethyl phthalate</td>
+<td align="left">131-11-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502H12</td>
+<td align="left">Dichlobenil</td>
+<td align="left">1194-65-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">-</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#write.csv(final_sum_tbl, &quot;./output data files/sum_tble_for_paper.csv&quot;)</span></code></pre></div>
+</div>
+<div id="visualize-ranking-metrics" class="section level2">
+<h2><span class="header-section-number">5.2</span> Visualize ranking metrics</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot ranking score.</span>
+<span class="co"># </span>
+<span class="co"># png(&#39;./output plots for SOT poster/ranking_score_for_paper_alt.png&#39;, units=&quot;px&quot;,  width=500*12.5, height=400*12.5, res=900)</span>
+
+<span class="kw">ggplot</span>(sum_tbl_update, <span class="kw">aes</span>(<span class="dt">color=</span><span class="kw">as.factor</span>(no_tox_flag))  ) +
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">reorder</span>(spid, ranking_score), <span class="dt">y=</span> ranking_score, <span class="dt">shape=</span>Activity_Group), <span class="dt">alpha =</span> <span class="dv">1</span>, <span class="dt">size =</span> <span class="dv">1</span>) +
+<span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">100</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">size =</span> <span class="fl">0.8</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;gray3&quot;</span>) +
+<span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">50</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">size =</span> <span class="fl">0.8</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;gray3&quot;</span>) +
+<span class="st">    </span><span class="kw">geom_rect</span>(<span class="kw">aes</span>(<span class="dt">xmin =</span> <span class="dv">154</span>, <span class="dt">xmax=</span> <span class="dv">170</span>,  <span class="dt">ymin =</span> <span class="dv">100</span>, <span class="dt">ymax =</span> +<span class="ot">Inf</span>), <span class="dt">linetype =</span><span class="dv">0</span>, <span class="dt">fill=</span><span class="st">&quot;gray80&quot;</span>, <span class="dt">alpha=</span><span class="fl">0.1</span>)+
+<span class="st">    </span><span class="kw">geom_rect</span>(<span class="kw">aes</span>(<span class="dt">xmin =</span> <span class="dv">86</span>, <span class="dt">xmax=</span> <span class="dv">154</span>,  <span class="dt">ymin =</span> <span class="dv">50</span>, <span class="dt">ymax =</span> <span class="dv">100</span>), <span class="dt">linetype =</span><span class="dv">0</span>, <span class="dt">fill =</span><span class="st">&quot;gray80&quot;</span>, <span class="dt">alpha=</span><span class="fl">0.1</span>)+
+<span class="st">    </span><span class="kw">geom_rect</span>(<span class="kw">aes</span>(<span class="dt">xmin =</span> <span class="dv">0</span>, <span class="dt">xmax=</span> <span class="dv">86</span>,  <span class="dt">ymin =</span> <span class="dv">0</span>, <span class="dt">ymax =</span> <span class="dv">50</span>), <span class="dt">linetype =</span><span class="dv">0</span>, <span class="dt">fill =</span><span class="st">&quot;gray80&quot;</span>, <span class="dt">alpha=</span><span class="fl">0.1</span>)+
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">reorder</span>(spid, ranking_score), <span class="dt">y=</span> ranking_score, <span class="dt">shape=</span>Activity_Group), <span class="dt">alpha =</span> <span class="dv">1</span>, <span class="dt">size =</span> <span class="dv">2</span>) +
+<span class="st">    </span><span class="co">#ggtitle(&quot;Ranking Scores&quot;) + </span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Chemicals, ordered by ranking scores&quot;</span>) +
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Ranking Score&quot;</span>)+
+<span class="st">    </span><span class="kw">theme_few</span>() +
+<span class="st">    </span><span class="co">#scale_x_discrete(labels=NULL)+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.ticks.x=</span><span class="kw">element_blank</span>(), 
+          <span class="dt">axis.text.y=</span><span class="kw">element_text</span>(<span class="dt">size=</span><span class="kw">rel</span>(<span class="fl">1.2</span>)))+
+<span class="st">    </span><span class="kw">scale_color_discrete</span>(<span class="dt">name =</span><span class="st">&quot;Cytotoxicity&quot;</span>,
+                          <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;+&quot;</span>, <span class="st">&quot;-&quot;</span>)) +
+<span class="st">    </span><span class="kw">scale_shape_discrete</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;&gt; 100&quot;</span>, <span class="st">&quot;50~100&quot;</span>, <span class="st">&quot;&lt; 50&quot;</span>)) +
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">axis.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="kw">rel</span>(<span class="fl">1.2</span>))) +
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>)) +
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.justification =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>)) <span class="co">#+</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">    <span class="co">#theme(legend.background = element_rect(fill=&quot;gray90&quot;, size=.5, linetype=&quot;dotted&quot;))</span>
+<span class="co"># dev.off()</span></code></pre></div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="multi-conc-analysis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="toxcast-internal-replicates.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
