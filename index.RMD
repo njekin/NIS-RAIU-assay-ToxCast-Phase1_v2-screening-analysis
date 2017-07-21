@@ -20,4 +20,6 @@ A web book version of this document (easier to navigate), in addition with inter
 
 
 Key R functions written in this analysis were gathered as an R package `ToxPlot`. To install or view the most up-to-date source code please go to [github link](https://github.com/njekin/ToxPlot-R-Package). At the [end of this document](#source) the source code of these functions used in this analysis is also provided.
-  
+
+
+
