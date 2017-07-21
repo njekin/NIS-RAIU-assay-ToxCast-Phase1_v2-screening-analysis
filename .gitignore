@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+/images
+/input data files
+/output data files
+/raw data files
+/output plots
+/_book
+/_bookdown_files
+*.rmd

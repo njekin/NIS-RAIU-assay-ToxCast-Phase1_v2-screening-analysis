@@ -1,7 +1,7 @@
 
 # R source code in `ToxPlot` package {#source}
 
-Main R functions written in this analysis were gathered as a R package `ToxPlot`, to install or view the most up-to-date version please go to this [github link](http://).  
+Main R functions written in this analysis were gathered as an R package `ToxPlot`, to install or view the most up-to-date version please go to this [github link](https://github.com/njekin/ToxPlot-R-Package).  
 
 Below is the version of source code used in this analysis. You may also use these functions by sourcing them. 
 
