@@ -6,7 +6,7 @@ site: bookdown::bookdown_site
 # documentclass: book
 output: 
     bookdown::html_document2: default
-    #bookdown::gitbook: default
+    bookdown::gitbook: default
     # bookdown::pdf_book: default
     # bookdown::html_book: default
     
