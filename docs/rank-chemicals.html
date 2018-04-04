@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R</title>
+  <meta name="description" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R">
+  <meta name="generator" content="bookdown 0.3.20 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R" />
+  
+  
+  
+
+<meta name="author" content="Jun Wang">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="multi-conc-results-analysis.html">
+<link rel="next" href="toxcast-internal-replicates.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html"><i class="fa fa-check"></i><b>2</b> Data Import and Preprocessing</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#preprocess-single-concentration-data"><i class="fa fa-check"></i><b>2.1</b> Preprocess Single-Concentration Data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentration"><i class="fa fa-check"></i><b>2.1.1</b> Update Testing Concentration</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-sinlge-con-level0-file-with-updated-concentration"><i class="fa fa-check"></i><b>2.1.2</b> Export Sinlge-Con level0 file with updated concentration</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#import-and-preprocess-multi-concentration-data"><i class="fa fa-check"></i><b>2.2</b> Import and Preprocess Multi-Concentration Data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#functions-for-data-retrieving"><i class="fa fa-check"></i><b>2.2.1</b> Functions for data retrieving</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#parse-all-excel-data-files-and-generate-tidy-table"><i class="fa fa-check"></i><b>2.2.2</b> Parse all excel data files and generate tidy table</a></li>
+<li class="chapter" data-level="2.2.3" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentrations"><i class="fa fa-check"></i><b>2.2.3</b> Update Testing Concentrations</a></li>
+<li class="chapter" data-level="2.2.4" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-multi-conc-data-to-file"><i class="fa fa-check"></i><b>2.2.4</b> Export Multi-conc data to file</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="code-test.html"><a href="code-test.html"><i class="fa fa-check"></i><b>3</b> Code Test</a></li>
+<li class="chapter" data-level="4" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html"><i class="fa fa-check"></i><b>4</b> Single-Conc Results Analysis</a><ul>
+<li class="chapter" data-level="4.1" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#define-basic-assay-info"><i class="fa fa-check"></i><b>4.1</b> Define basic assay info</a></li>
+<li class="chapter" data-level="4.2" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#data-import"><i class="fa fa-check"></i><b>4.2</b> Data Import</a></li>
+<li class="chapter" data-level="4.3" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#normalization"><i class="fa fa-check"></i><b>4.3</b> Normalization</a></li>
+<li class="chapter" data-level="4.4" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#threshold-of-significance"><i class="fa fa-check"></i><b>4.4</b> Threshold of Significance</a></li>
+<li class="chapter" data-level="4.5" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#qc-of-single-conc-assay"><i class="fa fa-check"></i><b>4.5</b> QC of Single-conc assay</a></li>
+<li class="chapter" data-level="4.6" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#qc-summary-of-single-con-assay"><i class="fa fa-check"></i><b>4.6</b> QC Summary of Single-Con assay</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#single-con-positive-control-qc"><i class="fa fa-check"></i><b>4.6.1</b> Single-Con Positive Control QC</a></li>
+<li class="chapter" data-level="4.6.2" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#single-con-controls"><i class="fa fa-check"></i><b>4.6.2</b> Single-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#visualize-the-single-concentration-data"><i class="fa fa-check"></i><b>4.7</b> Visualize the single concentration data</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html"><i class="fa fa-check"></i><b>5</b> Multi-Conc Results Analysis</a><ul>
+<li class="chapter" data-level="5.1" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#import-mc-data"><i class="fa fa-check"></i><b>5.1</b> Import MC data</a></li>
+<li class="chapter" data-level="5.2" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#normalization-1"><i class="fa fa-check"></i><b>5.2</b> Normalization</a></li>
+<li class="chapter" data-level="5.3" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#bmad-of-mc"><i class="fa fa-check"></i><b>5.3</b> 3bMAD of MC</a></li>
+<li class="chapter" data-level="5.4" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#multi-con-qc"><i class="fa fa-check"></i><b>5.4</b> Multi-Con QC</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#quality-control"><i class="fa fa-check"></i><b>5.4.1</b> Quality Control</a></li>
+<li class="chapter" data-level="5.4.2" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#sodium-perchlorate-dcnq"><i class="fa fa-check"></i><b>5.4.2</b> Sodium Perchlorate &amp; DCNQ</a></li>
+<li class="chapter" data-level="5.4.3" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#visualize-all-multi-con-controls"><i class="fa fa-check"></i><b>5.4.3</b> Visualize all Multi-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#test-chemical-dose-response-modeling"><i class="fa fa-check"></i><b>5.5</b> Test Chemical Dose-response Modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="rank-chemicals.html"><a href="rank-chemicals.html"><i class="fa fa-check"></i><b>6</b> Rank Chemicals</a><ul>
+<li class="chapter" data-level="6.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#ranking-plot"><i class="fa fa-check"></i><b>6.1</b> Ranking Plot</a></li>
+<li class="chapter" data-level="6.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#results-table-for-publication"><i class="fa fa-check"></i><b>6.2</b> Results Table for publication</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#table-1-in-est-paper"><i class="fa fa-check"></i><b>6.2.1</b> Table 1 in ES&amp;T paper</a></li>
+<li class="chapter" data-level="6.2.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#table-s1-in-est-paper"><i class="fa fa-check"></i><b>6.2.2</b> Table S1 in ES&amp;T paper</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html"><i class="fa fa-check"></i><b>7</b> ToxCast Internal Replicates</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#single-con-internal-replicate-performance"><i class="fa fa-check"></i><b>7.0.1</b> Single-con internal Replicate performance</a></li>
+<li class="chapter" data-level="7.0.2" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#multi-con-internal-controls-replication-performance"><i class="fa fa-check"></i><b>7.0.2</b> Multi-con internal controls replication performance</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html"><i class="fa fa-check"></i><b>8</b> Export Dose-Response Curve</a><ul>
+<li class="chapter" data-level="8.1" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#make-plots"><i class="fa fa-check"></i><b>8.1</b> Make plots</a></li>
+<li class="chapter" data-level="8.2" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#export-dose-response-plots-as-pdf"><i class="fa fa-check"></i><b>8.2</b> Export dose-response plots as PDF</a></li>
+<li class="chapter" data-level="8.3" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#fig.1"><i class="fa fa-check"></i><b>8.3</b> Fig.1</a></li>
+<li class="chapter" data-level="8.4" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#fig.-3"><i class="fa fa-check"></i><b>8.4</b> Fig. 3</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="source.html"><a href="source.html"><i class="fa fa-check"></i><b>9</b> R source code in <code>ToxPlot</code> package</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="rank-chemicals" class="section level1">
+<h1><span class="header-section-number">6</span> Rank Chemicals</h1>
+<p>To prioritize the chemicals for potential NIS inhibition activity, a ranking score was calculated using two metrics that take into account the potential confounding impact of cytotoxicity on identifying RAIU inhibition activity: 1) toxicity-adjusted area (TAA) and 2) the difference of median responses of RAIU and cytotoxicity at maximum tested concentration (Median-Difference). TAA was defined by the maximum concentration vertical line (right border), the significant threshold horizontal line for RAIU assay (top border), and the dose-response curves of RAIU and cell viability results. The numeric value of TAA is penalized when a chemical demonstrates strong cytotoxicity. Median-Difference was calculated using the median of cell viability responses minus the median of RAIU responses at the maximum testing concentration (usually 100 µM). Larger separations between RAIU and cytotoxicity are reflected in larger Median-Difference values. To rank test chemicals, NaClO4 was used as the reference to normalize the TAA and Median-Difference of each test chemical. Specifically, the TAA and Median-Difference values of NaClO4 positive control included on each of the 54 multi-concentration testing plates were first calculated to obtain the median of NaClO4 TAA and Median-Difference (150.03 and 95.67 respectively). Then the TAA and Median-Difference of test chemicals were normalized as the percentage of the median NaClO4 TAA and Median-Difference separately and then summed to obtain a chemical ranking score. The ranking score of 200 represents the potency of the referenced NaClO4.</p>
+<div class="figure">
+<img src="images/ranking_score.png" alt="Demonstration of TAA and Median-Difference" />
+<p class="caption">Demonstration of TAA and Median-Difference</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(perchlorate_rank<span class="op">$</span>taa)</code></pre></div>
+<pre><code>## [1] 151.0348</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(perchlorate_rank<span class="op">$</span>med_diff)</code></pre></div>
+<pre><code>## [1] 95.66618</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># calculate ranking metrics, normalize to sodium perchlorate</span>
+sum_tbl &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">rank_tcpl</span>(mc_model, spid_chnm_table, 
+                              <span class="dt">med_taa =</span> <span class="kw">median</span>(perchlorate_rank<span class="op">$</span>taa),
+                              <span class="dt">med_med_diff =</span> <span class="kw">median</span>(perchlorate_rank<span class="op">$</span>med_diff))
+
+<span class="co">#write_csv(sum_tbl, &quot;./output data files/Phase1_rank_table.csv&quot;)</span></code></pre></div>
+<div id="ranking-plot" class="section level2">
+<h2><span class="header-section-number">6.1</span> Ranking Plot</h2>
+<p>Use color to indicate chemicals that have significant RAIU but no significant cytotoxicity at any given concentration.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#check each concentration, and find concentrations that have sig RAIU but no sig cytotoxicity.</span>
+<span class="co">#get the median response for each chemical on each concentration</span>
+median_responses &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(wllt <span class="op">==</span><span class="st"> &quot;t&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">group_by</span>(spid, conc, assay) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">summarize</span>(<span class="dt">med =</span> <span class="kw">median</span>(nval_median)) <span class="op">%&gt;%</span><span class="st"> </span>ungroup
+cyto_positives &lt;-<span class="st"> </span>median_responses <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &#39;Cytotox&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">positive_cyto =</span> <span class="kw">ifelse</span>((med <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span> <span class="op">-</span><span class="st"> </span>sig_mc[[<span class="dv">1</span>,<span class="dv">3</span>]]), <span class="dv">1</span>, <span class="dv">0</span>)) 
+raiu_positives &lt;-<span class="st"> </span>median_responses <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &#39;RAIU&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">positive_raiu =</span> <span class="kw">ifelse</span>((med <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span> <span class="op">-</span><span class="st"> </span>sig_mc[[<span class="dv">2</span>,<span class="dv">3</span>]]), <span class="dv">1</span>, <span class="dv">0</span>)) 
+
+raiu_1_cyto_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="kw">left_join</span>(cyto_positives, raiu_positives, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;spid&quot;</span>, <span class="st">&quot;conc&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">separation =</span> <span class="kw">ifelse</span>((positive_raiu <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>positive_cyto <span class="op">==</span><span class="st"> </span><span class="dv">0</span>), <span class="dv">1</span>, <span class="dv">0</span>))
+
+separation_spid &lt;-<span class="st"> </span>raiu_1_cyto_<span class="dv">0</span> <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(separation <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">select</span>(spid) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>unique <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">sep =</span> <span class="st">&quot;Yes&quot;</span>)
+
+sum_tbl5 &lt;-<span class="st"> </span><span class="kw">left_join</span>(sum_tbl, separation_spid, <span class="dt">by =</span> <span class="st">&quot;spid&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">sep =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(sep), <span class="st">&quot;No&quot;</span>, <span class="st">&quot;Yes&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span>(<span class="kw">is.na</span>(taa_norm)))
+sum_tbl6 &lt;-<span class="st"> </span><span class="kw">left_join</span>(sum_tbl, separation_spid, <span class="dt">by =</span> <span class="st">&quot;spid&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">sep =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(sep), <span class="st">&quot;-&quot;</span>, <span class="st">&quot;+&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span>(<span class="kw">is.na</span>(taa_norm)))
+
+rs_plot2 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(sum_tbl5) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">reorder</span>(spid, ranking_score), <span class="dt">y =</span> ranking_score, <span class="dt">fill =</span> sep), <span class="dt">alpha =</span> <span class="fl">0.9</span>, <span class="dt">linetype =</span> <span class="st">&quot;solid&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_light</span>(<span class="dt">base_size =</span> <span class="dv">14</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Chemicals, ordered by ranking scores&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Ranking Score&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">200</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">size =</span> <span class="fl">0.8</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;gray32&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">axis.text.y =</span> <span class="kw">element_blank</span>(),
+          <span class="dt">axis.ticks.y =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_fill_manual</span>(<span class="dt">name =</span> <span class="st">&quot;&quot;</span>,
+                      <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;gray20&quot;</span>, <span class="st">&quot;#21B321&quot;</span>),
+                      <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;&quot;</span>,<span class="st">&quot;Yes&quot;</span>),
+                      <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;No&quot;</span>, <span class="st">&quot;Non-cytotoxic RAIU inhibition</span><span class="ch">\n</span><span class="st">at 1 or 2 concentrations&quot;</span>)
+                      )<span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.justification =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.28</span>, <span class="fl">0.18</span>),
+          <span class="dt">legend.title =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="kw">rel</span>(<span class="fl">0.7</span>)),
+          <span class="dt">legend.text =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="kw">rel</span>(<span class="fl">0.6</span>)),
+          <span class="dt">legend.background =</span> <span class="kw">element_blank</span>()) <span class="op">+</span><span class="st">  </span>
+<span class="st">    </span><span class="kw">coord_flip</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">breaks =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">25</span>, <span class="dv">200</span>, <span class="dt">by =</span> <span class="dv">25</span>))
+    
+
+rs_plot2</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ggsave(&quot;./output plots/ranking_score.png&quot;, rs_plot2, dpi = 600, width = 4.5, height = 5.2, units = &quot;in&quot;)</span>
+<span class="co"># rs_plot3 &lt;- rs_plot2 + </span>
+<span class="co">#     theme(legend.text = element_text(size = rel(0.7)),</span>
+<span class="co">#           axis.title = element_text(size =rel(1.6)))</span>
+<span class="co"># rs_plot3</span>
+<span class="co"># ggsave(&quot;./output plots/ranking_score_slim.png&quot;, rs_plot3, dpi = 900, width = 4.0, height = 10, units = &quot;in&quot;)</span></code></pre></div>
+</div>
+<div id="results-table-for-publication" class="section level2">
+<h2><span class="header-section-number">6.2</span> Results Table for publication</h2>
+<div id="table-1-in-est-paper" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> Table 1 in ES&amp;T paper</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_results &lt;-<span class="st"> </span>sum_tbl6 <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(spid, chnm, casn, AC50_prim, absEC50_prim, cyto_lim, ranking_score, sep)
+ 
+## merge sum-tbl with spid_chnm_table, to include all single and multi-con results
+spid_chnm_table &lt;-
+<span class="kw">read_excel</span>(<span class="st">&quot;./raw data files/EPA_11700_EPA-SLaws_ph1v2_150ul_20170125_key.xlsx&quot;</span>)
+<span class="co">#rename the column title to be compatible with tcpl package.</span>
+
+
+spid_chnm_table &lt;-
+<span class="st">    </span>spid_chnm_table <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(EPA_Sample_ID, Aliquot_Concentration, CASRN, Preferred_Name)
+<span class="kw">names</span>(spid_chnm_table) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;spid&quot;</span>, <span class="st">&quot;aliquot_conc&quot;</span>, <span class="st">&quot;casn&quot;</span>, <span class="st">&quot;chnm&quot;</span>)
+<span class="co">#calculate the actual cocnentration tested in single-con screening</span>
+<span class="co">#the unit will be convert from mM to Molar</span>
+spid_chnm_table &lt;-<span class="st"> </span>spid_chnm_table <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">test_conc =</span> aliquot_conc <span class="op">/</span><span class="st"> </span><span class="fl">2E5</span>)
+<span class="kw">colnames</span>(spid_chnm_table)</code></pre></div>
+<pre><code>## [1] &quot;spid&quot;         &quot;aliquot_conc&quot; &quot;casn&quot;         &quot;chnm&quot;        
+## [5] &quot;test_conc&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">single_con_results &lt;-<span class="st"> </span>spid_chnm_table <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">hitc =</span> <span class="kw">ifelse</span>(spid <span class="op">%in%</span><span class="st"> </span>ls169<span class="op">$</span>spid, <span class="st">&quot;+&quot;</span>, <span class="st">&quot;-&quot;</span>))
+
+final_sum_tbl &lt;-<span class="st"> </span><span class="kw">full_join</span>(single_con_results, multi_results, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;spid&quot;</span>, <span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;casn&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(spid, chnm, casn, test_conc, hitc, <span class="kw">everything</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>aliquot_conc) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(ranking_score), <span class="kw">desc</span>(hitc)) 
+
+<span class="kw">colnames</span>(final_sum_tbl) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SPID&quot;</span>, <span class="st">&quot;Chemical&quot;</span>, <span class="st">&quot;CAS NO.&quot;</span>, <span class="st">&quot;Max Conc(M)&quot;</span>, <span class="st">&quot;Tested in Multi-Conc&quot;</span>, <span class="st">&quot;AC50&quot;</span>, <span class="st">&quot;absEC50&quot;</span>, <span class="st">&quot;Cytotox Point&quot;</span>, <span class="st">&quot;Ranking Score&quot;</span>, <span class="st">&quot;Non-cytotoxic RAIU inhibition at 1 or 2 concentrations&quot;</span>)
+
+knitr<span class="op">::</span><span class="kw">kable</span>(final_sum_tbl[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>,],
+             <span class="dt">caption =</span> <span class="st">&quot;Results for the top 20 ranked chemical samples that demonstrated significant RAIU inhibition in multi-concentration screening&quot;</span> )</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-32">Table 6.1: </span>Results for the top 20 ranked chemical samples that demonstrated significant RAIU inhibition in multi-concentration screening</caption>
+<thead>
+<tr class="header">
+<th align="left">SPID</th>
+<th align="left">Chemical</th>
+<th align="left">CAS NO.</th>
+<th align="right">Max Conc(M)</th>
+<th align="left">Tested in Multi-Conc</th>
+<th align="right">AC50</th>
+<th align="right">absEC50</th>
+<th align="right">Cytotox Point</th>
+<th align="right">Ranking Score</th>
+<th align="left">Non-cytotoxic RAIU inhibition at 1 or 2 concentrations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TP0001500G04</td>
+<td align="left">Etoxazole</td>
+<td align="left">153233-91-1</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.917875</td>
+<td align="right">-5.882295</td>
+<td align="right">-4.324598</td>
+<td align="right">150.40664</td>
+<td align="left">+</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502E10</td>
+<td align="left">Triphenyltin hydroxide</td>
+<td align="left">76-87-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.386793</td>
+<td align="right">-5.388907</td>
+<td align="right">-5.169301</td>
+<td align="right">114.69714</td>
+<td align="left">-</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501D03</td>
+<td align="left">Niclosamide</td>
+<td align="left">50-65-7</td>
+<td align="right">5.0e-05</td>
+<td align="left">+</td>
+<td align="right">-6.954288</td>
+<td align="right">-6.787996</td>
+<td align="right">-6.914861</td>
+<td align="right">109.37954</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502G01</td>
+<td align="left">3-Iodo-2-propynyl-N-butylcarbamate</td>
+<td align="left">55406-53-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-5.089050</td>
+<td align="right">-5.301357</td>
+<td align="right">-4.795430</td>
+<td align="right">107.60665</td>
+<td align="left">+</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501E07</td>
+<td align="left">PFOS</td>
+<td align="left">1763-23-1</td>
+<td align="right">8.0e-05</td>
+<td align="left">+</td>
+<td align="right">-4.746544</td>
+<td align="right">-4.776923</td>
+<td align="right">-4.090921</td>
+<td align="right">94.75458</td>
+<td align="left">+</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498G01</td>
+<td align="left">PFOS</td>
+<td align="left">1763-23-1</td>
+<td align="right">8.0e-05</td>
+<td align="left">+</td>
+<td align="right">-4.722963</td>
+<td align="right">-4.740131</td>
+<td align="right">NA</td>
+<td align="right">93.63201</td>
+<td align="left">+</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498B02</td>
+<td align="left">Cyprodinil</td>
+<td align="left">121552-61-2</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.428222</td>
+<td align="right">-4.429650</td>
+<td align="right">NA</td>
+<td align="right">89.11580</td>
+<td align="left">+</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501G03</td>
+<td align="left">Rotenone</td>
+<td align="left">83-79-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-7.149873</td>
+<td align="right">-6.219251</td>
+<td align="right">-7.303662</td>
+<td align="right">86.15161</td>
+<td align="left">+</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501C09</td>
+<td align="left">Pyridaben</td>
+<td align="left">96489-71-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-8.635381</td>
+<td align="right">-7.488271</td>
+<td align="right">-7.596914</td>
+<td align="right">78.17340</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500E11</td>
+<td align="left">Methoxyfenozide</td>
+<td align="left">161050-58-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.784047</td>
+<td align="right">-4.722900</td>
+<td align="right">-4.676226</td>
+<td align="right">76.97244</td>
+<td align="left">+</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500E05</td>
+<td align="left">2-(Thiocyanomethylthio)benzothiazole</td>
+<td align="left">21564-17-0</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.325152</td>
+<td align="right">-4.370695</td>
+<td align="right">-4.908035</td>
+<td align="right">71.47611</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500D09</td>
+<td align="left">Oxyfluorfen</td>
+<td align="left">42874-03-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.554565</td>
+<td align="right">-4.385772</td>
+<td align="right">NA</td>
+<td align="right">68.26704</td>
+<td align="left">+</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499D08</td>
+<td align="left">Captan</td>
+<td align="left">133-06-2</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-4.494527</td>
+<td align="right">-4.501728</td>
+<td align="right">-4.807092</td>
+<td align="right">65.78758</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502F03</td>
+<td align="left">Fipronil</td>
+<td align="left">120068-37-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.569726</td>
+<td align="right">-4.630450</td>
+<td align="right">-4.922140</td>
+<td align="right">64.31604</td>
+<td align="left">+</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502E07</td>
+<td align="left">Fluroxypyr-meptyl</td>
+<td align="left">81406-37-3</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.765877</td>
+<td align="right">-4.735046</td>
+<td align="right">-4.735038</td>
+<td align="right">64.09509</td>
+<td align="left">+</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500D03</td>
+<td align="left">Cyhalofop-butyl</td>
+<td align="left">122008-85-9</td>
+<td align="right">9.5e-05</td>
+<td align="left">+</td>
+<td align="right">-5.469458</td>
+<td align="right">-4.749693</td>
+<td align="right">-5.071778</td>
+<td align="right">58.46669</td>
+<td align="left">-</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499A01</td>
+<td align="left">Fenpyroximate (Z,E)</td>
+<td align="left">111812-58-9</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-6.788967</td>
+<td align="right">-6.072622</td>
+<td align="right">-7.091646</td>
+<td align="right">57.34488</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498C01</td>
+<td align="left">Thiobencarb</td>
+<td align="left">28249-77-6</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.375865</td>
+<td align="right">-4.335303</td>
+<td align="right">-4.704910</td>
+<td align="right">55.19915</td>
+<td align="left">-</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500E07</td>
+<td align="left">Emamectin benzoate</td>
+<td align="left">155569-91-8</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.876405</td>
+<td align="right">-4.991496</td>
+<td align="right">-5.177326</td>
+<td align="right">54.81987</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499C08</td>
+<td align="left">Diphenylamine</td>
+<td align="left">122-39-4</td>
+<td align="right">1.0e-04</td>
+<td align="left">+</td>
+<td align="right">-4.739166</td>
+<td align="right">-4.281879</td>
+<td align="right">-5.591725</td>
+<td align="right">54.01489</td>
+<td align="left">-</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#write_csv(final_sum_tbl, &quot;./output data files/sum_tble_for_paper_new_ranking.txt&quot;)</span>
+<span class="co"># make sure use the excel text import tool to open this file, otherwise CAS NO. will be read wrong by excel as date.</span></code></pre></div>
+</div>
+<div id="table-s1-in-est-paper" class="section level3">
+<h3><span class="header-section-number">6.2.2</span> Table S1 in ES&amp;T paper</h3>
+<p>Export supplemental summary table that includes all potency metrics.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sup_sum_tbl &lt;-<span class="st"> </span><span class="kw">full_join</span>(single_con_results, sum_tbl6, 
+                         <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;spid&quot;</span>, <span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;casn&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(spid, chnm, casn, test_conc, hitc, <span class="kw">everything</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>aliquot_conc, <span class="op">-</span>index) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(ranking_score), <span class="kw">desc</span>(hitc)) 
+
+
+<span class="kw">colnames</span>(sup_sum_tbl) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Sample ID&quot;</span>, <span class="st">&quot;Chemical&quot;</span>, <span class="st">&quot;CAS NO.&quot;</span>, <span class="st">&quot;Max Conc(M)&quot;</span>, <span class="st">&quot;Multi-Con Test&quot;</span>, <span class="st">&quot;TAA&quot;</span>, <span class="st">&quot;Median Difference&quot;</span>, <span class="st">&quot;AC50 Cytotox&quot;</span>, <span class="st">&quot;AC50 RAIU&quot;</span>, <span class="st">&quot;absEC80 Cytotox&quot;</span>, <span class="st">&quot;absEC50 Cytotox&quot;</span>, <span class="st">&quot;absEC80 RAIU&quot;</span>, <span class="st">&quot;absEC50 RAIU&quot;</span>, <span class="st">&quot;Cytotox point&quot;</span>, <span class="st">&quot;TAA Normalized&quot;</span>, <span class="st">&quot;Median_Difference Normalized&quot;</span>, <span class="st">&quot;Ranking Score&quot;</span>, <span class="st">&quot;Non-cytotoxic RAIU inhibition at 1 or 2 concentrations&quot;</span>)
+
+<span class="kw">write_csv</span>(sup_sum_tbl, <span class="st">&quot;./output data files/Supplemental_summary_table.csv&quot;</span>)</code></pre></div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="multi-conc-results-analysis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="toxcast-internal-replicates.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

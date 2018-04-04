@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R</title>
+  <meta name="description" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R">
+  <meta name="generator" content="bookdown 0.3.20 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R" />
+  
+  
+  
+
+<meta name="author" content="Jun Wang">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="single-conc-results-analysis.html">
+<link rel="next" href="rank-chemicals.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html"><i class="fa fa-check"></i><b>2</b> Data Import and Preprocessing</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#preprocess-single-concentration-data"><i class="fa fa-check"></i><b>2.1</b> Preprocess Single-Concentration Data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentration"><i class="fa fa-check"></i><b>2.1.1</b> Update Testing Concentration</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-sinlge-con-level0-file-with-updated-concentration"><i class="fa fa-check"></i><b>2.1.2</b> Export Sinlge-Con level0 file with updated concentration</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#import-and-preprocess-multi-concentration-data"><i class="fa fa-check"></i><b>2.2</b> Import and Preprocess Multi-Concentration Data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#functions-for-data-retrieving"><i class="fa fa-check"></i><b>2.2.1</b> Functions for data retrieving</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#parse-all-excel-data-files-and-generate-tidy-table"><i class="fa fa-check"></i><b>2.2.2</b> Parse all excel data files and generate tidy table</a></li>
+<li class="chapter" data-level="2.2.3" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentrations"><i class="fa fa-check"></i><b>2.2.3</b> Update Testing Concentrations</a></li>
+<li class="chapter" data-level="2.2.4" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-multi-conc-data-to-file"><i class="fa fa-check"></i><b>2.2.4</b> Export Multi-conc data to file</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="code-test.html"><a href="code-test.html"><i class="fa fa-check"></i><b>3</b> Code Test</a></li>
+<li class="chapter" data-level="4" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html"><i class="fa fa-check"></i><b>4</b> Single-Conc Results Analysis</a><ul>
+<li class="chapter" data-level="4.1" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#define-basic-assay-info"><i class="fa fa-check"></i><b>4.1</b> Define basic assay info</a></li>
+<li class="chapter" data-level="4.2" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#data-import"><i class="fa fa-check"></i><b>4.2</b> Data Import</a></li>
+<li class="chapter" data-level="4.3" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#normalization"><i class="fa fa-check"></i><b>4.3</b> Normalization</a></li>
+<li class="chapter" data-level="4.4" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#threshold-of-significance"><i class="fa fa-check"></i><b>4.4</b> Threshold of Significance</a></li>
+<li class="chapter" data-level="4.5" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#qc-of-single-conc-assay"><i class="fa fa-check"></i><b>4.5</b> QC of Single-conc assay</a></li>
+<li class="chapter" data-level="4.6" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#qc-summary-of-single-con-assay"><i class="fa fa-check"></i><b>4.6</b> QC Summary of Single-Con assay</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#single-con-positive-control-qc"><i class="fa fa-check"></i><b>4.6.1</b> Single-Con Positive Control QC</a></li>
+<li class="chapter" data-level="4.6.2" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#single-con-controls"><i class="fa fa-check"></i><b>4.6.2</b> Single-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#visualize-the-single-concentration-data"><i class="fa fa-check"></i><b>4.7</b> Visualize the single concentration data</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html"><i class="fa fa-check"></i><b>5</b> Multi-Conc Results Analysis</a><ul>
+<li class="chapter" data-level="5.1" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#import-mc-data"><i class="fa fa-check"></i><b>5.1</b> Import MC data</a></li>
+<li class="chapter" data-level="5.2" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#normalization-1"><i class="fa fa-check"></i><b>5.2</b> Normalization</a></li>
+<li class="chapter" data-level="5.3" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#bmad-of-mc"><i class="fa fa-check"></i><b>5.3</b> 3bMAD of MC</a></li>
+<li class="chapter" data-level="5.4" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#multi-con-qc"><i class="fa fa-check"></i><b>5.4</b> Multi-Con QC</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#quality-control"><i class="fa fa-check"></i><b>5.4.1</b> Quality Control</a></li>
+<li class="chapter" data-level="5.4.2" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#sodium-perchlorate-dcnq"><i class="fa fa-check"></i><b>5.4.2</b> Sodium Perchlorate &amp; DCNQ</a></li>
+<li class="chapter" data-level="5.4.3" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#visualize-all-multi-con-controls"><i class="fa fa-check"></i><b>5.4.3</b> Visualize all Multi-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#test-chemical-dose-response-modeling"><i class="fa fa-check"></i><b>5.5</b> Test Chemical Dose-response Modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="rank-chemicals.html"><a href="rank-chemicals.html"><i class="fa fa-check"></i><b>6</b> Rank Chemicals</a><ul>
+<li class="chapter" data-level="6.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#ranking-plot"><i class="fa fa-check"></i><b>6.1</b> Ranking Plot</a></li>
+<li class="chapter" data-level="6.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#results-table-for-publication"><i class="fa fa-check"></i><b>6.2</b> Results Table for publication</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#table-1-in-est-paper"><i class="fa fa-check"></i><b>6.2.1</b> Table 1 in ES&amp;T paper</a></li>
+<li class="chapter" data-level="6.2.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#table-s1-in-est-paper"><i class="fa fa-check"></i><b>6.2.2</b> Table S1 in ES&amp;T paper</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html"><i class="fa fa-check"></i><b>7</b> ToxCast Internal Replicates</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#single-con-internal-replicate-performance"><i class="fa fa-check"></i><b>7.0.1</b> Single-con internal Replicate performance</a></li>
+<li class="chapter" data-level="7.0.2" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#multi-con-internal-controls-replication-performance"><i class="fa fa-check"></i><b>7.0.2</b> Multi-con internal controls replication performance</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html"><i class="fa fa-check"></i><b>8</b> Export Dose-Response Curve</a><ul>
+<li class="chapter" data-level="8.1" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#make-plots"><i class="fa fa-check"></i><b>8.1</b> Make plots</a></li>
+<li class="chapter" data-level="8.2" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#export-dose-response-plots-as-pdf"><i class="fa fa-check"></i><b>8.2</b> Export dose-response plots as PDF</a></li>
+<li class="chapter" data-level="8.3" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#fig.1"><i class="fa fa-check"></i><b>8.3</b> Fig.1</a></li>
+<li class="chapter" data-level="8.4" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#fig.-3"><i class="fa fa-check"></i><b>8.4</b> Fig. 3</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="source.html"><a href="source.html"><i class="fa fa-check"></i><b>9</b> R source code in <code>ToxPlot</code> package</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="multi-conc-results-analysis" class="section level1">
+<h1><span class="header-section-number">5</span> Multi-Conc Results Analysis</h1>
+<div id="import-mc-data" class="section level2">
+<h2><span class="header-section-number">5.1</span> Import MC data</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Get the spid of the 169 chemicals entering multi-con test.</span>
+dt_mc_ls &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;./input data files/NIS_ph1_v2_mc_lvl0_for_tcpl_raiu.csv&quot;</span>, <span class="dt">na =</span> <span class="st">&quot;NA&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(spid)
+mc_chem_list &lt;-<span class="st"> </span><span class="kw">unique</span>(dt_mc_ls<span class="op">$</span>spid)[<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>)]
+ls169 &lt;-<span class="st"> </span>sc_median <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(mc_test<span class="op">==</span><span class="st">&quot;Yes&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(spid)
+
+ls11 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(mc_chem_list) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">flag =</span> (mc_chem_list <span class="op">%in%</span><span class="st"> </span>ls169<span class="op">$</span>spid)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(flag<span class="op">==</span><span class="ot">FALSE</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(mc_chem_list) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">rename</span>(<span class="dt">spid=</span>mc_chem_list)
+
+spid_chnm_table &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;./raw data files/EPA_11700_EPA-SLaws_ph1v2_150ul_20170125_key.xlsx&quot;</span>)
+
+spid_chnm_table &lt;-<span class="st"> </span>spid_chnm_table <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(EPA_Sample_ID, CASRN, Preferred_Name)
+<span class="co"># rename the column title to be compatible with tcpl package. </span>
+<span class="kw">names</span>(spid_chnm_table) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;spid&quot;</span>, <span class="st">&quot;casn&quot;</span>, <span class="st">&quot;chnm&quot;</span>)
+
+<span class="co"># Import MC data (look at the 169 chemicals)</span>
+mc_lvl0_raiu_update &lt;-<span class="st"> </span>
+<span class="st">    </span><span class="kw">read_csv</span>(<span class="st">&quot;./input data files/NIS_ph1_v2_mc_lvl0_for_tcpl_raiu.csv&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span>(spid <span class="op">%in%</span><span class="st"> </span>ls11<span class="op">$</span>spid))
+
+mc_lvl0_cyto_update &lt;-<span class="st"> </span>
+<span class="st">    </span><span class="kw">read_csv</span>(<span class="st">&quot;./input data files/NIS_ph1_v2_mc_lvl0_for_tcpl_cytotox.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span>(spid <span class="op">%in%</span><span class="st"> </span>ls11<span class="op">$</span>spid))
+
+dt_mc &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(mc_lvl0_cyto_update, mc_lvl0_raiu_update)</code></pre></div>
+</div>
+<div id="normalization-1" class="section level2">
+<h2><span class="header-section-number">5.2</span> Normalization</h2>
+<p>Normalize raw response to the median of DMSO controls, calculated per plate.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_mc_norm &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">normalize_per_plate</span>(dt_mc)</code></pre></div>
+</div>
+<div id="bmad-of-mc" class="section level2">
+<h2><span class="header-section-number">5.3</span> 3bMAD of MC</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#create concentration index</span>
+dt_mc_norm &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">group_by</span>(spid) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">cndx =</span> <span class="kw">generate_index</span>(conc)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>ungroup
+sig_mc &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">neg_nval_median=</span> <span class="dv">100</span> <span class="op">-</span><span class="st"> </span>nval_median) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(assay) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(wllt <span class="op">==</span><span class="st"> &quot;t&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(cndx <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>cndx <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st">    </span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">bMAD =</span> <span class="kw">mad</span>(neg_nval_median, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),
+            <span class="dt">three_bMAD=</span><span class="dv">3</span><span class="op">*</span><span class="kw">mad</span>(neg_nval_median, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) 
+knitr<span class="op">::</span><span class="kw">kable</span>(sig_mc, <span class="dt">digits =</span><span class="dv">2</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">assay</th>
+<th align="right">bMAD</th>
+<th align="right">three_bMAD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Cytotox</td>
+<td align="right">5.89</td>
+<td align="right">17.68</td>
+</tr>
+<tr class="even">
+<td align="left">RAIU</td>
+<td align="right">7.93</td>
+<td align="right">23.78</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multi-con-qc" class="section level2">
+<h2><span class="header-section-number">5.4</span> Multi-Con QC</h2>
+<div id="quality-control" class="section level3">
+<h3><span class="header-section-number">5.4.1</span> Quality Control</h3>
+<p>To assesss the quality of assay for each 96 well plate, the following metrics were used .</p>
+<pre><code>* CV of DMSO controls 
+* Z&#39; score </code></pre>
+<p>The negative control DMSO wells’ raw readings were used to calculate mean, standard deviation and CV for each plate.<br />
+Z’ score and SSMD were calculated for each plate as well using the raw data of DMSO negative control, RAIU or cytotox positive control readings. Note the positive control values are taken from the highest concentration wells, which represent the maximum RAIU inhibition or toxic inhibition observed on the positive control chemicals.</p>
+<p>Z’ factor is calculated as follows:<br />
+<span class="math display">\[Z&#39;=1-\frac{3\sigma_{positive\ control} + 3\sigma_{DMSO\ control}}{|\mu_{positive\ control} - \mu_{DMSO\ control}|}\]</span></p>
+<p>**Note that in Z’ calculation, because we only had one well of cytotox positive control, therefore sigma wasn’t calculatable. This make the cytotox Z’ score looks better than the RAIU.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># function to calculate CV_DMSO, Z&#39; and SSMD for each plate</span>
+<span class="co"># Note the calculation is based on raw/unnormalized data. </span>
+<span class="co">#dt_mc_norm &lt;- readRDS(&quot;dt_mc_norm.rds&quot;)</span>
+
+qc_mc &lt;-<span class="st"> </span><span class="kw">qc_per_plate</span>(dt_mc_norm, assay_info, <span class="dt">resp =</span> <span class="st">&quot;nval_median&quot;</span>)
+<span class="co">#qc_l &lt;- qc %&gt;% gather(metric, value, CV_DMSO:SSMD) </span>
+
+<span class="co"># qplot(unique_id, SSMD, data=qc, color = assay_name) + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())</span>
+<span class="kw">qplot</span>(unique_id, CV_DMSO, <span class="dt">data=</span>qc_mc<span class="op">$</span>qc, <span class="dt">color =</span> assay) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;CV of DMSO in Multi-Con Assay&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels=</span><span class="ot">NULL</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="_main_files/figure-html/quality_control-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">    <span class="co">#theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())</span>
+
+<span class="kw">qplot</span>(unique_id, Z_prime, <span class="dt">data=</span>qc_mc<span class="op">$</span>qc, <span class="dt">color =</span> assay) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Z&#39; Score in Multi-Con Assay&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels=</span><span class="ot">NULL</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="_main_files/figure-html/quality_control-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">    <span class="co">#theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())</span></code></pre></div>
+<p>The summary of qulaity control metrics for Multi-conc Cell Viability Assay:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc_mc_cyto &lt;-<span class="st"> </span>qc_mc<span class="op">$</span>qc <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &quot;Cytotox&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(CV_DMSO, Z_prime) <span class="op">%&gt;%</span>
+<span class="st">    </span>describe
+knitr<span class="op">::</span><span class="kw">kable</span>(qc_mc_cyto[<span class="dv">2</span><span class="op">:</span><span class="dv">3</span>,], <span class="dt">digits =</span> <span class="dv">2</span>, 
+             <span class="dt">caption =</span> <span class="st">&quot;Summary of Multi-Conc Cell Viability Assay QC Metrics&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-21">Table 5.1: </span>Summary of Multi-Conc Cell Viability Assay QC Metrics</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">vars</th>
+<th align="right">n</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">median</th>
+<th align="right">trimmed</th>
+<th align="right">mad</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">range</th>
+<th align="right">skew</th>
+<th align="right">kurtosis</th>
+<th align="right">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CV_DMSO</td>
+<td align="right">2</td>
+<td align="right">54</td>
+<td align="right">5.42</td>
+<td align="right">1.47</td>
+<td align="right">5.14</td>
+<td align="right">5.32</td>
+<td align="right">1.40</td>
+<td align="right">2.8</td>
+<td align="right">9.54</td>
+<td align="right">6.74</td>
+<td align="right">0.64</td>
+<td align="right">-0.09</td>
+<td align="right">0.20</td>
+</tr>
+<tr class="even">
+<td>Z_prime</td>
+<td align="right">3</td>
+<td align="right">54</td>
+<td align="right">0.83</td>
+<td align="right">0.05</td>
+<td align="right">0.84</td>
+<td align="right">0.83</td>
+<td align="right">0.04</td>
+<td align="right">0.7</td>
+<td align="right">0.91</td>
+<td align="right">0.21</td>
+<td align="right">-0.63</td>
+<td align="right">-0.10</td>
+<td align="right">0.01</td>
+</tr>
+</tbody>
+</table>
+<p>Summary of qc metrics for Multi-conc RAIU assay:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc_mc_r &lt;-<span class="st"> </span>qc_mc<span class="op">$</span>qc <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &quot;RAIU&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(CV_DMSO, Z_prime) <span class="op">%&gt;%</span>
+<span class="st">    </span>describe</code></pre></div>
+<pre><code>## Adding missing grouping variables: `apid`</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre><code>## Warning in FUN(newX[, i], ...): no non-missing arguments to min; returning
+## Inf</code></pre>
+<pre><code>## Warning in FUN(newX[, i], ...): no non-missing arguments to max; returning
+## -Inf</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(qc_mc_r[<span class="dv">2</span><span class="op">:</span><span class="dv">3</span>,], <span class="dt">caption=</span><span class="st">&quot;Summary Multi-Conc RAIU Assay QC Metrics&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-22">Table 5.2: </span>Summary Multi-Conc RAIU Assay QC Metrics</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">vars</th>
+<th align="right">n</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">median</th>
+<th align="right">trimmed</th>
+<th align="right">mad</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">range</th>
+<th align="right">skew</th>
+<th align="right">kurtosis</th>
+<th align="right">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CV_DMSO</td>
+<td align="right">2</td>
+<td align="right">54</td>
+<td align="right">8.6167424</td>
+<td align="right">1.014914</td>
+<td align="right">8.6613033</td>
+<td align="right">8.598188</td>
+<td align="right">1.0016105</td>
+<td align="right">6.704893</td>
+<td align="right">11.4977674</td>
+<td align="right">4.7928743</td>
+<td align="right">0.2629207</td>
+<td align="right">0.0569357</td>
+<td align="right">0.1381124</td>
+</tr>
+<tr class="even">
+<td>Z_prime</td>
+<td align="right">3</td>
+<td align="right">54</td>
+<td align="right">0.7244648</td>
+<td align="right">0.031661</td>
+<td align="right">0.7202322</td>
+<td align="right">0.725418</td>
+<td align="right">0.0337723</td>
+<td align="right">0.637237</td>
+<td align="right">0.7846036</td>
+<td align="right">0.1473666</td>
+<td align="right">-0.2947822</td>
+<td align="right">-0.0649648</td>
+<td align="right">0.0043085</td>
+</tr>
+</tbody>
+</table>
+<p>All qc metrics in a table:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(dplyr<span class="op">::</span><span class="kw">select</span>(qc_mc<span class="op">$</span>qc, apid, assay, CV_DMSO, Z_prime),
+             <span class="dt">digits =</span> <span class="dv">2</span>,
+             <span class="dt">longtable =</span> <span class="ot">TRUE</span>,
+             <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;Plate&quot;</span>, <span class="st">&quot;assay&quot;</span>,<span class="st">&quot;CV of DMSO&quot;</span>, <span class="st">&quot;Z&#39;&quot;</span>),
+             <span class="dt">caption =</span> <span class="st">&quot;Plate-wise quality control metrics in Multi-Conc Assays&quot;</span>)</code></pre></div>
+<table>
+<caption>(#tab:qc table)Plate-wise quality control metrics in Multi-Conc Assays</caption>
+<thead>
+<tr class="header">
+<th align="left">Plate</th>
+<th align="left">assay</th>
+<th align="right">CV of DMSO</th>
+<th align="right">Z’</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Plate_1_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">6.70</td>
+<td align="right">0.78</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_1_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">6.78</td>
+<td align="right">0.78</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_1_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">7.33</td>
+<td align="right">0.77</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_10_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">9.50</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_10_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">8.34</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_10_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">10.84</td>
+<td align="right">0.66</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_11_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">8.00</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_11_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">9.28</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_11_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">8.66</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_12_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">8.93</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_12_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">8.59</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_12_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">9.50</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_13_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">7.68</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_13_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">8.95</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_13_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">7.97</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_14_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">8.02</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_14_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">11.50</td>
+<td align="right">0.64</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_14_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">9.01</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_15_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">9.65</td>
+<td align="right">0.69</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_15_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">7.50</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_15_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">7.28</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_16_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">7.85</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_16_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">8.13</td>
+<td align="right">0.74</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_16_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">8.06</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_17_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">9.37</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_17_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">8.46</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_17_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">8.87</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_18_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">7.51</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_18_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">7.52</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_18_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">8.98</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_2_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">6.80</td>
+<td align="right">0.78</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_2_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">7.58</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_2_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">9.12</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_3_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">8.90</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_3_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">9.66</td>
+<td align="right">0.69</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_3_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">10.34</td>
+<td align="right">0.67</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_4_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">8.96</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_4_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">9.59</td>
+<td align="right">0.69</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_4_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">9.11</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_5_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">9.34</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_5_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">8.66</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_5_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">8.07</td>
+<td align="right">0.74</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_6_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">7.94</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_6_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">9.61</td>
+<td align="right">0.69</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_6_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">8.69</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_7_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">7.99</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_7_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">9.49</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_7_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">10.23</td>
+<td align="right">0.67</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_8_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">8.61</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_8_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">6.85</td>
+<td align="right">0.77</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_8_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">8.93</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_9_rep1</td>
+<td align="left">RAIU</td>
+<td align="right">8.52</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_9_rep2</td>
+<td align="left">RAIU</td>
+<td align="right">9.20</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_9_rep3</td>
+<td align="left">RAIU</td>
+<td align="right">8.33</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_1_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">5.75</td>
+<td align="right">0.82</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_1_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">6.06</td>
+<td align="right">0.81</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_1_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">7.05</td>
+<td align="right">0.78</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_10_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">5.14</td>
+<td align="right">0.84</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_10_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">5.52</td>
+<td align="right">0.83</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_10_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">3.21</td>
+<td align="right">0.90</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_11_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">4.19</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_11_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">5.67</td>
+<td align="right">0.82</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_11_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">4.75</td>
+<td align="right">0.85</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_12_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">6.50</td>
+<td align="right">0.80</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_12_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">4.66</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_12_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">3.89</td>
+<td align="right">0.88</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_13_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">4.62</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_13_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">4.68</td>
+<td align="right">0.85</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_13_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">5.98</td>
+<td align="right">0.81</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_14_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">6.08</td>
+<td align="right">0.81</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_14_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">4.74</td>
+<td align="right">0.85</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_14_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">4.19</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_15_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">6.10</td>
+<td align="right">0.81</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_15_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">4.50</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_15_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">4.27</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_16_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">6.46</td>
+<td align="right">0.80</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_16_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">4.05</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_16_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">4.28</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_17_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">8.56</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_17_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">7.81</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_17_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">4.45</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_18_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">8.21</td>
+<td align="right">0.74</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_18_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">7.37</td>
+<td align="right">0.77</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_18_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">4.92</td>
+<td align="right">0.85</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_2_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">3.29</td>
+<td align="right">0.90</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_2_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">7.04</td>
+<td align="right">0.78</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_2_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">5.14</td>
+<td align="right">0.84</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_3_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">6.45</td>
+<td align="right">0.80</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_3_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">5.35</td>
+<td align="right">0.83</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_3_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">2.80</td>
+<td align="right">0.91</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_4_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">4.54</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_4_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">4.55</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_4_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">6.17</td>
+<td align="right">0.81</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_5_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">6.25</td>
+<td align="right">0.80</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_5_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">4.01</td>
+<td align="right">0.88</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_5_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">5.82</td>
+<td align="right">0.82</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_6_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">4.15</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_6_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">6.07</td>
+<td align="right">0.81</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_6_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">6.23</td>
+<td align="right">0.81</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_7_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">9.54</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_7_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">7.48</td>
+<td align="right">0.77</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_7_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">8.16</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_8_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">4.48</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_8_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">3.52</td>
+<td align="right">0.89</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_8_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">5.13</td>
+<td align="right">0.84</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_9_rep1</td>
+<td align="left">Cytotox</td>
+<td align="right">4.19</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="odd">
+<td align="left">Plate_9_rep2</td>
+<td align="left">Cytotox</td>
+<td align="right">5.21</td>
+<td align="right">0.84</td>
+</tr>
+<tr class="even">
+<td align="left">Plate_9_rep3</td>
+<td align="left">Cytotox</td>
+<td align="right">3.56</td>
+<td align="right">0.89</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sodium-perchlorate-dcnq" class="section level3">
+<h3><span class="header-section-number">5.4.2</span> Sodium Perchlorate &amp; DCNQ</h3>
+<p>On each assay plate, sodium perchlorate and DCNQ were included in six concentrations to serve as positive controls for RAIU and Cytotox assay. Here they are modelled separately by each assay plate.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##extract mc related data frame
+d_pos_cyto &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &quot;Cytotox&quot;</span>, wllt<span class="op">==</span><span class="st"> &quot;pc&quot;</span>)
+d_pos_raiu &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &quot;RAIU&quot;</span>, wllt<span class="op">==</span><span class="st">&quot;pr&quot;</span>)
+
+d_neg_cyto &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &quot;Cytotox&quot;</span>, wllt<span class="op">==</span><span class="st">&quot;nrc&quot;</span>)
+d_neg_raiu &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &quot;RAIU&quot;</span>, wllt<span class="op">==</span><span class="st">&quot;nrc&quot;</span>)
+d_ec80_raiu &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &quot;RAIU&quot;</span>, wllt<span class="op">==</span><span class="st">&quot;pr_ec80&quot;</span>)
+d_ec20_raiu &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> &quot;RAIU&quot;</span>, wllt<span class="op">==</span><span class="st">&quot;pr_ec20&quot;</span>)
+
+##plot all DCNQ in multi-con
+g_cyto_pos &lt;-<span class="st"> </span><span class="kw">qplot</span>(<span class="dt">data=</span>d_pos_cyto, <span class="dt">x=</span><span class="kw">log10</span>(conc), <span class="dt">y=</span>nval_median) <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(
+        <span class="co">#title = paste(&quot;SPID: &quot; , spid, &quot;\nNAME: &quot;, chnm, &quot;\nCAS NO: &quot;, casn, sep = &quot;&quot;),</span>
+        <span class="dt">x =</span> <span class="st">&quot;Concentration (logM)&quot;</span>,
+        <span class="dt">y =</span> <span class="st">&quot;% Control Activity&quot;</span>
+    ) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>(
+        <span class="dt">color =</span> <span class="st">&quot;#F8766D&quot;</span>,
+        <span class="dt">shape =</span> <span class="dv">1</span>,
+        <span class="dt">alpha =</span> <span class="fl">0.5</span>,
+        <span class="dt">size =</span> <span class="fl">1.8</span>
+    ) <span class="op">+</span>
+<span class="st">    </span><span class="kw">coord_fixed</span>(
+        <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">125</span>),
+        <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">9</span>, <span class="op">-</span><span class="dv">4</span>),
+        <span class="dt">ratio =</span> <span class="dv">2</span> <span class="op">/</span><span class="st"> </span><span class="dv">70</span>
+    ) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(
+        <span class="dt">from =</span> <span class="dv">0</span>,
+        <span class="dt">to =</span> <span class="dv">120</span>,
+        <span class="dt">by =</span> <span class="dv">20</span>
+    )) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">    </span><span class="co"># scale_color_manual(values=c(&quot;red&quot;,&quot;blue&quot;))+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>())<span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">plot.title=</span><span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>))
+g_cyto_pos</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##plot all NaClO4 in multi-con
+g_raiu_pos &lt;-<span class="st"> </span><span class="kw">qplot</span>(<span class="dt">data=</span>d_pos_raiu, <span class="dt">x=</span><span class="kw">log10</span>(conc), <span class="dt">y=</span>nval_median) <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(
+        <span class="co">#title = paste(&quot;SPID: &quot; , spid, &quot;\nNAME: &quot;, chnm, &quot;\nCAS NO: &quot;, casn, sep = &quot;&quot;),</span>
+        <span class="dt">x =</span> <span class="st">&quot;Concentration (logM)&quot;</span>,
+        <span class="dt">y =</span> <span class="st">&quot;% Control Activity&quot;</span>
+    ) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>(
+        <span class="dt">color =</span> <span class="st">&quot;#00BFC4&quot;</span>,
+        <span class="dt">shape =</span> <span class="dv">1</span>,
+        <span class="dt">alpha =</span> <span class="fl">0.5</span>,
+        <span class="dt">size =</span> <span class="dv">1</span>
+    ) <span class="op">+</span>
+<span class="st">    </span><span class="kw">coord_fixed</span>(
+        <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">125</span>),
+        <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">9</span>, <span class="op">-</span><span class="dv">4</span>),
+        <span class="dt">ratio =</span> <span class="dv">2</span> <span class="op">/</span><span class="st"> </span><span class="dv">70</span>
+    ) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(
+        <span class="dt">from =</span> <span class="dv">0</span>,
+        <span class="dt">to =</span> <span class="dv">120</span>,
+        <span class="dt">by =</span> <span class="dv">20</span>
+    )) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>())<span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">plot.title=</span><span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>))
+
+g_raiu_pos</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-23-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Obtain AC50 and absEC50 for the positive controls</span>
+
+d_pos_raiu &lt;-<span class="st"> </span><span class="kw">mutate</span>(d_pos_raiu, <span class="dt">spid =</span> <span class="kw">paste</span>(spid, apid, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))
+pos_raiu_md &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">fit_curve_tcpl</span>(<span class="dt">df =</span> d_pos_raiu,
+                                 <span class="dt">assay_info =</span> <span class="kw">list</span>(<span class="dt">prim_assay =</span> <span class="st">&quot;RAIU&quot;</span>, <span class="dt">toxi_assay =</span> <span class="ot">NULL</span>))</code></pre></div>
+<pre><code>## Processing 54 samples(spid)....
+## NaClO4_Plate_1_rep1 ||NaClO4_Plate_1_rep2 ||NaClO4_Plate_1_rep3 ||NaClO4_Plate_10_rep1 ||NaClO4_Plate_10_rep2 ||NaClO4_Plate_10_rep3 ||NaClO4_Plate_11_rep1 ||NaClO4_Plate_11_rep2 ||NaClO4_Plate_11_rep3 ||NaClO4_Plate_12_rep1 ||NaClO4_Plate_12_rep2 ||NaClO4_Plate_12_rep3 ||NaClO4_Plate_13_rep1 ||NaClO4_Plate_13_rep2 ||NaClO4_Plate_13_rep3 ||NaClO4_Plate_14_rep1 ||NaClO4_Plate_14_rep2 ||NaClO4_Plate_14_rep3 ||NaClO4_Plate_15_rep1 ||NaClO4_Plate_15_rep2 ||NaClO4_Plate_15_rep3 ||NaClO4_Plate_16_rep1 ||NaClO4_Plate_16_rep2 ||NaClO4_Plate_16_rep3 ||NaClO4_Plate_17_rep1 ||NaClO4_Plate_17_rep2 ||NaClO4_Plate_17_rep3 ||NaClO4_Plate_18_rep1 ||NaClO4_Plate_18_rep2 ||NaClO4_Plate_18_rep3 ||NaClO4_Plate_2_rep1 ||NaClO4_Plate_2_rep2 ||NaClO4_Plate_2_rep3 ||NaClO4_Plate_3_rep1 ||NaClO4_Plate_3_rep2 ||NaClO4_Plate_3_rep3 ||NaClO4_Plate_4_rep1 ||NaClO4_Plate_4_rep2 ||NaClO4_Plate_4_rep3 ||NaClO4_Plate_5_rep1 ||NaClO4_Plate_5_rep2 ||NaClO4_Plate_5_rep3 ||NaClO4_Plate_6_rep1 ||NaClO4_Plate_6_rep2 ||NaClO4_Plate_6_rep3 ||NaClO4_Plate_7_rep1 ||NaClO4_Plate_7_rep2 ||NaClO4_Plate_7_rep3 ||NaClO4_Plate_8_rep1 ||NaClO4_Plate_8_rep2 ||NaClO4_Plate_8_rep3 ||NaClO4_Plate_9_rep1 ||NaClO4_Plate_9_rep2 ||NaClO4_Plate_9_rep3 ||
+## Curve Fitting Completed!
+## Calculation time: 9.1 secs</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">raiu_pos_tbl &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">summary_tcpl</span>(pos_raiu_md)
+
+
+d_pos_cyto &lt;-<span class="st"> </span><span class="kw">mutate</span>(d_pos_cyto, <span class="dt">spid =</span> <span class="kw">paste</span>(spid, apid, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))
+pos_cyto_md &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">fit_curve_tcpl</span>(<span class="dt">df =</span> d_pos_cyto,
+                                 <span class="dt">assay_info =</span> <span class="kw">list</span>(<span class="dt">prim_assay =</span> <span class="ot">NULL</span>, <span class="dt">toxi_assay =</span> <span class="st">&quot;Cytotox&quot;</span>))</code></pre></div>
+<pre><code>## Processing 54 samples(spid)....
+## DCNQ_Plate_1_rep1 ||DCNQ_Plate_1_rep2 ||DCNQ_Plate_1_rep3 ||DCNQ_Plate_10_rep1 ||DCNQ_Plate_10_rep2 ||DCNQ_Plate_10_rep3 ||DCNQ_Plate_11_rep1 ||DCNQ_Plate_11_rep2 ||DCNQ_Plate_11_rep3 ||DCNQ_Plate_12_rep1 ||DCNQ_Plate_12_rep2 ||DCNQ_Plate_12_rep3 ||DCNQ_Plate_13_rep1 ||DCNQ_Plate_13_rep2 ||DCNQ_Plate_13_rep3 ||DCNQ_Plate_14_rep1 ||DCNQ_Plate_14_rep2 ||DCNQ_Plate_14_rep3 ||DCNQ_Plate_15_rep1 ||DCNQ_Plate_15_rep2 ||DCNQ_Plate_15_rep3 ||DCNQ_Plate_16_rep1 ||DCNQ_Plate_16_rep2 ||DCNQ_Plate_16_rep3 ||DCNQ_Plate_17_rep1 ||DCNQ_Plate_17_rep2 ||DCNQ_Plate_17_rep3 ||DCNQ_Plate_18_rep1 ||DCNQ_Plate_18_rep2 ||DCNQ_Plate_18_rep3 ||DCNQ_Plate_2_rep1 ||DCNQ_Plate_2_rep2 ||DCNQ_Plate_2_rep3 ||DCNQ_Plate_3_rep1 ||DCNQ_Plate_3_rep2 ||DCNQ_Plate_3_rep3 ||DCNQ_Plate_4_rep1 ||DCNQ_Plate_4_rep2 ||DCNQ_Plate_4_rep3 ||DCNQ_Plate_5_rep1 ||DCNQ_Plate_5_rep2 ||DCNQ_Plate_5_rep3 ||DCNQ_Plate_6_rep1 ||DCNQ_Plate_6_rep2 ||DCNQ_Plate_6_rep3 ||DCNQ_Plate_7_rep1 ||DCNQ_Plate_7_rep2 ||DCNQ_Plate_7_rep3 ||DCNQ_Plate_8_rep1 ||DCNQ_Plate_8_rep2 ||DCNQ_Plate_8_rep3 ||DCNQ_Plate_9_rep1 ||DCNQ_Plate_9_rep2 ||DCNQ_Plate_9_rep3 ||
+## Curve Fitting Completed!
+## Calculation time: 5.4 secs</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cyto_pos_tbl &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">summary_tcpl</span>(pos_cyto_md) 
+
+pos_tbl &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(cyto_pos_tbl, raiu_pos_tbl)  <span class="co">#this is the modelling results for all mc positive </span></code></pre></div>
+<div id="visualize-ac50s" class="section level4">
+<h4><span class="header-section-number">5.4.2.1</span> Visualize AC50s</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(raiu_pos_tbl, <span class="kw">aes</span>(spid, AC50_prim)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.8</span>, <span class="dt">size=</span><span class="dv">3</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels=</span><span class="ot">NULL</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;AC50 of RAIU Positive Control (NaClO4) in Multi-Conc Assay&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Concentration (logM)&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>() </code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(cyto_pos_tbl, <span class="kw">aes</span>(spid, AC50_toxi)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.8</span>, <span class="dt">size=</span><span class="dv">3</span>)<span class="op">+</span>
+<span class="st">    </span><span class="co">#facet_grid(Metric~., scale=&quot;free&quot;)+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels=</span><span class="ot">NULL</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;AC50 of Cell Viability Positive Control (DCNQ) in Multi-Conc Assay&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Concentration (logM)&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>() </code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-24-2.png" width="672" /></p>
+</div>
+<div id="summarize-ac50s-of-positive-controls-in-multi-conc-assays" class="section level4">
+<h4><span class="header-section-number">5.4.2.2</span> Summarize AC50s of positive controls in multi-conc assays</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##summarizing AC50s of positive controls.
+<span class="kw">library</span>(psych)
+pos_sum_raiu &lt;-<span class="st"> </span>raiu_pos_tbl <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(AC50_prim, absEC50_prim) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>describe
+
+pos_sum_cyto &lt;-<span class="st"> </span>cyto_pos_tbl <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(AC50_toxi, absEC50_toxi) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>describe
+
+knitr<span class="op">::</span><span class="kw">kable</span>(pos_sum_raiu, <span class="dt">digits =</span> <span class="dv">2</span>,  <span class="dt">caption=</span><span class="st">&quot;Summary of RAIU positive control IC50s&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-25">Table 5.3: </span>Summary of RAIU positive control IC50s</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">vars</th>
+<th align="right">n</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">median</th>
+<th align="right">trimmed</th>
+<th align="right">mad</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">range</th>
+<th align="right">skew</th>
+<th align="right">kurtosis</th>
+<th align="right">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AC50_prim</td>
+<td align="right">1</td>
+<td align="right">54</td>
+<td align="right">-6.38</td>
+<td align="right">0.13</td>
+<td align="right">-6.41</td>
+<td align="right">-6.40</td>
+<td align="right">0.11</td>
+<td align="right">-6.57</td>
+<td align="right">-6.04</td>
+<td align="right">0.53</td>
+<td align="right">1.04</td>
+<td align="right">0.83</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="even">
+<td>absEC50_prim</td>
+<td align="right">2</td>
+<td align="right">54</td>
+<td align="right">-6.36</td>
+<td align="right">0.13</td>
+<td align="right">-6.39</td>
+<td align="right">-6.38</td>
+<td align="right">0.10</td>
+<td align="right">-6.54</td>
+<td align="right">-6.04</td>
+<td align="right">0.51</td>
+<td align="right">0.89</td>
+<td align="right">0.52</td>
+<td align="right">0.02</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(pos_sum_cyto, <span class="dt">digits =</span> <span class="dv">2</span>,  <span class="dt">caption=</span><span class="st">&quot;Summary of Cytotox positive control IC50s&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-26">Table 5.4: </span>Summary of Cytotox positive control IC50s</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">vars</th>
+<th align="right">n</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">median</th>
+<th align="right">trimmed</th>
+<th align="right">mad</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">range</th>
+<th align="right">skew</th>
+<th align="right">kurtosis</th>
+<th align="right">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AC50_toxi</td>
+<td align="right">1</td>
+<td align="right">54</td>
+<td align="right">-4.83</td>
+<td align="right">0.12</td>
+<td align="right">-4.88</td>
+<td align="right">-4.86</td>
+<td align="right">0.03</td>
+<td align="right">-4.92</td>
+<td align="right">-4.47</td>
+<td align="right">0.45</td>
+<td align="right">1.98</td>
+<td align="right">2.87</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="even">
+<td>absEC50_toxi</td>
+<td align="right">2</td>
+<td align="right">54</td>
+<td align="right">-4.83</td>
+<td align="right">0.10</td>
+<td align="right">-4.88</td>
+<td align="right">-4.85</td>
+<td align="right">0.03</td>
+<td align="right">-4.92</td>
+<td align="right">-4.55</td>
+<td align="right">0.37</td>
+<td align="right">1.75</td>
+<td align="right">1.74</td>
+<td align="right">0.01</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="dose-response-of-positive-controls-on-each-plate" class="section level4">
+<h4><span class="header-section-number">5.4.2.3</span> Dose-Response of Positive Controls on each plate</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># perchlorate</span>
+dt_perchlorate &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(spid <span class="op">==</span><span class="st"> &quot;NaClO4&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">spid =</span> <span class="kw">paste</span>(spid, pid, rep, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))
+<span class="co">#dt_perchlorate &lt;- dt_mc_norm %&gt;% filter(spid == &quot;NaClO4&quot;) </span>
+perchlorate_md &lt;-<span class="st"> </span><span class="kw">fit_curve_tcpl</span>(dt_perchlorate,
+                                 <span class="dt">assay_info =</span> <span class="kw">list</span>(<span class="dt">prim_assay =</span> <span class="st">&quot;RAIU&quot;</span>, <span class="dt">toxi_assay =</span> <span class="st">&quot;Cytotox&quot;</span>),
+                                 <span class="dt">prim_cutoff =</span> <span class="fl">23.78165</span>,
+                                 <span class="dt">toxi_cutoff =</span> <span class="fl">17.68251</span>)</code></pre></div>
+<pre><code>## Processing 54 samples(spid)....
+## NaClO4_Plate_1_rep1 ||NaClO4_Plate_1_rep2 ||NaClO4_Plate_1_rep3 ||NaClO4_Plate_10_rep1 ||NaClO4_Plate_10_rep2 ||NaClO4_Plate_10_rep3 ||NaClO4_Plate_11_rep1 ||NaClO4_Plate_11_rep2 ||NaClO4_Plate_11_rep3 ||NaClO4_Plate_12_rep1 ||NaClO4_Plate_12_rep2 ||NaClO4_Plate_12_rep3 ||NaClO4_Plate_13_rep1 ||NaClO4_Plate_13_rep2 ||NaClO4_Plate_13_rep3 ||NaClO4_Plate_14_rep1 ||NaClO4_Plate_14_rep2 ||NaClO4_Plate_14_rep3 ||NaClO4_Plate_15_rep1 ||NaClO4_Plate_15_rep2 ||NaClO4_Plate_15_rep3 ||NaClO4_Plate_16_rep1 ||NaClO4_Plate_16_rep2 ||NaClO4_Plate_16_rep3 ||NaClO4_Plate_17_rep1 ||NaClO4_Plate_17_rep2 ||NaClO4_Plate_17_rep3 ||NaClO4_Plate_18_rep1 ||NaClO4_Plate_18_rep2 ||NaClO4_Plate_18_rep3 ||NaClO4_Plate_2_rep1 ||NaClO4_Plate_2_rep2 ||NaClO4_Plate_2_rep3 ||NaClO4_Plate_3_rep1 ||NaClO4_Plate_3_rep2 ||NaClO4_Plate_3_rep3 ||NaClO4_Plate_4_rep1 ||NaClO4_Plate_4_rep2 ||NaClO4_Plate_4_rep3 ||NaClO4_Plate_5_rep1 ||NaClO4_Plate_5_rep2 ||NaClO4_Plate_5_rep3 ||NaClO4_Plate_6_rep1 ||NaClO4_Plate_6_rep2 ||NaClO4_Plate_6_rep3 ||NaClO4_Plate_7_rep1 ||NaClO4_Plate_7_rep2 ||NaClO4_Plate_7_rep3 ||NaClO4_Plate_8_rep1 ||NaClO4_Plate_8_rep2 ||NaClO4_Plate_8_rep3 ||NaClO4_Plate_9_rep1 ||NaClO4_Plate_9_rep2 ||NaClO4_Plate_9_rep3 ||
+## Curve Fitting Completed!
+## Calculation time: 13.4 secs</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">perchlorate_rank &lt;-<span class="st"> </span><span class="kw">rank_tcpl</span>(perchlorate_md)
+<span class="co">#perchlorate_rank$taa %&gt;% median</span>
+
+perchlorate_plots &lt;-<span class="st"> </span><span class="kw">plot_tcpl</span>(perchlorate_md, perchlorate_rank, <span class="dt">notation =</span> T)
+perchlorate_plots[[<span class="dv">1</span>]]</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># DCNQ</span>
+dt_dcnq &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(spid <span class="op">==</span><span class="st"> &quot;DCNQ&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">spid =</span> <span class="kw">paste</span>(spid, pid, rep, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))
+dcnq_md &lt;-<span class="st"> </span><span class="kw">fit_curve_tcpl</span>(dt_dcnq,
+                                 <span class="dt">assay_info =</span> <span class="kw">list</span>(<span class="dt">prim_assay =</span> <span class="st">&quot;RAIU&quot;</span>, <span class="dt">toxi_assay =</span> <span class="st">&quot;Cytotox&quot;</span>),
+                                 <span class="dt">prim_cutoff =</span> <span class="fl">23.78165</span>,
+                                 <span class="dt">toxi_cutoff =</span> <span class="fl">17.68251</span>)</code></pre></div>
+<pre><code>## Processing 54 samples(spid)....
+## DCNQ_Plate_1_rep1 ||DCNQ_Plate_1_rep2 ||DCNQ_Plate_1_rep3 ||DCNQ_Plate_10_rep1 ||DCNQ_Plate_10_rep2 ||DCNQ_Plate_10_rep3 ||DCNQ_Plate_11_rep1 ||DCNQ_Plate_11_rep2 ||DCNQ_Plate_11_rep3 ||DCNQ_Plate_12_rep1 ||DCNQ_Plate_12_rep2 ||DCNQ_Plate_12_rep3 ||DCNQ_Plate_13_rep1 ||DCNQ_Plate_13_rep2 ||DCNQ_Plate_13_rep3 ||DCNQ_Plate_14_rep1 ||DCNQ_Plate_14_rep2 ||DCNQ_Plate_14_rep3 ||DCNQ_Plate_15_rep1 ||DCNQ_Plate_15_rep2 ||DCNQ_Plate_15_rep3 ||DCNQ_Plate_16_rep1 ||DCNQ_Plate_16_rep2 ||DCNQ_Plate_16_rep3 ||DCNQ_Plate_17_rep1 ||DCNQ_Plate_17_rep2 ||DCNQ_Plate_17_rep3 ||DCNQ_Plate_18_rep1 ||DCNQ_Plate_18_rep2 ||DCNQ_Plate_18_rep3 ||DCNQ_Plate_2_rep1 ||DCNQ_Plate_2_rep2 ||DCNQ_Plate_2_rep3 ||DCNQ_Plate_3_rep1 ||DCNQ_Plate_3_rep2 ||DCNQ_Plate_3_rep3 ||DCNQ_Plate_4_rep1 ||DCNQ_Plate_4_rep2 ||DCNQ_Plate_4_rep3 ||DCNQ_Plate_5_rep1 ||DCNQ_Plate_5_rep2 ||DCNQ_Plate_5_rep3 ||DCNQ_Plate_6_rep1 ||DCNQ_Plate_6_rep2 ||DCNQ_Plate_6_rep3 ||DCNQ_Plate_7_rep1 ||DCNQ_Plate_7_rep2 ||DCNQ_Plate_7_rep3 ||DCNQ_Plate_8_rep1 ||DCNQ_Plate_8_rep2 ||DCNQ_Plate_8_rep3 ||DCNQ_Plate_9_rep1 ||DCNQ_Plate_9_rep2 ||DCNQ_Plate_9_rep3 ||
+## Curve Fitting Completed!
+## Calculation time: 13.5 secs</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dcnq_rank &lt;-<span class="st"> </span><span class="kw">rank_tcpl</span>(dcnq_md)
+dcnq_plots &lt;-<span class="st"> </span><span class="kw">plot_tcpl</span>(dcnq_md, dcnq_rank, <span class="dt">notation =</span> T)
+dcnq_plots[[<span class="dv">1</span>]]</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-27-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Export all Sodium Perchlorate and DCNQ plots into one pdf supplemental file</span>
+l3 &lt;-<span class="st"> </span><span class="kw">append</span>(perchlorate_plots, dcnq_plots)
+<span class="co"># save_plot_pdf(l3, &quot;./output plots/perchlorate_dcnq_curves.pdf&quot;)</span>
+
+<span class="co"># bind_rows(dt_perchlorate, dt_dcnq) %&gt;% </span>
+<span class="co">#     select(spid, assay, conc, nval_median) %&gt;% </span>
+<span class="co">#     write_csv(&quot;./output figure&#39;s source data/supplemental_fig.3_data.csv&quot;)</span></code></pre></div>
+</div>
+</div>
+<div id="visualize-all-multi-con-controls" class="section level3">
+<h3><span class="header-section-number">5.4.3</span> Visualize all Multi-Con Controls</h3>
+<p>Visualize all other controls (DMSO, 2,4-D 100uM, DCNQ 100uM, NaNO3 100uM, NaSCN 100uM) included on each test plate. NaClO4 and DCNQ are plotted using the 100uM concentration wells.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m3 &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span>wllt <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;t&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span>(spid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;NaClO4&quot;</span>, <span class="st">&quot;DCNQ&quot;</span>)))
+
+m4 &lt;-<span class="st"> </span>dt_mc_norm <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(spid <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;NaClO4&quot;</span>, <span class="st">&quot;DCNQ&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(conc <span class="op">==</span><span class="st"> </span><span class="fl">1e-4</span>)
+
+m31 &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(m3, m4)
+
+## facet plots of all controls&#39; data points
+<span class="kw">ggplot</span>(m31, <span class="kw">aes</span>(apid, nval_median)) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>apid),<span class="dt">alpha=</span><span class="fl">0.7</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">facet_grid</span>(spid<span class="op">~</span>assay) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits=</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">140</span>), <span class="dt">breaks=</span> <span class="kw">seq</span>(<span class="dt">from=</span><span class="op">-</span><span class="dv">20</span>, <span class="dt">to=</span><span class="dv">140</span>, <span class="dt">by=</span><span class="dv">20</span>)) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="co">#scale_x_discrete(breaks=NULL)+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels=</span><span class="ot">NULL</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;% Control Activity&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Response of controls in all 54 multi-conc assay plates&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>()<span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>,
+          <span class="dt">plot.title=</span><span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>))</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##print the control stats table. 
+mc_ctrl_sum &lt;-<span class="st"> </span>m31 <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(wllt <span class="op">!=</span><span class="st"> &quot;t&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="co">#mutate(assay= if_else(aeid==1, &quot;Cytotox&quot;, &quot;RAIU&quot;)) %&gt;%  #add &quot;assay&quot; variable</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">resp=</span>nval_median) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">group_by</span>(assay, spid) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">summarize</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(resp),
+              <span class="dt">sd =</span> <span class="kw">sd</span>(resp),
+              <span class="dt">min =</span> <span class="kw">min</span>(resp),
+              <span class="dt">max =</span> <span class="kw">max</span>(resp),
+              <span class="dt">CV =</span> sd<span class="op">/</span>mean<span class="op">*</span><span class="dv">100</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(mc_ctrl_sum, <span class="dt">digits =</span> <span class="dv">2</span>, <span class="dt">caption =</span> <span class="st">&quot;Multi-Conc Control Summary Stats&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-28">Table 5.5: </span>Multi-Conc Control Summary Stats</caption>
+<thead>
+<tr class="header">
+<th align="left">assay</th>
+<th align="left">spid</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">CV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Cytotox</td>
+<td align="left">2,4-D</td>
+<td align="right">99.34</td>
+<td align="right">4.21</td>
+<td align="right">90.92</td>
+<td align="right">113.31</td>
+<td align="right">4.24</td>
+</tr>
+<tr class="even">
+<td align="left">Cytotox</td>
+<td align="left">DCNQ</td>
+<td align="right">3.72</td>
+<td align="right">0.38</td>
+<td align="right">2.62</td>
+<td align="right">4.76</td>
+<td align="right">10.33</td>
+</tr>
+<tr class="odd">
+<td align="left">Cytotox</td>
+<td align="left">DMSO</td>
+<td align="right">100.92</td>
+<td align="right">5.41</td>
+<td align="right">87.82</td>
+<td align="right">123.66</td>
+<td align="right">5.36</td>
+</tr>
+<tr class="even">
+<td align="left">Cytotox</td>
+<td align="left">NaClO4</td>
+<td align="right">99.19</td>
+<td align="right">4.69</td>
+<td align="right">89.12</td>
+<td align="right">112.51</td>
+<td align="right">4.73</td>
+</tr>
+<tr class="odd">
+<td align="left">Cytotox</td>
+<td align="left">NaNO3</td>
+<td align="right">98.95</td>
+<td align="right">5.43</td>
+<td align="right">88.64</td>
+<td align="right">112.92</td>
+<td align="right">5.49</td>
+</tr>
+<tr class="even">
+<td align="left">Cytotox</td>
+<td align="left">NaSCN</td>
+<td align="right">104.30</td>
+<td align="right">3.98</td>
+<td align="right">94.83</td>
+<td align="right">117.03</td>
+<td align="right">3.81</td>
+</tr>
+<tr class="odd">
+<td align="left">RAIU</td>
+<td align="left">2,4-D</td>
+<td align="right">90.86</td>
+<td align="right">4.49</td>
+<td align="right">76.22</td>
+<td align="right">101.30</td>
+<td align="right">4.94</td>
+</tr>
+<tr class="even">
+<td align="left">RAIU</td>
+<td align="left">DCNQ</td>
+<td align="right">3.92</td>
+<td align="right">3.37</td>
+<td align="right">2.58</td>
+<td align="right">27.36</td>
+<td align="right">85.98</td>
+</tr>
+<tr class="odd">
+<td align="left">RAIU</td>
+<td align="left">DMSO</td>
+<td align="right">99.50</td>
+<td align="right">8.28</td>
+<td align="right">80.77</td>
+<td align="right">119.46</td>
+<td align="right">8.32</td>
+</tr>
+<tr class="even">
+<td align="left">RAIU</td>
+<td align="left">NaClO4</td>
+<td align="right">3.28</td>
+<td align="right">0.38</td>
+<td align="right">2.30</td>
+<td align="right">4.33</td>
+<td align="right">11.47</td>
+</tr>
+<tr class="odd">
+<td align="left">RAIU</td>
+<td align="left">NaNO3</td>
+<td align="right">83.08</td>
+<td align="right">7.17</td>
+<td align="right">69.45</td>
+<td align="right">98.80</td>
+<td align="right">8.63</td>
+</tr>
+<tr class="even">
+<td align="left">RAIU</td>
+<td align="left">NaSCN</td>
+<td align="right">24.69</td>
+<td align="right">2.71</td>
+<td align="right">20.47</td>
+<td align="right">43.17</td>
+<td align="right">10.99</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="test-chemical-dose-response-modeling" class="section level2">
+<h2><span class="header-section-number">5.5</span> Test Chemical Dose-response Modeling</h2>
+<p>The model used here is the Hill model provided in <code>tcpl</code> R package.</p>
+<p><span class="math display">\[f(x) = \frac{tp}{1+10^{(ga-x)gw}}\]</span></p>
+<p>Where x is the log concentration, tp is the top asymptote, ga is the AC50 (the log concentration where the modeled activity equals 50% of the top asymptote), and gw is the hill coefficient. The Hill model provided in the tcpl R package constrains the three parameters as following:</p>
+<ul>
+<li><ol style="list-style-type: decimal">
+<li>0 &lt;= tp &lt;= 1.2 times the maximum response value<br />
+</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>(minimum log concentration minus 2) &lt;= ga &lt;= (maximum log concentration plus 0.5)<br />
+</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
+<li>0.3 &lt;= gw &lt;= 8</li>
+</ol></li>
+</ul>
+<hr />
+<p>The modelling is done using a wrapper function <code>fit_curve_tcpl</code> in <code>ToxPlot</code> package, which serves as an convenient interface to use the <code>tcplFit</code> function in the <code>tcpl</code> package, and returns a list object containing all data and modeling results.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mc_model &lt;-<span class="st"> </span><span class="kw">fit_curve_tcpl</span>(<span class="dt">df =</span> <span class="kw">filter</span>(dt_mc_norm, wllt <span class="op">==</span><span class="st"> &quot;t&quot;</span>), 
+                           <span class="dt">assay_info =</span> <span class="kw">list</span>(<span class="dt">prim_assay =</span> <span class="st">&quot;RAIU&quot;</span>, <span class="dt">toxi_assay =</span> <span class="st">&quot;Cytotox&quot;</span>), 
+                           <span class="dt">prim_cutoff =</span> <span class="fl">23.78165</span>, <span class="dt">toxi_cutoff =</span> <span class="fl">17.68251</span>)</code></pre></div>
+<pre><code>## Processing 169 samples(spid)....
+## TP0001498A01 ||TP0001498B02 ||TP0001498B05 ||TP0001498B07 ||TP0001498B08 ||TP0001498B09 ||TP0001498B11 ||TP0001498C01 ||TP0001498C03 ||TP0001498C04 ||TP0001501E03 ||TP0001501E05 ||TP0001501E07 ||TP0001501E11 ||TP0001501F01 ||TP0001501F04 ||TP0001501F07 ||TP0001501G02 ||TP0001501G03 ||TP0001501G04 ||TP0001501G09 ||TP0001501G10 ||TP0001501G11 ||TP0001502A01 ||TP0001502B01 ||TP0001502B03 ||TP0001502B04 ||TP0001502B05 ||TP0001502B07 ||TP0001502B10 ||TP0001502C04 ||TP0001502C07 ||TP0001502C09 ||TP0001502C11 ||TP0001502D03 ||TP0001502D04 ||TP0001502D09 ||TP0001502D11 ||TP0001502E01 ||TP0001502E02 ||TP0001502E03 ||TP0001502E04 ||TP0001502E07 ||TP0001502E08 ||TP0001502E10 ||TP0001502F02 ||TP0001502F03 ||TP0001502F04 ||TP0001502F05 ||TP0001502F07 ||TP0001502F09 ||TP0001502F10 ||TP0001502G01 ||TP0001502G02 ||TP0001502G03 ||TP0001502G04 ||TP0001502G07 ||TP0001502G09 ||TP0001502G11 ||TP0001500A01 ||TP0001500B02 ||TP0001500B05 ||TP0001500B07 ||TP0001500B08 ||TP0001500B09 ||TP0001500C04 ||TP0001500C05 ||TP0001500C09 ||TP0001500D03 ||TP0001500D04 ||TP0001500D05 ||TP0001500D07 ||TP0001500D09 ||TP0001500D11 ||TP0001500E01 ||TP0001500E05 ||TP0001500E07 ||TP0001500E08 ||TP0001500E09 ||TP0001500E10 ||TP0001500E11 ||TP0001500F01 ||TP0001500F02 ||TP0001500F03 ||TP0001500F04 ||TP0001500F07 ||TP0001500F09 ||TP0001500F11 ||TP0001500G01 ||TP0001500G02 ||TP0001500G03 ||TP0001500G04 ||TP0001500G05 ||TP0001500G07 ||TP0001500G08 ||TP0001500G09 ||TP0001500G11 ||TP0001498C09 ||TP0001498C10 ||TP0001498C11 ||TP0001498D01 ||TP0001498D02 ||TP0001498D03 ||TP0001498D05 ||TP0001498D07 ||TP0001498D08 ||TP0001498D10 ||TP0001498D11 ||TP0001498E01 ||TP0001498E04 ||TP0001498E08 ||TP0001498E11 ||TP0001498F01 ||TP0001498F03 ||TP0001498F05 ||TP0001498F07 ||TP0001498G01 ||TP0001498G02 ||TP0001498G03 ||TP0001498G05 ||TP0001498G08 ||TP0001498G09 ||TP0001498H12 ||TP0001499A01 ||TP0001499B01 ||TP0001499B03 ||TP0001499B05 ||TP0001499B07 ||TP0001499B11 ||TP0001499C01 ||TP0001499C07 ||TP0001499C08 ||TP0001499C09 ||TP0001499D01 ||TP0001499D02 ||TP0001499D08 ||TP0001499E01 ||TP0001499E02 ||TP0001499E03 ||TP0001499E09 ||TP0001499E10 ||TP0001499E11 ||TP0001499F01 ||TP0001499F10 ||TP0001499G01 ||TP0001499G02 ||TP0001499G03 ||TP0001499G10 ||TP0001499G11 ||TP0001501A01 ||TP0001501B01 ||TP0001501B05 ||TP0001501B08 ||TP0001501B10 ||TP0001501B11 ||TP0001501C01 ||TP0001501C02 ||TP0001501C03 ||TP0001501C04 ||TP0001501C09 ||TP0001501C11 ||TP0001501D01 ||TP0001501D02 ||TP0001501D03 ||TP0001501D04 ||TP0001501D05 ||TP0001501D10 ||TP0001501E01 ||TP0001501E02 ||
+## Curve Fitting Completed!
+## Calculation time: 37.7 secs</code></pre>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="single-conc-results-analysis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="rank-chemicals.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R</title>
+  <meta name="description" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R">
+  <meta name="generator" content="bookdown 0.3.20 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R" />
+  
+  
+  
+
+<meta name="author" content="Jun Wang">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="code-test.html">
+<link rel="next" href="multi-conc-results-analysis.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html"><i class="fa fa-check"></i><b>2</b> Data Import and Preprocessing</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#preprocess-single-concentration-data"><i class="fa fa-check"></i><b>2.1</b> Preprocess Single-Concentration Data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentration"><i class="fa fa-check"></i><b>2.1.1</b> Update Testing Concentration</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-sinlge-con-level0-file-with-updated-concentration"><i class="fa fa-check"></i><b>2.1.2</b> Export Sinlge-Con level0 file with updated concentration</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#import-and-preprocess-multi-concentration-data"><i class="fa fa-check"></i><b>2.2</b> Import and Preprocess Multi-Concentration Data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#functions-for-data-retrieving"><i class="fa fa-check"></i><b>2.2.1</b> Functions for data retrieving</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#parse-all-excel-data-files-and-generate-tidy-table"><i class="fa fa-check"></i><b>2.2.2</b> Parse all excel data files and generate tidy table</a></li>
+<li class="chapter" data-level="2.2.3" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentrations"><i class="fa fa-check"></i><b>2.2.3</b> Update Testing Concentrations</a></li>
+<li class="chapter" data-level="2.2.4" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-multi-conc-data-to-file"><i class="fa fa-check"></i><b>2.2.4</b> Export Multi-conc data to file</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="code-test.html"><a href="code-test.html"><i class="fa fa-check"></i><b>3</b> Code Test</a></li>
+<li class="chapter" data-level="4" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html"><i class="fa fa-check"></i><b>4</b> Single-Conc Results Analysis</a><ul>
+<li class="chapter" data-level="4.1" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#define-basic-assay-info"><i class="fa fa-check"></i><b>4.1</b> Define basic assay info</a></li>
+<li class="chapter" data-level="4.2" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#data-import"><i class="fa fa-check"></i><b>4.2</b> Data Import</a></li>
+<li class="chapter" data-level="4.3" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#normalization"><i class="fa fa-check"></i><b>4.3</b> Normalization</a></li>
+<li class="chapter" data-level="4.4" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#threshold-of-significance"><i class="fa fa-check"></i><b>4.4</b> Threshold of Significance</a></li>
+<li class="chapter" data-level="4.5" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#qc-of-single-conc-assay"><i class="fa fa-check"></i><b>4.5</b> QC of Single-conc assay</a></li>
+<li class="chapter" data-level="4.6" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#qc-summary-of-single-con-assay"><i class="fa fa-check"></i><b>4.6</b> QC Summary of Single-Con assay</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#single-con-positive-control-qc"><i class="fa fa-check"></i><b>4.6.1</b> Single-Con Positive Control QC</a></li>
+<li class="chapter" data-level="4.6.2" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#single-con-controls"><i class="fa fa-check"></i><b>4.6.2</b> Single-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#visualize-the-single-concentration-data"><i class="fa fa-check"></i><b>4.7</b> Visualize the single concentration data</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html"><i class="fa fa-check"></i><b>5</b> Multi-Conc Results Analysis</a><ul>
+<li class="chapter" data-level="5.1" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#import-mc-data"><i class="fa fa-check"></i><b>5.1</b> Import MC data</a></li>
+<li class="chapter" data-level="5.2" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#normalization-1"><i class="fa fa-check"></i><b>5.2</b> Normalization</a></li>
+<li class="chapter" data-level="5.3" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#bmad-of-mc"><i class="fa fa-check"></i><b>5.3</b> 3bMAD of MC</a></li>
+<li class="chapter" data-level="5.4" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#multi-con-qc"><i class="fa fa-check"></i><b>5.4</b> Multi-Con QC</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#quality-control"><i class="fa fa-check"></i><b>5.4.1</b> Quality Control</a></li>
+<li class="chapter" data-level="5.4.2" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#sodium-perchlorate-dcnq"><i class="fa fa-check"></i><b>5.4.2</b> Sodium Perchlorate &amp; DCNQ</a></li>
+<li class="chapter" data-level="5.4.3" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#visualize-all-multi-con-controls"><i class="fa fa-check"></i><b>5.4.3</b> Visualize all Multi-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#test-chemical-dose-response-modeling"><i class="fa fa-check"></i><b>5.5</b> Test Chemical Dose-response Modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="rank-chemicals.html"><a href="rank-chemicals.html"><i class="fa fa-check"></i><b>6</b> Rank Chemicals</a><ul>
+<li class="chapter" data-level="6.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#ranking-plot"><i class="fa fa-check"></i><b>6.1</b> Ranking Plot</a></li>
+<li class="chapter" data-level="6.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#results-table-for-publication"><i class="fa fa-check"></i><b>6.2</b> Results Table for publication</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#table-1-in-est-paper"><i class="fa fa-check"></i><b>6.2.1</b> Table 1 in ES&amp;T paper</a></li>
+<li class="chapter" data-level="6.2.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#table-s1-in-est-paper"><i class="fa fa-check"></i><b>6.2.2</b> Table S1 in ES&amp;T paper</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html"><i class="fa fa-check"></i><b>7</b> ToxCast Internal Replicates</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#single-con-internal-replicate-performance"><i class="fa fa-check"></i><b>7.0.1</b> Single-con internal Replicate performance</a></li>
+<li class="chapter" data-level="7.0.2" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#multi-con-internal-controls-replication-performance"><i class="fa fa-check"></i><b>7.0.2</b> Multi-con internal controls replication performance</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html"><i class="fa fa-check"></i><b>8</b> Export Dose-Response Curve</a><ul>
+<li class="chapter" data-level="8.1" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#make-plots"><i class="fa fa-check"></i><b>8.1</b> Make plots</a></li>
+<li class="chapter" data-level="8.2" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#export-dose-response-plots-as-pdf"><i class="fa fa-check"></i><b>8.2</b> Export dose-response plots as PDF</a></li>
+<li class="chapter" data-level="8.3" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#fig.1"><i class="fa fa-check"></i><b>8.3</b> Fig.1</a></li>
+<li class="chapter" data-level="8.4" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#fig.-3"><i class="fa fa-check"></i><b>8.4</b> Fig. 3</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="source.html"><a href="source.html"><i class="fa fa-check"></i><b>9</b> R source code in <code>ToxPlot</code> package</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="single-conc-results-analysis" class="section level1">
+<h1><span class="header-section-number">4</span> Single-Conc Results Analysis</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>())
+<span class="kw">library</span>(plotly)
+<span class="kw">library</span>(ggthemes)
+<span class="kw">library</span>(stringr)
+<span class="kw">library</span>(readxl)
+<span class="kw">library</span>(grid)
+<span class="kw">library</span>(gridExtra)
+<span class="kw">library</span>(devtools)
+<span class="co"># load_all(&quot;./toxplot first pub ver&quot;)</span>
+<span class="kw">load_all</span>(<span class="st">&quot;./toxplot&quot;</span>)
+<span class="kw">library</span>(tidyverse)
+<span class="co"># session_info()</span></code></pre></div>
+<div id="define-basic-assay-info" class="section level2">
+<h2><span class="header-section-number">4.1</span> Define basic assay info</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co">#define the names of the primary and toxicity assay.</span>
+  <span class="co">#names should match what&#39;s provided in the &lt;assay&gt; column of the input dataframe</span>
+assay_info &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="dt">prim_assay =</span> <span class="st">&quot;RAIU&quot;</span>,
+  <span class="dt">toxi_assay =</span> <span class="st">&quot;Cytotox&quot;</span>
+)</code></pre></div>
+</div>
+<div id="data-import" class="section level2">
+<h2><span class="header-section-number">4.2</span> Data Import</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_sc &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;./input data files/NIS_ph1_v2_sc_lvl0_for_tcpl.csv&quot;</span>)</code></pre></div>
+</div>
+<div id="normalization" class="section level2">
+<h2><span class="header-section-number">4.3</span> Normalization</h2>
+<p>Each sample well is normalized as percentage of the DMSO median on each plate.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_sc_norm &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">normalize_per_plate</span>(dt_sc, <span class="dt">nctrl =</span> <span class="st">&quot;DMSO&quot;</span>)</code></pre></div>
+</div>
+<div id="threshold-of-significance" class="section level2">
+<h2><span class="header-section-number">4.4</span> Threshold of Significance</h2>
+<p>Now calculating 3bMAD and 3sigma value for the DMSO control in the single concentration assay as a whole.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sig_cutoff_sc &lt;-<span class="st"> </span>dt_sc_norm <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(spid <span class="op">==</span><span class="st"> &quot;DMSO&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">summarize</span>(<span class="dt">bMAD =</span> <span class="kw">mad</span>(nval_median, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),
+              <span class="dt">three_bMAD =</span> <span class="dv">3</span><span class="op">*</span><span class="kw">mad</span>(nval_median, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) 
+knitr<span class="op">::</span><span class="kw">kable</span>(sig_cutoff_sc, <span class="dt">digits =</span> <span class="dv">2</span>) </code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">bMAD</th>
+<th align="right">three_bMAD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">6.83</td>
+<td align="right">20.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="qc-of-single-conc-assay" class="section level2">
+<h2><span class="header-section-number">4.5</span> QC of Single-conc assay</h2>
+<p>Assay quality control measures were calculated by each 96-well plate.</p>
+<p>To assesss the quality of assay for each 96 well plate, the following metrics were used:</p>
+<ul>
+<li>CV of DMSO controls</li>
+<li>Z’ score</li>
+</ul>
+<p>The negative control DMSO wells’ raw readings were used to calculate mean, standard deviation and CV for each plate.</p>
+<p>Z’ factor is calculated as follows: <span class="math display">\[Z&#39;=1-\frac{3\sigma_{positive\ control} + 3\sigma_{DMSO\ control}}{|\mu_{positive\ control} - \mu_{DMSO\ control}|}\]</span></p>
+<p><strong>Note that in Z’ calculation, because we only had one well of cytotox positive control, therefore sigma wasn’t calculatable. Hence the Z’ calculated for cytotox is unusable.</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">qc_sc &lt;-<span class="st"> </span><span class="kw">qc_per_plate</span>(dt_sc_norm, assay_info, <span class="dt">resp =</span> <span class="st">&quot;nval_median&quot;</span>)
+
+<span class="kw">qplot</span>(unique_id, CV_DMSO, <span class="dt">data =</span> qc_sc<span class="op">$</span>qc, <span class="dt">color =</span> assay) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;CV of DMSO in Single-Con Assay&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">qplot</span>(unique_id, Z_prime, <span class="dt">data =</span> qc_sc<span class="op">$</span>qc, <span class="dt">color =</span> assay) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Z&#39; in Single-Con Assay&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+</div>
+<div id="qc-summary-of-single-con-assay" class="section level2">
+<h2><span class="header-section-number">4.6</span> QC Summary of Single-Con assay</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(psych)
+qc_sc_t &lt;-<span class="st"> </span>qc_sc<span class="op">$</span>qc <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(CV_DMSO, Z_prime) <span class="op">%&gt;%</span>
+<span class="st">    </span>describe
+knitr<span class="op">::</span><span class="kw">kable</span>(qc_sc_t, <span class="dt">digits =</span> <span class="dv">2</span>,  <span class="dt">caption =</span> <span class="st">&quot;Summary Single-Con Assay QC Metrics&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-13">Table 4.1: </span>Summary Single-Con Assay QC Metrics</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">vars</th>
+<th align="right">n</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">median</th>
+<th align="right">trimmed</th>
+<th align="right">mad</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">range</th>
+<th align="right">skew</th>
+<th align="right">kurtosis</th>
+<th align="right">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>apid*</td>
+<td align="right">1</td>
+<td align="right">15</td>
+<td align="right">NaN</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NaN</td>
+<td align="right">NA</td>
+<td align="right">Inf</td>
+<td align="right">-Inf</td>
+<td align="right">-Inf</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td>CV_DMSO</td>
+<td align="right">2</td>
+<td align="right">15</td>
+<td align="right">7.14</td>
+<td align="right">1.56</td>
+<td align="right">7.55</td>
+<td align="right">7.01</td>
+<td align="right">1.52</td>
+<td align="right">4.91</td>
+<td align="right">11.04</td>
+<td align="right">6.13</td>
+<td align="right">0.68</td>
+<td align="right">0.19</td>
+<td align="right">0.40</td>
+</tr>
+<tr class="odd">
+<td>Z_prime</td>
+<td align="right">3</td>
+<td align="right">15</td>
+<td align="right">0.77</td>
+<td align="right">0.05</td>
+<td align="right">0.76</td>
+<td align="right">0.77</td>
+<td align="right">0.04</td>
+<td align="right">0.65</td>
+<td align="right">0.84</td>
+<td align="right">0.18</td>
+<td align="right">-0.72</td>
+<td align="right">0.40</td>
+<td align="right">0.01</td>
+</tr>
+</tbody>
+</table>
+<p>All single-con QC metrics in a table</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(dplyr<span class="op">::</span><span class="kw">select</span>(qc_sc<span class="op">$</span>qc, apid, CV_DMSO, Z_prime),
+             <span class="dt">digits =</span> <span class="dv">2</span>,
+             <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;Plate&quot;</span>, <span class="st">&quot;CV of DMSO&quot;</span>, <span class="st">&quot;Z&#39;&quot;</span>),
+             <span class="dt">caption =</span> <span class="st">&quot;QC metrics in Single-Conc Screening&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-14">Table 4.2: </span>QC metrics in Single-Conc Screening</caption>
+<thead>
+<tr class="header">
+<th align="left">Plate</th>
+<th align="right">CV of DMSO</th>
+<th align="right">Z’</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TP0001498_rep1</td>
+<td align="right">5.40</td>
+<td align="right">0.82</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001498_rep2</td>
+<td align="right">4.91</td>
+<td align="right">0.84</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001498_rep3</td>
+<td align="right">5.61</td>
+<td align="right">0.81</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499_rep1</td>
+<td align="right">7.55</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001499_rep2</td>
+<td align="right">7.72</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001499_rep3</td>
+<td align="right">6.35</td>
+<td align="right">0.79</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500_rep1</td>
+<td align="right">7.74</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001500_rep2</td>
+<td align="right">8.11</td>
+<td align="right">0.74</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001500_rep3</td>
+<td align="right">11.04</td>
+<td align="right">0.65</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501_rep1</td>
+<td align="right">6.46</td>
+<td align="right">0.79</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001501_rep2</td>
+<td align="right">5.59</td>
+<td align="right">0.82</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001501_rep3</td>
+<td align="right">7.70</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502_rep1</td>
+<td align="right">8.04</td>
+<td align="right">0.75</td>
+</tr>
+<tr class="even">
+<td align="left">TP0001502_rep2</td>
+<td align="right">6.53</td>
+<td align="right">0.79</td>
+</tr>
+<tr class="odd">
+<td align="left">TP0001502_rep3</td>
+<td align="right">8.40</td>
+<td align="right">0.74</td>
+</tr>
+</tbody>
+</table>
+<div id="single-con-positive-control-qc" class="section level3">
+<h3><span class="header-section-number">4.6.1</span> Single-Con Positive Control QC</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## model single-con controls on each plate
+sc_pos_raiu &lt;-<span class="st"> </span>dt_sc_norm <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(spid <span class="op">==</span><span class="st"> &quot;NaClO4&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">spid =</span> <span class="kw">paste</span>(spid, apid)) <span class="co"># change spid to distinguish NaClO4 on each plate. </span>
+
+sc_raiu_pos_md &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">fit_curve_tcpl</span>(sc_pos_raiu, <span class="dt">assay_info =</span> <span class="kw">list</span>(<span class="dt">prim_assay =</span> <span class="st">&quot;RAIU&quot;</span>, <span class="dt">toxi_assay =</span> <span class="ot">NULL</span>))</code></pre></div>
+<pre><code>## Processing 15 samples(spid)....
+## NaClO4 TP0001498_rep1 ||NaClO4 TP0001498_rep2 ||NaClO4 TP0001498_rep3 ||NaClO4 TP0001499_rep1 ||NaClO4 TP0001499_rep2 ||NaClO4 TP0001499_rep3 ||NaClO4 TP0001500_rep1 ||NaClO4 TP0001500_rep2 ||NaClO4 TP0001500_rep3 ||NaClO4 TP0001501_rep1 ||NaClO4 TP0001501_rep2 ||NaClO4 TP0001501_rep3 ||NaClO4 TP0001502_rep1 ||NaClO4 TP0001502_rep2 ||NaClO4 TP0001502_rep3 ||
+## Curve Fitting Completed!
+## Calculation time: 2.8 secs</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sc_raiu_pos_sum &lt;-<span class="st"> </span>toxplot<span class="op">::</span><span class="kw">summary_tcpl</span>(sc_raiu_pos_md)
+
+##plot AC50 for pos controls together
+st &lt;-<span class="st"> </span>sc_raiu_pos_sum <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(AC50_prim, absEC50_prim, spid) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">rename</span>(<span class="dt">AC50 =</span> AC50_prim, <span class="dt">absEC50 =</span> absEC50_prim) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">gather</span>(<span class="dt">key=</span>Metric, <span class="dt">value=</span> value, AC50, absEC50)
+
+<span class="kw">ggplot</span>(st, <span class="kw">aes</span>(spid, value)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>Metric), <span class="dt">alpha=</span><span class="fl">0.8</span>, <span class="dt">size=</span><span class="dv">3</span>)<span class="op">+</span>
+<span class="st">    </span><span class="co">#facet_grid(Metric~., scale=&quot;free&quot;)+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels=</span><span class="ot">NULL</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;AC50 &amp; absEC50 of Positive Control(NaClO4) in Single-Con Assay&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Concentration (logM)&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>() </code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">    <span class="co">#theme(legend.position = &quot;none&quot;) </span>
+
+<span class="co">#summary</span>
+<span class="kw">library</span>(psych)
+sc_pos_sum_raiu &lt;-<span class="st"> </span>sc_raiu_pos_sum <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(AC50_prim, absEC50_prim) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">rename</span>(<span class="dt">AC50=</span>AC50_prim, <span class="dt">absEC50 =</span> absEC50_prim) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>describe
+knitr<span class="op">::</span><span class="kw">kable</span>(sc_pos_sum_raiu, <span class="dt">digits =</span> <span class="dv">2</span>,  <span class="dt">caption=</span><span class="st">&quot;Summary of single-con RAIU positive control IC50s&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-15">Table 4.3: </span>Summary of single-con RAIU positive control IC50s</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">vars</th>
+<th align="right">n</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">median</th>
+<th align="right">trimmed</th>
+<th align="right">mad</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">range</th>
+<th align="right">skew</th>
+<th align="right">kurtosis</th>
+<th align="right">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AC50</td>
+<td align="right">1</td>
+<td align="right">15</td>
+<td align="right">-6.44</td>
+<td align="right">0.11</td>
+<td align="right">-6.45</td>
+<td align="right">-6.46</td>
+<td align="right">0.05</td>
+<td align="right">-6.57</td>
+<td align="right">-6.06</td>
+<td align="right">0.51</td>
+<td align="right">2.28</td>
+<td align="right">5.19</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="even">
+<td>absEC50</td>
+<td align="right">2</td>
+<td align="right">15</td>
+<td align="right">-6.42</td>
+<td align="right">0.11</td>
+<td align="right">-6.43</td>
+<td align="right">-6.44</td>
+<td align="right">0.05</td>
+<td align="right">-6.55</td>
+<td align="right">-6.06</td>
+<td align="right">0.49</td>
+<td align="right">2.18</td>
+<td align="right">4.85</td>
+<td align="right">0.03</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="single-con-controls" class="section level3">
+<h3><span class="header-section-number">4.6.2</span> Single-Con Controls</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#only take the NaClO4 wells at 1E-4M</span>
+s1 &lt;-<span class="st"> </span>dt_sc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(wllt<span class="op">!=</span><span class="st">&quot;t&quot;</span>, spid<span class="op">!=</span><span class="st">&quot;NaClO4&quot;</span>)
+s2 &lt;-<span class="st"> </span>dt_sc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(spid<span class="op">==</span><span class="st">&quot;NaClO4&quot;</span>, conc<span class="op">==</span><span class="st"> </span><span class="fl">1E-4</span>)
+s3 &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(s1, s2)
+
+sc_ctrl_sum &lt;-<span class="st"> </span>s3 <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">filter</span>(wllt <span class="op">!=</span><span class="st">&quot;t&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">resp=</span>nval_median) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="co">#rename(&quot;NaClO4(1E-4M)F&quot;=NaClO4) %&gt;% </span>
+<span class="st">    </span><span class="kw">group_by</span>(spid) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">summarize</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(resp),
+              <span class="dt">sd =</span> <span class="kw">sd</span>(resp),
+              <span class="dt">min =</span> <span class="kw">min</span>(resp),
+              <span class="dt">max =</span> <span class="kw">max</span>(resp),
+              <span class="dt">CV =</span> sd<span class="op">/</span>mean<span class="op">*</span><span class="dv">100</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(sc_ctrl_sum, <span class="dt">digits =</span><span class="dv">2</span>, <span class="dt">caption=</span><span class="st">&quot;Single-Con control summary stats&quot;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-16">Table 4.4: </span>Single-Con control summary stats</caption>
+<thead>
+<tr class="header">
+<th align="left">spid</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">CV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2,4-D</td>
+<td align="right">92.41</td>
+<td align="right">4.24</td>
+<td align="right">83.91</td>
+<td align="right">100.71</td>
+<td align="right">4.59</td>
+</tr>
+<tr class="even">
+<td align="left">DMSO</td>
+<td align="right">100.63</td>
+<td align="right">7.11</td>
+<td align="right">71.69</td>
+<td align="right">116.19</td>
+<td align="right">7.06</td>
+</tr>
+<tr class="odd">
+<td align="left">NaClO4</td>
+<td align="right">2.85</td>
+<td align="right">0.36</td>
+<td align="right">2.08</td>
+<td align="right">3.84</td>
+<td align="right">12.60</td>
+</tr>
+<tr class="even">
+<td align="left">NaNO3</td>
+<td align="right">81.25</td>
+<td align="right">7.56</td>
+<td align="right">63.47</td>
+<td align="right">93.21</td>
+<td align="right">9.31</td>
+</tr>
+<tr class="odd">
+<td align="left">NaSCN</td>
+<td align="right">20.64</td>
+<td align="right">1.12</td>
+<td align="right">18.56</td>
+<td align="right">23.05</td>
+<td align="right">5.41</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot all sc controls</span>
+<span class="kw">ggplot</span>(<span class="kw">filter</span>(s3, wllt <span class="op">!=</span><span class="st">&quot;t&quot;</span>), <span class="kw">aes</span>(apid, nval_median)) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>apid),<span class="dt">alpha=</span><span class="fl">0.6</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">facet_grid</span>(spid<span class="op">~</span>.) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits=</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">140</span>), <span class="dt">breaks=</span> <span class="kw">seq</span>(<span class="dt">from=</span><span class="op">-</span><span class="dv">20</span>, <span class="dt">to=</span><span class="dv">140</span>, <span class="dt">by=</span><span class="dv">20</span>)) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="co">#scale_x_discrete(breaks=NULL)+</span>
+<span class="st">    </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels=</span><span class="ot">NULL</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Normalized Response&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Assay Plate ID&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Response of controls in 15 Single-Conc assay plates&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_bw</span>()<span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">plot.title=</span><span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>))</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+</div>
+<div id="visualize-the-single-concentration-data" class="section level2">
+<h2><span class="header-section-number">4.7</span> Visualize the single concentration data</h2>
+<p>A total of 310 chemical samples was tested in the single-con and 169 were further tested in multi-concentration.<br />
+The plot below showed the median, max, and min value for each tested chemical, and coloring shows which chemical were carried on to the multi-con assay. Because the assay has 3 replicates, so all three replicate’s data are actually plotted in this figure.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#calculate median, max and min value</span>
+sc_median &lt;-<span class="st"> </span>dt_sc_norm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">str_detect</span>(dt_sc_norm<span class="op">$</span>spid, <span class="st">&quot;^TP*&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">welltype =</span> <span class="st">&quot;sample&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">group_by</span>(pid, spid) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">summarize</span>(
+        <span class="dt">median =</span> <span class="kw">median</span>(nval_median),
+        <span class="dt">up_range =</span> <span class="kw">max</span>(nval_median),
+        <span class="dt">lo_range =</span> <span class="kw">min</span>(nval_median),
+        <span class="dt">range =</span> <span class="kw">max</span>(nval_median) <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(nval_median)
+    ) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">mc_test =</span> <span class="kw">ifelse</span>(median <span class="op">&lt;</span><span class="st"> </span><span class="dv">80</span>, <span class="st">&quot;Yes&quot;</span>, <span class="st">&quot;No&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">arrange</span>(median)
+<span class="co">#saveRDS(sc_median, &quot;../../NIS project Phase II/Phase 2 data analysis/ph1_single.rds&quot;)</span>
+##Plot single con median+range plot. 
+<span class="kw">library</span>(RColorBrewer)
+
+fig2 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(sc_median, <span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">reorder</span>(spid, <span class="op">-</span>median), <span class="dt">y=</span>median, <span class="dt">color=</span>mc_test)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">size=</span><span class="fl">1.5</span>, <span class="dt">alpha=</span><span class="fl">0.6</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymax=</span>up_range, <span class="dt">ymin=</span>lo_range), <span class="dt">alpha=</span><span class="fl">0.8</span>, <span class="dt">size =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Chemicals, ordered by increasing iodide uptake inhibition&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Iodide Uptake (% of control)&quot;</span>)<span class="op">+</span><span class="kw">scale_x_discrete</span>(<span class="dt">breaks=</span><span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">    </span><span class="co">#ggtitle(&quot;Median and Response of Test Chemicals&quot;)+</span>
+<span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">80</span>, <span class="dt">linetype=</span><span class="st">&quot;dashed&quot;</span>, <span class="dt">color=</span><span class="st">&quot;violetred1&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">100</span>, <span class="dt">alpha=</span><span class="fl">0.8</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="ot">NULL</span>, <span class="dt">x =</span> <span class="dv">270</span>, <span class="dt">y =</span> <span class="dv">103</span>, <span class="dt">label =</span> <span class="st">&quot;DMSO Control&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;grey30&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="ot">NULL</span>, <span class="dt">x =</span> <span class="dv">270</span>, <span class="dt">y =</span> <span class="dv">83</span>, <span class="dt">label =</span> <span class="st">&quot;20% Inhibition&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;grey30&quot;</span>)<span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span><span class="dv">100</span>, <span class="dt">by=</span><span class="dv">20</span>))<span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette=</span><span class="st">&quot;Set1&quot;</span>, <span class="dt">name=</span> <span class="st">&quot;Multi-Conc Assay&quot;</span>, <span class="dt">labels=</span> <span class="kw">c</span>(<span class="st">&quot;No&quot;</span>, <span class="st">&quot;Yes&quot;</span>)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme_few</span>(<span class="dt">base_size =</span> <span class="dv">12</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.15</span>, <span class="fl">0.1</span>), <span class="dt">legend.background =</span> <span class="kw">element_blank</span>())
+fig2</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#ggsave(&quot;./output plots/fig2.tiff&quot;, fig2, dpi = 900, width = 7, height = 5, compression = &quot;lzw&quot;)</span></code></pre></div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="code-test.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="multi-conc-results-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

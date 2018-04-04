@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R</title>
+  <meta name="description" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R">
+  <meta name="generator" content="bookdown 0.3.20 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R" />
+  
+  
+  
+
+<meta name="author" content="Jun Wang">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="export-dose-response-curve.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html"><i class="fa fa-check"></i><b>2</b> Data Import and Preprocessing</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#preprocess-single-concentration-data"><i class="fa fa-check"></i><b>2.1</b> Preprocess Single-Concentration Data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentration"><i class="fa fa-check"></i><b>2.1.1</b> Update Testing Concentration</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-sinlge-con-level0-file-with-updated-concentration"><i class="fa fa-check"></i><b>2.1.2</b> Export Sinlge-Con level0 file with updated concentration</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#import-and-preprocess-multi-concentration-data"><i class="fa fa-check"></i><b>2.2</b> Import and Preprocess Multi-Concentration Data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#functions-for-data-retrieving"><i class="fa fa-check"></i><b>2.2.1</b> Functions for data retrieving</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#parse-all-excel-data-files-and-generate-tidy-table"><i class="fa fa-check"></i><b>2.2.2</b> Parse all excel data files and generate tidy table</a></li>
+<li class="chapter" data-level="2.2.3" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#update-testing-concentrations"><i class="fa fa-check"></i><b>2.2.3</b> Update Testing Concentrations</a></li>
+<li class="chapter" data-level="2.2.4" data-path="data-import-and-preprocessing.html"><a href="data-import-and-preprocessing.html#export-multi-conc-data-to-file"><i class="fa fa-check"></i><b>2.2.4</b> Export Multi-conc data to file</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="code-test.html"><a href="code-test.html"><i class="fa fa-check"></i><b>3</b> Code Test</a></li>
+<li class="chapter" data-level="4" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html"><i class="fa fa-check"></i><b>4</b> Single-Conc Results Analysis</a><ul>
+<li class="chapter" data-level="4.1" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#define-basic-assay-info"><i class="fa fa-check"></i><b>4.1</b> Define basic assay info</a></li>
+<li class="chapter" data-level="4.2" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#data-import"><i class="fa fa-check"></i><b>4.2</b> Data Import</a></li>
+<li class="chapter" data-level="4.3" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#normalization"><i class="fa fa-check"></i><b>4.3</b> Normalization</a></li>
+<li class="chapter" data-level="4.4" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#threshold-of-significance"><i class="fa fa-check"></i><b>4.4</b> Threshold of Significance</a></li>
+<li class="chapter" data-level="4.5" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#qc-of-single-conc-assay"><i class="fa fa-check"></i><b>4.5</b> QC of Single-conc assay</a></li>
+<li class="chapter" data-level="4.6" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#qc-summary-of-single-con-assay"><i class="fa fa-check"></i><b>4.6</b> QC Summary of Single-Con assay</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#single-con-positive-control-qc"><i class="fa fa-check"></i><b>4.6.1</b> Single-Con Positive Control QC</a></li>
+<li class="chapter" data-level="4.6.2" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#single-con-controls"><i class="fa fa-check"></i><b>4.6.2</b> Single-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="single-conc-results-analysis.html"><a href="single-conc-results-analysis.html#visualize-the-single-concentration-data"><i class="fa fa-check"></i><b>4.7</b> Visualize the single concentration data</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html"><i class="fa fa-check"></i><b>5</b> Multi-Conc Results Analysis</a><ul>
+<li class="chapter" data-level="5.1" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#import-mc-data"><i class="fa fa-check"></i><b>5.1</b> Import MC data</a></li>
+<li class="chapter" data-level="5.2" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#normalization-1"><i class="fa fa-check"></i><b>5.2</b> Normalization</a></li>
+<li class="chapter" data-level="5.3" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#bmad-of-mc"><i class="fa fa-check"></i><b>5.3</b> 3bMAD of MC</a></li>
+<li class="chapter" data-level="5.4" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#multi-con-qc"><i class="fa fa-check"></i><b>5.4</b> Multi-Con QC</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#quality-control"><i class="fa fa-check"></i><b>5.4.1</b> Quality Control</a></li>
+<li class="chapter" data-level="5.4.2" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#sodium-perchlorate-dcnq"><i class="fa fa-check"></i><b>5.4.2</b> Sodium Perchlorate &amp; DCNQ</a></li>
+<li class="chapter" data-level="5.4.3" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#visualize-all-multi-con-controls"><i class="fa fa-check"></i><b>5.4.3</b> Visualize all Multi-Con Controls</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="multi-conc-results-analysis.html"><a href="multi-conc-results-analysis.html#test-chemical-dose-response-modeling"><i class="fa fa-check"></i><b>5.5</b> Test Chemical Dose-response Modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="rank-chemicals.html"><a href="rank-chemicals.html"><i class="fa fa-check"></i><b>6</b> Rank Chemicals</a><ul>
+<li class="chapter" data-level="6.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#ranking-plot"><i class="fa fa-check"></i><b>6.1</b> Ranking Plot</a></li>
+<li class="chapter" data-level="6.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#results-table-for-publication"><i class="fa fa-check"></i><b>6.2</b> Results Table for publication</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="rank-chemicals.html"><a href="rank-chemicals.html#table-1-in-est-paper"><i class="fa fa-check"></i><b>6.2.1</b> Table 1 in ES&amp;T paper</a></li>
+<li class="chapter" data-level="6.2.2" data-path="rank-chemicals.html"><a href="rank-chemicals.html#table-s1-in-est-paper"><i class="fa fa-check"></i><b>6.2.2</b> Table S1 in ES&amp;T paper</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html"><i class="fa fa-check"></i><b>7</b> ToxCast Internal Replicates</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#single-con-internal-replicate-performance"><i class="fa fa-check"></i><b>7.0.1</b> Single-con internal Replicate performance</a></li>
+<li class="chapter" data-level="7.0.2" data-path="toxcast-internal-replicates.html"><a href="toxcast-internal-replicates.html#multi-con-internal-controls-replication-performance"><i class="fa fa-check"></i><b>7.0.2</b> Multi-con internal controls replication performance</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html"><i class="fa fa-check"></i><b>8</b> Export Dose-Response Curve</a><ul>
+<li class="chapter" data-level="8.1" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#make-plots"><i class="fa fa-check"></i><b>8.1</b> Make plots</a></li>
+<li class="chapter" data-level="8.2" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#export-dose-response-plots-as-pdf"><i class="fa fa-check"></i><b>8.2</b> Export dose-response plots as PDF</a></li>
+<li class="chapter" data-level="8.3" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#fig.1"><i class="fa fa-check"></i><b>8.3</b> Fig.1</a></li>
+<li class="chapter" data-level="8.4" data-path="export-dose-response-curve.html"><a href="export-dose-response-curve.html#fig.-3"><i class="fa fa-check"></i><b>8.4</b> Fig. 3</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="source.html"><a href="source.html"><i class="fa fa-check"></i><b>9</b> R source code in <code>ToxPlot</code> package</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analysis of ToxCast phase I Chemical Screening Results from NIS RAIU Bioassay in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="source" class="section level1">
+<h1><span class="header-section-number">9</span> R source code in <code>ToxPlot</code> package</h1>
+<p>Main R functions written for this analysis were compiled as an R package <code>ToxPlot</code>, and version 0.1.0 is available on <a href="https://cran.r-project.org/package=toxplot">CRAN</a>.<br />
+For the most up-to-date version please go to the <a href="https://github.com/njekin/ToxPlot-R-Package">github link</a>.</p>
+<p>Below is the source code of <code>ToxPlot</code> ver.0.1.0 used in this analysis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#&#39; normalize per plate</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; normalize raw readings as percent of median vehicle control wells</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param dt data.frame contains essential columns with the raw data.</span>
+<span class="co">#&#39; @param nctrl the name (spid) of the vehicle/solvent control used for calculation</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @return data.frame with normalized value columns. &#39;nval_mean&#39; column is the normalized value</span>
+<span class="co">#&#39; calculated using the mean of vehicle control wells, &#39;nval_median&#39; column is the normalized value</span>
+<span class="co">#&#39; calculated using the median of vehicle control wells.</span>
+<span class="co">#&#39; @import dplyr</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @examples</span>
+<span class="co">#&#39; ## normalize demo data</span>
+<span class="co">#&#39; demo_mc_norm &lt;- normalize_per_plate(demo_mc, nctrl = &quot;DMSO&quot;)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @export</span>
+
+normalize_per_plate &lt;-<span class="st"> </span><span class="cf">function</span>(dt, <span class="dt">nctrl =</span> <span class="st">&quot;DMSO&quot;</span>) {
+
+  <span class="co"># claim variables for passing R CMD Check</span>
+  assay &lt;-<span class="st"> </span>spid &lt;-<span class="st"> </span>apid &lt;-<span class="st"> </span>rval &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+
+  output &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
+  <span class="co">#iterate through each assay, calculate separately</span>
+  <span class="cf">for</span> (as <span class="cf">in</span> <span class="kw">unique</span>(dt<span class="op">$</span>assay)) {
+    df_t &lt;-<span class="st"> </span><span class="kw">normalize_single_assay</span>(dplyr<span class="op">::</span><span class="kw">filter</span>(dt, assay <span class="op">==</span><span class="st"> </span>as), nctrl)
+    output &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">bind_rows</span>(output, df_t)
+  }
+
+  <span class="kw">return</span>(output)
+
+}
+
+<span class="co">#&#39; normalize per plate (from single assay data)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; normalize raw readings as percent of median/mean vehicle control wells, per assay, per plate.</span>
+<span class="co">#&#39; This function is called by normalize_per_plate, should not be called directly by user.</span>
+<span class="co">#&#39; #&#39;</span>
+<span class="co">#&#39; @param dt data.frame contains essential columns with the raw data.</span>
+<span class="co">#&#39; @param nctrl the name (spid) of the vehicle/solvent control used for calculation</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @return data.frame with normalized value columns. &#39;nval_mean&#39; column is the normalized value</span>
+<span class="co">#&#39; calculated using the mean of vehicle control wells, &#39;nval_median&#39; column is the normalized value</span>
+<span class="co">#&#39; calculated using the median of vehicle control wells.</span>
+<span class="co">#&#39; @import dplyr</span>
+<span class="co">#</span>
+normalize_single_assay &lt;-<span class="st"> </span><span class="cf">function</span>(dt, nctrl) {
+
+  <span class="co"># claim variables for passing R CMD Check</span>
+  assay &lt;-<span class="st"> </span>spid &lt;-<span class="st"> </span>apid &lt;-<span class="st"> </span>rval &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+
+  <span class="co">#calculate the mean and median value for negative control</span>
+  ctrl_avg &lt;-<span class="st"> </span>dt <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid <span class="op">==</span><span class="st"> </span>nctrl) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(apid) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(<span class="dt">mean_DMSO =</span> <span class="kw">mean</span>(rval, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),
+                     <span class="dt">median_DMSO =</span> stats<span class="op">::</span><span class="kw">median</span>(rval, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
+
+  <span class="co">#iterate through the data table to calculate normalized percent activity</span>
+  <span class="co">#normalization was done using both mean and median separately.</span>
+
+  temp &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
+  <span class="cf">for</span> (id <span class="cf">in</span> ctrl_avg<span class="op">$</span>apid){
+    med &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(ctrl_avg, apid <span class="op">==</span><span class="st"> </span>id)<span class="op">$</span>median_DMSO
+    avg &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(ctrl_avg, apid <span class="op">==</span><span class="st"> </span>id)<span class="op">$</span>mean_DMSO
+    t &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(dt, apid <span class="op">==</span><span class="st"> </span>id) <span class="op">%&gt;%</span>
+<span class="st">      </span><span class="kw">mutate</span>(<span class="dt">nval_mean =</span> <span class="dv">100</span> <span class="op">*</span><span class="st"> </span>rval<span class="op">/</span>avg,
+             <span class="dt">nval_median =</span> <span class="dv">100</span> <span class="op">*</span><span class="st"> </span>rval<span class="op">/</span>med)
+    temp &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(temp, t)
+  }
+  <span class="kw">return</span>(temp)
+}
+
+<span class="co">#&#39; Quality-control metrics calculation</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; Calculate QC metrics, includin Z&#39; score, CV of DMSO negative control, per assay plate.</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param d data.frame contains essential columns with the raw data.</span>
+<span class="co">#&#39; @param resp response type, specify either &#39;nval_median&#39; or &#39;nval_mean&#39; for QC calculation</span>
+<span class="co">#&#39; @param assay_info assay_info list, contains names of primary and cytotox assay, names must match</span>
+<span class="co">#&#39; what are provided in the raw data, under the column &#39;assay&#39;.</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @examples</span>
+<span class="co">#&#39; ## calculate QC measures from demo data</span>
+<span class="co">#&#39; assay_info &lt;- list(prim_assay = &quot;Primary&quot;,toxi_assay = &quot;Cytotox&quot;)</span>
+<span class="co">#&#39; demo_mc_norm &lt;- normalize_per_plate(demo_mc, nctrl = &quot;DMSO&quot;)</span>
+<span class="co">#&#39; qc &lt;- qc_per_plate(demo_mc_norm, assay_info)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @return three dataframe each representing negative control stats, positive control stats and QC metrics (CV_DMSO, Z&#39; score, SSMD) for each assay plate</span>
+<span class="co">#&#39; @export</span>
+<span class="co"># QC measures are calculated per 96-well palte. &#39;apid&#39; plus &#39;assay&#39; column can serve as the ID to distinguish each plate.</span>
+
+qc_per_plate &lt;-<span class="st"> </span><span class="cf">function</span>(d, assay_info, <span class="dt">resp =</span> <span class="st">&quot;nval_median&quot;</span>) {
+
+  <span class="co"># claim variables for passing R CMD Check</span>
+  assay &lt;-<span class="st"> </span>apid &lt;-<span class="st"> </span>wllt &lt;-<span class="st"> </span>conc &lt;-<span class="st"> </span>CV_DMSO &lt;-<span class="st"> </span>SSMD &lt;-<span class="st"> </span>Z_prime &lt;-<span class="st"> </span>logc &lt;-<span class="st"> </span>mean_DMSO &lt;-<span class="st"> </span>mean_positive &lt;-<span class="st"> </span><span class="ot">NULL</span>
+  sd_positive &lt;-<span class="st"> </span>sd_DMSO &lt;-<span class="st"> </span>unique_id &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+
+
+  <span class="co"># choose which normalized value to use (median based or mean based)</span>
+  <span class="cf">if</span> (resp <span class="op">==</span><span class="st"> &quot;nval_mean&quot;</span>) {
+    d<span class="op">$</span>resp &lt;-<span class="st"> </span>d<span class="op">$</span>nval_mean
+  } <span class="cf">else</span> <span class="cf">if</span> (resp <span class="op">==</span><span class="st"> &quot;nval_median&quot;</span>) {
+    d<span class="op">$</span>resp &lt;-<span class="st"> </span>d<span class="op">$</span>nval_median
+  } <span class="cf">else</span> {
+    <span class="kw">stop</span>(<span class="st">&quot;specify either nval_median or nval_mean for QC calculation&quot;</span>)
+  }
+
+  <span class="co"># create unique ID for each plate (apid + assay)</span>
+  <span class="co"># (can also distinguish between primary and cytotox assays)</span>
+  <span class="co"># group by the unique ID.</span>
+  d &lt;-<span class="st"> </span>d <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#dplyr::mutate(uid = paste(apid, assay)) %&gt;%</span>
+<span class="st">      </span><span class="co"># dplyr::group_by(pid, assay, repi)</span>
+<span class="st">      </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(apid, assay)
+
+  <span class="co"># calculate vehicle control (e.g., DMSO etc.) qc stats</span>
+  <span class="co"># use welltype = n to identify vehicle control</span>
+  n_ctrl_sum &lt;-<span class="st"> </span>d <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(wllt <span class="op">==</span><span class="st"> &quot;n&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(<span class="dt">count_DMSO =</span> <span class="kw">n</span>(),                     <span class="co">#count of DMSO control wells on each plate</span>
+                     <span class="dt">count_DMSO_NA =</span> <span class="kw">sum</span>(<span class="kw">is.na</span>(resp)),     <span class="co">#count of DMSO control wells with missing values</span>
+                     <span class="dt">mean_DMSO =</span> <span class="kw">mean</span>(resp, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),
+                     <span class="dt">sd_DMSO =</span> stats<span class="op">::</span><span class="kw">sd</span>(resp, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),
+                     <span class="dt">CV_DMSO =</span> <span class="dv">100</span> <span class="op">*</span><span class="st"> </span>stats<span class="op">::</span><span class="kw">sd</span>(resp, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(resp, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+                     <span class="co"># median_DMSO= median(resp, na.rm=TRUE),</span>
+                     <span class="co"># mad_DMSO= mad(resp, constant = 1, na.rm=TRUE),</span>
+                     <span class="co"># bmad_DMSO= mad(resp, constant = 1.4826, na.rm=TRUE),</span>
+                     <span class="co"># three_bmad = 3*bmad_DMSO</span>
+                     )
+
+
+  <span class="co"># calculate positive control stats</span>
+  pctrl_prim &lt;-<span class="st">  </span>d <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> </span>assay_info<span class="op">$</span>prim_assay,
+                  wllt <span class="op">==</span><span class="st"> &quot;pr&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(conc <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(conc)) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(<span class="dt">sd_positive =</span> stats<span class="op">::</span><span class="kw">sd</span>(resp, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),
+                     <span class="dt">mean_positive=</span> <span class="kw">mean</span>(resp, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
+
+  pctrl_toxi &lt;-<span class="st">  </span>d <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(assay <span class="op">==</span><span class="st"> </span>assay_info<span class="op">$</span>toxi_assay,
+                  wllt <span class="op">==</span><span class="st"> &quot;pc&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(conc <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(conc)) <span class="op">%&gt;%</span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(<span class="dt">sd_positive =</span> stats<span class="op">::</span><span class="kw">sd</span>(resp, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),
+                     <span class="dt">mean_positive =</span> <span class="kw">mean</span>(resp, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
+
+  p_ctrl_sum &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(pctrl_prim, pctrl_toxi)
+  <span class="kw">remove</span>(pctrl_toxi, pctrl_prim)
+
+
+  <span class="co"># calculate Z&#39;, SSMD</span>
+
+  qc &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">left_join</span>(p_ctrl_sum, n_ctrl_sum,
+                        <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;apid&quot;</span>=<span class="st">&quot;apid&quot;</span>, <span class="st">&quot;assay&quot;</span>=<span class="st">&quot;assay&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">       </span><span class="co">#replace NaN with 0 in sd_positive</span>
+<span class="st">       </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">sd_positive =</span> (<span class="kw">ifelse</span>(<span class="kw">is.na</span>(sd_positive), <span class="dv">0</span>, sd_positive))) <span class="op">%&gt;%</span>
+<span class="st">       </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">Z_prime =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="dv">3</span><span class="op">*</span>(sd_positive <span class="op">+</span><span class="st"> </span>sd_DMSO) <span class="op">/</span><span class="st"> </span>(<span class="kw">abs</span>(mean_positive <span class="op">-</span><span class="st"> </span>mean_DMSO)),
+                       <span class="dt">SSMD =</span> (<span class="kw">abs</span>(mean_positive <span class="op">-</span><span class="st"> </span>mean_DMSO) <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(sd_positive<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>sd_DMSO<span class="op">^</span><span class="dv">2</span>))) <span class="op">%&gt;%</span>
+<span class="st">       </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">unique_id =</span> <span class="kw">paste</span>(apid, assay, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">       </span>dplyr<span class="op">::</span><span class="kw">select</span>(unique_id, apid, assay, CV_DMSO, Z_prime, SSMD)
+
+
+
+  <span class="kw">list</span>(<span class="dt">neg_ctrl_sum =</span> n_ctrl_sum,
+       <span class="dt">pos_ctrl_sum =</span> p_ctrl_sum,
+       <span class="dt">qc =</span> qc)
+}
+
+<span class="co">#&#39; hill mode in ToxCast tcpl package</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param p a vector containing the Hill model parameters: top, log AC50, hill coefficient</span>
+<span class="co">#&#39; @param x a vector of log concentrations</span>
+<span class="co">#&#39; @return calculated y value based on the x and model parameters</span>
+<span class="co">#&#39;</span>
+hill_model &lt;-<span class="st"> </span><span class="cf">function</span>(p, x) {
+  y &lt;-<span class="st"> </span>p[<span class="dv">1</span>] <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">10</span> <span class="op">^</span><span class="st"> </span>((p[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>x) <span class="op">*</span><span class="st"> </span>p[<span class="dv">3</span>]))
+  <span class="kw">return</span>(y)
+}
+
+<span class="co"># ##========inversed hill model (using 100- the Y value)=======##</span>
+<span class="co"># hill_model_inverse &lt;- function(p, x) {</span>
+<span class="co">#   </span><span class="al">###</span><span class="co">   p:     a numeric vector of length 4 containg the starting values for</span>
+<span class="co">#   </span><span class="al">###</span><span class="co">          the hill model, in order: top, log AC50, hill</span>
+<span class="co">#   </span><span class="al">###</span><span class="co">          coefficient</span>
+<span class="co">#   </span><span class="al">###</span><span class="co">   x: a numeric vector containing the log concentration values</span>
+<span class="co">#</span>
+<span class="co">#   y &lt;- 100 - (p[1] / (1 + 10 ^ ((p[2] - x) * p[3])))</span>
+<span class="co">#   return(y)</span>
+<span class="co"># }</span>
+
+<span class="co">#&#39; calculate absolute EC_anything based on tcpl hill model</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param p a vector containing the Hill model parameters: top, log AC50, hill coefficient</span>
+<span class="co">#&#39; @param y the y value</span>
+<span class="co">#&#39; @return calculated x value</span>
+
+log_abs_ec &lt;-<span class="st"> </span><span class="cf">function</span>(p, y) {
+  ## y value is the absolute response value
+  ##p[1] is top parameter
+  ##p[2] is ga, logac50
+  ##p[3] is gw, hillslope
+  <span class="kw">suppressWarnings</span>(x &lt;-<span class="st"> </span>p[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span><span class="kw">log10</span>((p[<span class="dv">1</span>] <span class="op">-</span><span class="st"> </span>y) <span class="op">/</span><span class="st"> </span>y) <span class="op">/</span><span class="st"> </span>p[<span class="dv">3</span>])
+  <span class="cf">if</span> (<span class="kw">is.nan</span>(x)) {x &lt;-<span class="st"> </span><span class="ot">NA</span>}
+  <span class="kw">return</span>(x)
+}
+
+
+<span class="co">#&#39; function to calculate Area Under the Curve (AUC) of the hill model</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param p a vector containing the Hill model parameters: top, log AC50, hill coefficient</span>
+<span class="co">#&#39; @param lower lower boundary of x for integration</span>
+<span class="co">#&#39; @param upper upper boundary of x for integration</span>
+<span class="co">#&#39; @return calculated area under the curve (AUC) value</span>
+<span class="co">#&#39;</span>
+auc_hill_tcpl &lt;-<span class="st"> </span><span class="cf">function</span>(p, lower, upper) {
+  <span class="co">#define the hill model function</span>
+  hill &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+    p[<span class="dv">1</span>] <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">10</span> <span class="op">^</span><span class="st"> </span>((p[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>x) <span class="op">*</span><span class="st"> </span>p[<span class="dv">3</span>]))
+  }
+  a &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw">integrate</span>(hill, <span class="dt">lower =</span> lower, <span class="dt">upper =</span> upper)
+  <span class="kw">return</span>(a[[<span class="dv">1</span>]])
+}
+
+
+
+
+<span class="co">#&#39; fit dose-resopnse curve using tcpl hill model</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; Curve fitting using the tcplFit function in `tcpl` package.</span>
+<span class="co">#&#39; Chemicals are modelled based on spid.</span>
+<span class="co">#&#39; If you want to model the same chemical (e.g. positive controls),</span>
+<span class="co">#&#39; then assign different spid to this chemical so the function can separate them out.</span>
+<span class="co">#&#39; Absolute IC20 and absolute IC50 are calculated as well.</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param df input data contain normalized assay readings</span>
+<span class="co">#&#39; @param assay_info predefined names for primary and cytotoxicity assays,</span>
+<span class="co">#&#39; use NULL if either one of the assay does not need to be modeled.</span>
+<span class="co">#&#39; @param prim_cutoff significance cutoff for primary assay (eg. 3sigma or 3bMAD)</span>
+<span class="co">#&#39; @param toxi_cutoff significance cutoff for cytotoxicity assay (eg. 3sigma or 3bMAD)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @return A list object containing modeling results, the corresponding data for each chemical.</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @examples</span>
+<span class="co">#&#39; ## fit curve with default significant threshold 20</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(mc_norm, assay_info =</span>
+<span class="co">#&#39; list(prim_assay = &quot;Primary&quot;, toxi_assay = &quot;Cytotox&quot;))</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## start from raw data</span>
+<span class="co">#&#39; # define assay</span>
+<span class="co">#&#39; assay_info &lt;- list(prim_assay = &quot;Primary&quot;,toxi_assay = &quot;Cytotox&quot;)</span>
+<span class="co">#&#39; # data normalization</span>
+<span class="co">#&#39; demo_mc_norm &lt;- normalize_per_plate(demo_mc, nctrl = &quot;DMSO&quot;)</span>
+<span class="co">#&#39; # filter out test chemicals only</span>
+<span class="co">#&#39; demo_mc_norm &lt;- dplyr::filter(demo_mc_norm, wllt == &quot;t&quot;)</span>
+<span class="co">#&#39; # fit curve with default 20% threshold</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(demo_mc_norm, assay_info)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## fit curve with specified significance threshold</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(demo_mc_norm, assay_info, prim_cutoff = 25, toxi_cutoff = 25)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @import dplyr</span>
+<span class="co">#&#39; @export</span>
+
+fit_curve_tcpl &lt;-<span class="st"> </span><span class="cf">function</span>(df, assay_info, <span class="dt">prim_cutoff =</span> <span class="dv">20</span>, <span class="dt">toxi_cutoff =</span> <span class="dv">20</span>) {
+
+  <span class="co"># claim variables for passing R CMD Check</span>
+  conc &lt;-<span class="st"> </span>spid &lt;-<span class="st"> </span>assay &lt;-<span class="st"> </span>apid &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+  st_time &lt;-<span class="st"> </span><span class="kw">Sys.time</span>()
+  r_list &lt;-<span class="st"> </span><span class="kw">list</span>()
+  c_list &lt;-<span class="st"> </span><span class="kw">list</span>()
+  bmad_prim &lt;-<span class="st"> </span>prim_cutoff<span class="op">/</span><span class="dv">3</span>
+  bmad_toxi &lt;-<span class="st"> </span>toxi_cutoff<span class="op">/</span><span class="dv">3</span>
+  <span class="co"># get log concentration</span>
+  df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">logc =</span> <span class="kw">log10</span>(conc))
+  spid_list &lt;-<span class="st"> </span><span class="kw">unique</span>(df<span class="op">$</span>spid)
+  <span class="cf">if</span> (<span class="kw">is.null</span>(assay_info<span class="op">$</span>prim) <span class="op">&amp;</span><span class="st"> </span><span class="kw">is.null</span>(assay_info<span class="op">$</span>toxi_assay)) {
+    <span class="kw">stop</span>(<span class="st">&quot;assay_info cannot be NULL for both primary and cytotoxicity assay&quot;</span>)
+  }
+  n &lt;-<span class="st"> </span><span class="dv">1</span>
+  prim_md &lt;-<span class="st"> </span>toxi_md &lt;-<span class="st"> </span>model_list &lt;-<span class="st"> </span><span class="kw">list</span>()
+  <span class="kw">cat</span>(<span class="st">&quot;Processing&quot;</span>, <span class="kw">length</span>(<span class="kw">unique</span>(df<span class="op">$</span>spid)), <span class="st">&quot;samples(spid)....</span><span class="ch">\n</span><span class="st">&quot;</span>)
+  <span class="co"># process by each spid</span>
+  <span class="cf">for</span> (id <span class="cf">in</span> <span class="kw">unique</span>(df<span class="op">$</span>spid)) {
+    <span class="co">#d &lt;- df %&gt;% dplyr::filter(spid == i)</span>
+    <span class="kw">cat</span>(id, <span class="st">&quot;||&quot;</span>)
+    <span class="co"># model raiu data</span>
+    <span class="co"># check if toxi assay data is available, if not, skip modeling</span>
+    <span class="cf">if</span> (<span class="kw">is.null</span>(assay_info<span class="op">$</span>prim_assay)) {
+      prim_md &lt;-<span class="st"> </span><span class="ot">NA</span>
+      prim_dt &lt;-<span class="st"> </span><span class="ot">NA</span>
+    } <span class="cf">else</span> {
+
+      prim_dt &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid <span class="op">==</span><span class="st"> </span>id, assay <span class="op">==</span><span class="st"> </span>assay_info<span class="op">$</span>prim_assay)
+      m &lt;-<span class="st"> </span>tcpl<span class="op">::</span><span class="kw">tcplFit</span>(<span class="dt">logc =</span> prim_dt<span class="op">$</span>logc, <span class="dt">resp =</span> <span class="dv">100</span> <span class="op">-</span><span class="st"> </span>prim_dt<span class="op">$</span>nval_median, bmad_prim)
+      absIC50 &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(<span class="kw">c</span>(m<span class="op">$</span>hill_tp, m<span class="op">$</span>hill_ga, m<span class="op">$</span>hill_gw), <span class="dv">50</span>)
+      absIC20 &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(<span class="kw">c</span>(m<span class="op">$</span>hill_tp, m<span class="op">$</span>hill_ga, m<span class="op">$</span>hill_gw), <span class="dv">20</span>)
+      m[[<span class="st">&quot;absIC20&quot;</span>]] &lt;-<span class="st"> </span>absIC20
+      m[[<span class="st">&quot;absIC50&quot;</span>]] &lt;-<span class="st"> </span>absIC50
+      m[[<span class="st">&quot;apid&quot;</span>]] &lt;-<span class="st"> </span>prim_dt[[<span class="dv">1</span>,<span class="dv">1</span>]]
+      m[[<span class="st">&quot;assay&quot;</span>]] &lt;-<span class="st"> </span>assay_info<span class="op">$</span>prim_assay
+      m[[<span class="st">&quot;spid&quot;</span>]] &lt;-<span class="st"> </span>id
+      <span class="co">#prim_md &lt;- dplyr::bind_rows(prim_md, m)</span>
+      <span class="co"># print(m)</span>
+      prim_md &lt;-<span class="st"> </span><span class="kw">data.frame</span>(m) <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(apid, assay, spid, <span class="kw">everything</span>())
+    }
+
+    <span class="co"># model cytotox data</span>
+    <span class="co"># check if toxi assay data is available, if not, skip modeling</span>
+    <span class="cf">if</span> (<span class="kw">is.null</span>(assay_info<span class="op">$</span>toxi_assay)) {
+      toxi_md &lt;-<span class="st"> </span><span class="ot">NA</span>
+      toxi_dt &lt;-<span class="st"> </span><span class="ot">NA</span>
+    } <span class="cf">else</span> {
+      toxi_dt &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid <span class="op">==</span><span class="st"> </span>id, assay<span class="op">==</span>assay_info<span class="op">$</span>toxi_assay)
+      m &lt;-<span class="st"> </span>tcpl<span class="op">::</span><span class="kw">tcplFit</span>(<span class="dt">logc =</span> toxi_dt<span class="op">$</span>logc, <span class="dt">resp =</span> <span class="dv">100</span> <span class="op">-</span><span class="st"> </span>toxi_dt<span class="op">$</span>nval_median, bmad_toxi)
+      absIC50 &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(<span class="kw">c</span>(m<span class="op">$</span>hill_tp, m<span class="op">$</span>hill_ga, m<span class="op">$</span>hill_gw), <span class="dv">50</span>)
+      absIC20 &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(<span class="kw">c</span>(m<span class="op">$</span>hill_tp, m<span class="op">$</span>hill_ga, m<span class="op">$</span>hill_gw), <span class="dv">20</span>)
+      m[[<span class="st">&quot;absIC20&quot;</span>]] &lt;-<span class="st"> </span>absIC20
+      m[[<span class="st">&quot;absIC50&quot;</span>]] &lt;-<span class="st"> </span>absIC50
+      m[[<span class="st">&quot;apid&quot;</span>]] &lt;-<span class="st"> </span>toxi_dt[[<span class="dv">1</span>,<span class="dv">1</span>]]
+      m[[<span class="st">&quot;assay&quot;</span>]] &lt;-<span class="st"> </span>assay_info<span class="op">$</span>toxi_assay
+      m[[<span class="st">&quot;spid&quot;</span>]] &lt;-<span class="st"> </span>id
+      <span class="co">#toxi_md &lt;- dplyr::bind_rows(toxi_md, m)</span>
+
+      toxi_md &lt;-<span class="st"> </span><span class="kw">data.frame</span>(m) <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(apid, assay, spid, <span class="kw">everything</span>())
+
+    }
+
+    <span class="co">#build final model list</span>
+    model_list[[n]] &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">spid =</span> id,
+                            <span class="dt">model_prim =</span> prim_md,
+                            <span class="dt">model_toxi =</span> toxi_md,
+                            <span class="dt">data_prim =</span> prim_dt,
+                            <span class="dt">data_toxi =</span> toxi_dt,
+                            <span class="dt">cutoff_prim =</span> prim_cutoff,
+                            <span class="dt">cutoff_toxi =</span> toxi_cutoff,
+                            <span class="dt">assay_info =</span> assay_info)
+
+    n &lt;-<span class="st"> </span>n <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
+
+  }
+
+  time &lt;-<span class="st"> </span><span class="kw">difftime</span>(<span class="kw">Sys.time</span>(), st_time) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span>)
+  <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Curve Fitting Completed!</span><span class="ch">\n</span><span class="st">Calculation time:&quot;</span>, <span class="kw">paste</span>(<span class="kw">unclass</span>(time), <span class="kw">units</span>(time)), <span class="st">&quot;</span><span class="ch">\n\n</span><span class="st">&quot;</span>)
+
+
+  <span class="kw">return</span>(model_list)
+}
+
+
+
+<span class="co">#&#39; function to calculate ranking score, TAA, med_diff, EC values based on tcpl hill model</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; calculate ranking score, TAA, med_diff, absolute EC values, AC50, based on the hill model in tcpl package</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param tcpl_models the list object returned by &#39;fit_curve_tcpl&#39; function</span>
+<span class="co">#&#39; @param spid_chnm_table a reference table with &#39;spid&#39; and the corresponding chemical name &#39;chnm&#39; column,</span>
+<span class="co">#&#39; and the CAS number &#39;casn&#39; column.</span>
+<span class="co">#&#39; @param med_taa the median TAA value from reference chemical, if not supplied, then ranking score won&#39;t be calculated.</span>
+<span class="co">#&#39; @param med_med_diff the median Median-Difference from reference chemical, if not supplied, then ranking score won&#39;t be calculated.</span>
+<span class="co">#&#39; @return a dataframe containing ranking metrics for each chemical (spid)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @examples</span>
+<span class="co">#&#39; ## start with normalized data</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(mc_norm, assay_info =</span>
+<span class="co">#&#39; list(prim_assay = &quot;Primary&quot;, toxi_assay = &quot;Cytotox&quot;))</span>
+<span class="co">#&#39; demo_rank &lt;- rank_tcpl(demo_md)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## start from raw data</span>
+<span class="co">#&#39; # define assay</span>
+<span class="co">#&#39; assay_info &lt;- list(prim_assay = &quot;Primary&quot;,toxi_assay = &quot;Cytotox&quot;)</span>
+<span class="co">#&#39; # data normalization</span>
+<span class="co">#&#39; demo_mc_norm &lt;- normalize_per_plate(demo_mc, nctrl = &quot;DMSO&quot;)</span>
+<span class="co">#&#39; # filter out test chemicals only</span>
+<span class="co">#&#39; demo_mc_norm &lt;- dplyr::filter(demo_mc_norm, wllt == &quot;t&quot;)</span>
+<span class="co">#&#39; # fit curve with default 20% threshold</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(demo_mc_norm, assay_info)</span>
+<span class="co">#&#39; # calculate TAA and Med_diff only</span>
+<span class="co">#&#39; demo_rank &lt;- rank_tcpl(demo_md, med_taa = NULL, med_med_diff = NULL)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## calculate ranking score with specified median TAA and meidan Med_Difference</span>
+<span class="co">#&#39; demo_rank &lt;- rank_tcpl(demo_md, med_taa = 150, med_med_diff = 92)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @export</span>
+<span class="co">#&#39;</span>
+rank_tcpl &lt;-<span class="st"> </span><span class="cf">function</span>(tcpl_models, <span class="dt">spid_chnm_table =</span> <span class="ot">NULL</span>, <span class="dt">med_taa =</span> <span class="ot">NULL</span>, <span class="dt">med_med_diff =</span> <span class="ot">NULL</span>) {
+
+  <span class="co"># claim variables for passing R CMD Check</span>
+  taa_norm &lt;-<span class="st"> </span>med_diff_norm &lt;-<span class="st"> </span>ranking_score &lt;-<span class="st"> </span>spid &lt;-<span class="st"> </span>logc &lt;-<span class="st"> </span>nval_median &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+  df &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
+  ##iterate through each spid
+  <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(tcpl_models)) {
+    <span class="co">#get chemical sample id &#39;spid&#39;</span>
+    .spid &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>spid
+    <span class="co"># print(i)</span>
+    <span class="co"># print(.spid)</span>
+    <span class="co">#get chnm</span>
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(spid_chnm_table)) {
+      chnm &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid_chnm_table, spid <span class="op">==</span><span class="st"> </span>.spid)<span class="op">$</span>chnm
+      casn &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid_chnm_table, spid <span class="op">==</span><span class="st"> </span>.spid)<span class="op">$</span>casn
+    } <span class="cf">else</span> {
+      chnm &lt;-<span class="st"> </span><span class="ot">NA</span>
+      casn &lt;-<span class="st"> </span><span class="ot">NA</span>
+    }
+
+    assay_info &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>assay_info
+    <span class="cf">if</span> (<span class="kw">is.null</span>(assay_info<span class="op">$</span>toxi_assay)) {
+      <span class="kw">stop</span>(<span class="st">&quot;No toxi_assay, ranking score is not calculable!&quot;</span>)
+    }
+    <span class="co">#extract modelling results</span>
+    m_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>model_toxi
+    m_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>model_prim
+
+    <span class="co">#cutoff</span>
+    cutoff_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>cutoff_prim
+    cutoff_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>cutoff_toxi
+
+    <span class="co">#</span>
+    <span class="co">#calculate med_diff at max(logc)</span>
+    max_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>data_prim <span class="op">%&gt;%</span>
+<span class="st">      </span>dplyr<span class="op">::</span><span class="kw">filter</span>(logc <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(logc)) <span class="op">%&gt;%</span>
+<span class="st">      </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(<span class="dt">median =</span> stats<span class="op">::</span><span class="kw">median</span>(nval_median))
+    max_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>data_toxi <span class="op">%&gt;%</span>
+<span class="st">      </span>dplyr<span class="op">::</span><span class="kw">filter</span>(logc <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(logc)) <span class="op">%&gt;%</span>
+<span class="st">      </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(<span class="dt">median =</span> stats<span class="op">::</span><span class="kw">median</span>(nval_median))
+    med_diff &lt;-<span class="st"> </span>max_toxi<span class="op">$</span>median <span class="op">-</span><span class="st"> </span>max_prim<span class="op">$</span>median
+
+    ##get auc, logEC_3bmadprim, for prim
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(m_prim<span class="op">$</span>hill) <span class="op">&amp;</span><span class="st"> </span>m_prim<span class="op">$</span>hill <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {
+      para_prim &lt;-<span class="st"> </span><span class="kw">c</span>(m_prim<span class="op">$</span>hill_tp, m_prim<span class="op">$</span>hill_ga, m_prim<span class="op">$</span>hill_gw)
+      <span class="co">#get auc</span>
+      lr &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_prim, cutoff_prim)
+      aa_prim &lt;-
+<span class="st">        </span><span class="kw">auc_hill_tcpl</span>(para_prim, <span class="dt">lower =</span> lr, <span class="dt">upper =</span> m_prim<span class="op">$</span>logc_max) <span class="op">-</span><span class="st"> </span>cutoff_prim <span class="op">*</span><span class="st"> </span>(m_prim<span class="op">$</span>logc_max <span class="op">-</span><span class="st"> </span>lr)
+      <span class="co">#get AC50</span>
+      AC50_prim &lt;-<span class="st"> </span>m_prim<span class="op">$</span>hill_ga
+      <span class="co">#get absEC</span>
+      <span class="cf">if</span> (<span class="kw">hill_model</span>(para_prim,m_prim<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span><span class="dv">50</span>) {
+        absEC50_prim &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_prim, <span class="dv">50</span>)
+        absEC80_prim &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_prim, <span class="dv">20</span>)
+      } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">hill_model</span>(para_prim,m_prim<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span><span class="dv">20</span>) {
+        absEC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+        absEC80_prim &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_prim, <span class="dv">20</span>)
+      } <span class="cf">else</span> {
+        absEC80_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+        absEC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+      }
+    } <span class="cf">else</span> {
+      aa_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+      lr &lt;-<span class="st"> </span><span class="ot">NA</span>
+      absEC80_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+      absEC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+      AC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+    }
+
+    ##get auc, logEC_3bmadprim, for toxitox
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(m_toxi<span class="op">$</span>hill) <span class="op">&amp;</span><span class="st"> </span>m_toxi<span class="op">$</span>hill <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {
+      para_toxi &lt;-<span class="st"> </span><span class="kw">c</span>(m_toxi<span class="op">$</span>hill_tp, m_toxi<span class="op">$</span>hill_ga, m_toxi<span class="op">$</span>hill_gw)
+      <span class="co">#get AC50</span>
+      AC50_toxi &lt;-<span class="st"> </span>m_toxi<span class="op">$</span>hill_ga
+      <span class="co">#get aa_toxi</span>
+      <span class="cf">if</span> (<span class="kw">hill_model</span>(para_toxi,m_prim<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span>cutoff_prim) {
+        lc &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_toxi, cutoff_prim)
+        aa_toxi &lt;-
+<span class="st">          </span><span class="kw">auc_hill_tcpl</span>(para_toxi,<span class="dt">lower =</span> lc, <span class="dt">upper =</span> m_prim<span class="op">$</span>logc_max) <span class="op">-</span><span class="st"> </span>cutoff_prim <span class="op">*</span><span class="st"> </span>(m_prim<span class="op">$</span>logc_max <span class="op">-</span><span class="st"> </span>lc)
+      } <span class="cf">else</span> {
+        aa_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+        lc &lt;-<span class="st"> </span><span class="op">-</span><span class="dv">3</span>
+      }
+
+      <span class="co">#calculate absEC</span>
+      <span class="cf">if</span> (<span class="kw">hill_model</span>(para_toxi,m_prim<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span><span class="dv">50</span>) {
+        absEC50_toxi &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_toxi, <span class="dv">50</span>)
+        absEC80_toxi &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_toxi, <span class="dv">20</span>)
+      } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">hill_model</span>(para_toxi,m_prim<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span><span class="dv">20</span>) {
+        absEC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+        absEC80_toxi &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_toxi, <span class="dv">20</span>)
+      } <span class="cf">else</span> {
+        absEC80_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+        absEC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+      }
+      <span class="co">#get cytotox limit (absEC_cutoff_toxi)</span>
+      absEC_ct_toxi &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_toxi, cutoff_toxi)
+    } <span class="cf">else</span> {
+      aa_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+      lc &lt;-<span class="st"> </span><span class="op">-</span><span class="dv">3</span>
+      absEC80_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+      absEC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+      AC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+      absEC_ct_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+    }
+
+    ##calculate taa
+    <span class="cf">if</span> (<span class="kw">is.na</span>(aa_prim)) {
+      taa &lt;-<span class="st"> </span><span class="ot">NA</span>
+    } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">is.na</span>(aa_toxi)) {
+      taa &lt;-<span class="st"> </span>aa_prim
+    } <span class="cf">else</span> {
+      taa &lt;-<span class="st"> </span>aa_prim <span class="op">-</span><span class="st"> </span>aa_toxi
+    }
+
+    ##calculate selectivity based logEC value at 3bmad of prim assay.
+    <span class="cf">if</span> (<span class="kw">is.na</span>(lr)) {
+      selectivity_3bmad &lt;-<span class="st"> </span><span class="ot">NA</span>
+    } <span class="cf">else</span> {
+      selectivity_3bmad &lt;-<span class="st"> </span>lc <span class="op">-</span><span class="st"> </span>lr
+    }
+
+    ##calculate selectivity based on logAC50 (original method)
+    <span class="cf">if</span> (<span class="kw">is.na</span>(m_prim<span class="op">$</span>hill_ga)) {
+      selectivity_AC50 &lt;-<span class="st"> </span><span class="ot">NA</span>
+    } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">is.na</span>(m_toxi<span class="op">$</span>hill_ga)) {
+      selectivity_AC50 &lt;-<span class="st"> </span><span class="op">-</span><span class="dv">3</span> <span class="op">-</span><span class="st"> </span>m_prim<span class="op">$</span>hill_ga
+    } <span class="cf">else</span> {
+      selectivity_AC50 &lt;-<span class="st"> </span>m_toxi<span class="op">$</span>hill_ga <span class="op">-</span><span class="st"> </span>m_prim<span class="op">$</span>hill_ga
+    }
+
+    ##gather taa and selectivity into one table
+    t &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+      <span class="dt">index =</span> i,
+      <span class="dt">spid =</span> .spid,
+      <span class="dt">chnm =</span> chnm,
+      <span class="dt">casn =</span> casn,
+      <span class="co"># aa_toxi = aa_toxi,</span>
+      <span class="co"># aa_prim = aa_prim,</span>
+      <span class="dt">taa =</span> taa,
+      <span class="co"># sel_3bMAD = selectivity_3bmad,</span>
+      <span class="co"># sel_AC50 = selectivity_AC50,</span>
+      <span class="dt">med_diff =</span> med_diff,
+      <span class="dt">AC50_toxi =</span> AC50_toxi,
+      <span class="dt">AC50_prim =</span> AC50_prim,
+      <span class="dt">absEC80_toxi =</span> absEC80_toxi,
+      <span class="dt">absEC50_toxi =</span> absEC50_toxi,
+      <span class="dt">absEC80_prim =</span> absEC80_prim,
+      <span class="dt">absEC50_prim =</span> absEC50_prim,
+      <span class="dt">cyto_lim =</span> absEC_ct_toxi
+    )
+
+    df &lt;-<span class="st"> </span>base<span class="op">::</span><span class="kw">rbind</span>(df, t)
+
+  }
+
+  <span class="co">#calculate ranking_score</span>
+  <span class="co">#this done by adding 0-100 rescaled TAA value an med_diff value</span>
+  <span class="co"># df &lt;- df %&gt;%</span>
+  <span class="co">#   dplyr::mutate(taa_rescale = rescale_0_100(taa),</span>
+  <span class="co">#                 med_diff_rescale = rescale_0_100(med_diff),</span>
+  <span class="co">#                 ranking_score = taa_rescale + med_diff_rescale ) %&gt;%</span>
+  <span class="co">#   dplyr::arrange(desc(ranking_score))</span>
+  <span class="cf">if</span> (<span class="kw">is.null</span>(med_taa)<span class="op">&amp;</span><span class="kw">is.null</span>(med_med_diff)) {
+    df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span>
+<span class="st">      </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">ranking_score =</span> <span class="ot">NA</span>)
+  } <span class="cf">else</span> {
+    df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span>
+<span class="st">      </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">taa_norm =</span> taa<span class="op">/</span>med_taa<span class="op">*</span><span class="dv">100</span>,
+                    <span class="dt">med_diff_norm =</span> med_diff<span class="op">/</span>med_med_diff<span class="op">*</span><span class="dv">100</span>,
+                    <span class="dt">ranking_score =</span> taa_norm <span class="op">+</span><span class="st"> </span>med_diff_norm ) <span class="op">%&gt;%</span>
+<span class="st">      </span>dplyr<span class="op">::</span><span class="kw">arrange</span>(<span class="kw">desc</span>(ranking_score))
+
+  }
+
+
+
+  <span class="kw">return</span>(df)
+}
+
+
+
+
+<span class="co">#&#39; function to summarize curve fitting results</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param tcpl_models the list object returned by &#39;fit_curve_tcpl&#39; function</span>
+<span class="co">#&#39; @param spid_chnm_table a reference table with &#39;spid&#39; and the corresponding chemical name &#39;chnm&#39; column,</span>
+<span class="co">#&#39; and the CAS number &#39;casn&#39; column.</span>
+<span class="co">#&#39; @return a data.frame contains summarized metrics for each chemical (spid)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @examples</span>
+<span class="co">#&#39; ## supply models as the essential argument. spid_chnm_table is optional.</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(mc_norm, assay_info =</span>
+<span class="co">#&#39; list(prim_assay = &quot;Primary&quot;, toxi_assay = &quot;Cytotox&quot;))</span>
+<span class="co">#&#39; demo_sum &lt;- summary_tcpl(demo_md)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## start from raw data</span>
+<span class="co">#&#39; # define assay</span>
+<span class="co">#&#39; assay_info &lt;- list(prim_assay = &quot;Primary&quot;,toxi_assay = &quot;Cytotox&quot;)</span>
+<span class="co">#&#39; # data normalization</span>
+<span class="co">#&#39; demo_mc_norm &lt;- normalize_per_plate(demo_mc, nctrl = &quot;DMSO&quot;)</span>
+<span class="co">#&#39; # filter out test chemicals only</span>
+<span class="co">#&#39; demo_mc_norm &lt;- dplyr::filter(demo_mc_norm, wllt == &quot;t&quot;)</span>
+<span class="co">#&#39; # fit curve with default 20% threshold</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(demo_mc_norm, assay_info)</span>
+<span class="co">#&#39; # obtain summary table</span>
+<span class="co">#&#39; demo_sum &lt;- summary_tcpl(demo_md)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @export</span>
+<span class="co">#&#39;</span>
+summary_tcpl &lt;-<span class="st"> </span><span class="cf">function</span>(tcpl_models, <span class="dt">spid_chnm_table =</span> <span class="ot">NULL</span>) {
+
+  <span class="co"># claim variables for passing R CMD Check</span>
+  spid &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+
+  df &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
+  ##iterate through each spid
+  <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(tcpl_models)) {
+    <span class="co">#get chemical sample id &#39;spid&#39;</span>
+    .spid &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>spid
+    <span class="co"># print(i)</span>
+    <span class="co"># print(.spid)</span>
+    <span class="co">#get chnm</span>
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(spid_chnm_table)) {
+      chnm &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid_chnm_table, spid <span class="op">==</span><span class="st"> </span>.spid)<span class="op">$</span>chnm
+      casn &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid_chnm_table, spid <span class="op">==</span><span class="st"> </span>.spid)<span class="op">$</span>chnm
+    } <span class="cf">else</span> {
+      chnm &lt;-<span class="st"> </span><span class="ot">NA</span>
+    }
+
+    <span class="co">#extract modelling results</span>
+    m_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>model_toxi
+    m_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>model_prim
+
+    <span class="co">#cutoff</span>
+    cutoff_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>cutoff_prim
+    cutoff_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>cutoff_toxi
+
+    <span class="co">#get assay_info</span>
+    assay_info &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>assay_info
+
+    ##get metrics for prim
+    <span class="cf">if</span> (<span class="kw">is.null</span>(assay_info<span class="op">$</span>prim_assay)) {
+      absEC80_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+      absEC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+      AC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+    } <span class="cf">else</span> {
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(m_prim<span class="op">$</span>hill) <span class="op">&amp;</span><span class="st"> </span>m_prim<span class="op">$</span>hill <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {
+        para_prim &lt;-<span class="st"> </span><span class="kw">c</span>(m_prim<span class="op">$</span>hill_tp, m_prim<span class="op">$</span>hill_ga, m_prim<span class="op">$</span>hill_gw)
+        <span class="co">#get AC50</span>
+        AC50_prim &lt;-<span class="st"> </span>m_prim<span class="op">$</span>hill_ga
+        <span class="co">#get absEC</span>
+        <span class="cf">if</span> (<span class="kw">hill_model</span>(para_prim, m_prim<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span><span class="dv">50</span>) {
+          absEC50_prim &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_prim, <span class="dv">50</span>)
+          absEC80_prim &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_prim, <span class="dv">20</span>)
+        } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">hill_model</span>(para_prim,m_prim<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span><span class="dv">20</span>) {
+          absEC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+          absEC80_prim &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_prim, <span class="dv">20</span>)
+        } <span class="cf">else</span> {
+          absEC80_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+          absEC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+        }
+      } <span class="cf">else</span> {
+        absEC80_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+        absEC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+        AC50_prim &lt;-<span class="st"> </span><span class="ot">NA</span>
+      }
+    }
+
+    ##get metrics for toxi
+
+    <span class="cf">if</span> (<span class="kw">is.null</span>(assay_info<span class="op">$</span>toxi_assay)) {
+      absEC80_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+      absEC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+      AC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+    } <span class="cf">else</span> {
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(m_toxi<span class="op">$</span>hill) <span class="op">&amp;</span><span class="st"> </span>m_toxi<span class="op">$</span>hill <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {
+        para_toxi &lt;-<span class="st"> </span><span class="kw">c</span>(m_toxi<span class="op">$</span>hill_tp, m_toxi<span class="op">$</span>hill_ga, m_toxi<span class="op">$</span>hill_gw)
+        <span class="co">#get AC50</span>
+        AC50_toxi &lt;-<span class="st"> </span>m_toxi<span class="op">$</span>hill_ga
+        <span class="co">#calculate absEC</span>
+        <span class="cf">if</span> (<span class="kw">hill_model</span>(para_toxi,m_toxi<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span><span class="dv">50</span>) {
+          absEC50_toxi &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_toxi, <span class="dv">50</span>)
+          absEC80_toxi &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_toxi, <span class="dv">20</span>)
+        } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">hill_model</span>(para_toxi,m_toxi<span class="op">$</span>logc_max) <span class="op">&gt;</span><span class="st"> </span><span class="dv">20</span>) {
+          absEC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+          absEC80_toxi &lt;-<span class="st"> </span><span class="kw">log_abs_ec</span>(para_toxi, <span class="dv">20</span>)
+        } <span class="cf">else</span> {
+          absEC80_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+          absEC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+        }
+      } <span class="cf">else</span> {
+        absEC80_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+        absEC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+        AC50_toxi &lt;-<span class="st"> </span><span class="ot">NA</span>
+      }
+
+    }
+
+    ##gather taa and selectivity into one table
+    t &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+      <span class="dt">index =</span> i,
+      <span class="dt">spid =</span> .spid,
+      <span class="dt">chnm =</span> chnm,
+      <span class="dt">AC50_toxi =</span> AC50_toxi,
+      <span class="dt">AC50_prim =</span> AC50_prim,
+      <span class="dt">absEC80_toxi =</span> absEC80_toxi,
+      <span class="dt">absEC50_toxi =</span> absEC50_toxi,
+      <span class="dt">absEC80_prim =</span> absEC80_prim,
+      <span class="dt">absEC50_prim =</span> absEC50_prim
+    )
+
+    df &lt;-<span class="st"> </span>base<span class="op">::</span><span class="kw">rbind</span>(df, t)
+
+  }
+
+
+  <span class="kw">return</span>(df)
+}
+
+
+
+
+<span class="co">#&#39; Plot dose-resonse curves based on the tcpl hill model</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; Produce the plot for the dose-response curves and data points for both primary and toxicity assay.</span>
+<span class="co">#&#39; The direction of the data and dose-resonse curves are presented as the original data, rather than</span>
+<span class="co">#&#39; the uptrend direction required by the &#39;tcpl&#39; function. Plots are sorted by the ranking_score.</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param tcpl_models the list object created by &#39;fit_curve_tcpl&#39; function</span>
+<span class="co">#&#39; @param rank_table the data.frame output from &#39;rank_tcpl&#39; function</span>
+<span class="co">#&#39; @param spid_chnm_table the spid, chnm, casn info table</span>
+<span class="co">#&#39; @param notation value can be TRUE or FALSE, determine whehter to show potency metrics on the plot</span>
+<span class="co">#&#39; @param cunit  the unit of concentration, on default is &quot;M&quot; (molar).</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @return list of ggplot2 objects, each corresponding to one spid.</span>
+<span class="co">#&#39; @import ggthemes ggplot2</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @examples</span>
+<span class="co">#&#39; ## produce plots without notations</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(mc_norm, assay_info =</span>
+<span class="co">#&#39; list(prim_assay = &quot;Primary&quot;, toxi_assay = &quot;Cytotox&quot;))</span>
+<span class="co">#&#39; plots &lt;- plot_tcpl(demo_md)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## start from raw data</span>
+<span class="co">#&#39; # define assay</span>
+<span class="co">#&#39; assay_info &lt;- list(prim_assay = &quot;Primary&quot;,toxi_assay = &quot;Cytotox&quot;)</span>
+<span class="co">#&#39; # data normalization</span>
+<span class="co">#&#39; demo_mc_norm &lt;- normalize_per_plate(demo_mc, nctrl = &quot;DMSO&quot;)</span>
+<span class="co">#&#39; # filter out test chemicals only</span>
+<span class="co">#&#39; demo_mc_norm &lt;- dplyr::filter(demo_mc_norm, wllt == &quot;t&quot;)</span>
+<span class="co">#&#39; # fit curve with default 20% threshold</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(demo_mc_norm, assay_info)</span>
+<span class="co">#&#39; # calculate TAA and Med_diff only</span>
+<span class="co">#&#39; demo_rank &lt;- rank_tcpl(demo_md, med_taa = NULL, med_med_diff = NULL)</span>
+<span class="co">#&#39; #produce plots with notations</span>
+<span class="co">#&#39; demo_plots &lt;- plot_tcpl(demo_md, demo_rank, notation = TRUE)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ##produce plots with notations, with changed concentration unit displayed on the plot</span>
+<span class="co">#&#39; demo_plots &lt;- plot_tcpl(demo_md, demo_rank, notation = TRUE, cunit = &quot;uM&quot;)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @export</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+plot_tcpl &lt;-
+<span class="st">  </span><span class="cf">function</span>(tcpl_models, <span class="dt">rank_table=</span><span class="ot">NULL</span>, <span class="dt">spid_chnm_table =</span> <span class="ot">NULL</span>, <span class="dt">notation =</span> <span class="ot">FALSE</span>, <span class="dt">cunit =</span> <span class="st">&quot;M&quot;</span>) {
+
+    <span class="co"># claim variables for passing R CMD Check</span>
+    spid &lt;-<span class="st"> </span>nval_median &lt;-<span class="st"> </span>logc &lt;-<span class="st"> </span>resp &lt;-<span class="st"> </span>pred &lt;-<span class="st"> </span>assay &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+    <span class="co">#initiate empty output plot list</span>
+    plot_list &lt;-<span class="st"> </span><span class="kw">list</span>()
+    <span class="co">#reorder if rank is available</span>
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(rank_table)) {
+      tcpl_models &lt;-<span class="st"> </span>tcpl_models[rank_table<span class="op">$</span>index]
+    }
+
+    <span class="co">#loop through tcpl_models&#39;s unique spid.</span>
+    <span class="co">#note tcpl_models is the level 4 output from tcpl package, including all the modelling results</span>
+    <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(tcpl_models)) {
+      <span class="co">#get chemical sample id and chemical name</span>
+      .spid &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>spid
+      <span class="co">#print(.spid)</span>
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(spid_chnm_table)) {
+        chnm &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid_chnm_table, spid <span class="op">==</span><span class="st"> </span>.spid)<span class="op">$</span>chnm
+        casn &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid_chnm_table, spid <span class="op">==</span><span class="st"> </span>.spid)<span class="op">$</span>casn
+      } <span class="cf">else</span> {
+        chnm &lt;-<span class="st"> </span><span class="ot">NA</span>
+        casn &lt;-<span class="st"> </span><span class="ot">NA</span>
+      }
+
+      <span class="co">#cutoff</span>
+      cutoff_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>cutoff_prim
+      cutoff_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>cutoff_toxi
+      <span class="co">#assay_info</span>
+      assay_info &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>assay_info
+
+      <span class="co">#get normalized resonse value (cytotox and raiu together)</span>
+      <span class="co">#and use 100 minus the response value (inverse the plot)</span>
+      d &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">bind_rows</span>(tcpl_models[[i]]<span class="op">$</span>data_prim, tcpl_models[[i]]<span class="op">$</span>data_toxi) <span class="op">%&gt;%</span>
+<span class="st">        </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">resp =</span> nval_median) <span class="co">#%&gt;%</span>
+      <span class="co">#mutate(assay = ifelse(aeid == 1, assay_info$toxi_assay, assay_info$prim_assay))</span>
+
+      <span class="co">#determine left and right x boundary of the plot</span>
+      <span class="cf">if</span> ( <span class="kw">round</span>(<span class="kw">max</span>(d<span class="op">$</span>logc)) <span class="op">&lt;</span><span class="st"> </span><span class="kw">max</span>(d<span class="op">$</span>logc) ) {
+        rb &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">max</span>(d<span class="op">$</span>logc)) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
+      } <span class="cf">else</span> { rb &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">max</span>(d<span class="op">$</span>logc))}
+
+      lb &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">min</span>(d<span class="op">$</span>logc))<span class="op">-</span><span class="dv">1</span>
+
+      <span class="co">#initiate basic plot with data points.</span>
+      g &lt;-<span class="st"> </span><span class="kw">ggplot</span>(d, <span class="kw">aes</span>(<span class="dt">x =</span> logc, <span class="dt">y =</span> resp))
+
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(spid_chnm_table)){
+        g &lt;-<span class="st"> </span>g <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(
+          <span class="dt">title =</span> <span class="kw">paste</span>(i, <span class="st">&quot;. SPID: &quot;</span>, .spid, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">NAME: &quot;</span>, chnm, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">CAS NO: &quot;</span>, casn, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>),
+          <span class="dt">x =</span> <span class="kw">paste</span>(<span class="st">&quot;Concentration (log&quot;</span>, cunit, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>),
+          <span class="dt">y =</span> <span class="st">&quot;% Control Activity&quot;</span>
+          )
+      } <span class="cf">else</span> {
+        g &lt;-<span class="st"> </span>g <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(
+          <span class="dt">title =</span> <span class="kw">paste</span>(i, <span class="st">&quot;. SPID:&quot;</span> , .spid),
+          <span class="dt">x =</span> <span class="kw">paste</span>(<span class="st">&quot;Concentration (log&quot;</span>, cunit, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>),
+          <span class="dt">y =</span> <span class="st">&quot;% Control Activity&quot;</span>
+        )
+      }
+
+        <span class="co"># labs(</span>
+        <span class="co">#   title = paste(i, &quot;\nSPID: &quot; , .spid, &quot;\nNAME: &quot;, chnm, &quot;\nCAS NO: &quot;, casn, sep = &quot;&quot;),</span>
+        <span class="co">#   x = &quot;Concentration (logM)&quot;,</span>
+        <span class="co">#   y = &quot;% Control Activity&quot;</span>
+        <span class="co"># )</span>
+
+      <span class="co">#extract modelling results</span>
+      m_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>model_toxi
+      m_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>model_prim
+
+      <span class="co">#create 100 concentrations</span>
+      s &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">logc =</span> <span class="kw">seq</span>(lb, rb, <span class="dt">length =</span> <span class="dv">130</span>))
+
+      <span class="co">#test and plot cytotox model</span>
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(m_toxi<span class="op">$</span>hill) <span class="op">&amp;</span><span class="st"> </span>m_toxi<span class="op">$</span>hill <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {
+        para_cyto &lt;-<span class="st"> </span><span class="kw">c</span>(m_toxi<span class="op">$</span>hill_tp, m_toxi<span class="op">$</span>hill_ga, m_toxi<span class="op">$</span>hill_gw)
+        p1 &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">-</span><span class="st"> </span><span class="kw">hill_model</span>(para_cyto, s)
+        p1 &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">bind_cols</span>(s, <span class="kw">data.frame</span>(p1))
+        <span class="kw">names</span>(p1) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;logc&quot;</span>, <span class="st">&quot;pred&quot;</span>)
+        g &lt;-<span class="st"> </span>g <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(
+          <span class="dt">data =</span> p1,
+          <span class="kw">aes</span>(<span class="dt">x =</span> logc, <span class="dt">y =</span> pred),
+          <span class="dt">size =</span> <span class="dv">2</span>,
+          <span class="dt">alpha =</span> <span class="fl">0.9</span>,
+          <span class="dt">color =</span> <span class="st">&quot;#e02929&quot;</span>
+        )
+        <span class="co">#plot the vertical line at 3bmad cutoff</span>
+        <span class="co">#g &lt;- g+ geom_vline(xintercept = log_abs_ec(para_cyto, 3*m_toxi$bmad) )</span>
+      }
+
+      <span class="co">#test and plot raiu model</span>
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(m_prim<span class="op">$</span>hill) <span class="op">&amp;</span><span class="st"> </span>m_prim<span class="op">$</span>hill <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {
+        para_raiu &lt;-<span class="st"> </span><span class="kw">c</span>(m_prim<span class="op">$</span>hill_tp, m_prim<span class="op">$</span>hill_ga, m_prim<span class="op">$</span>hill_gw)
+
+        p2 &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">-</span><span class="st"> </span><span class="kw">hill_model</span>(para_raiu, s)
+        p2 &lt;-<span class="st"> </span><span class="kw">bind_cols</span>(s, <span class="kw">data.frame</span>(p2))
+        <span class="kw">names</span>(p2) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;logc&quot;</span>, <span class="st">&quot;pred&quot;</span>)
+        g &lt;-<span class="st"> </span>g <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(
+          <span class="dt">data =</span> p2,
+          <span class="kw">aes</span>(<span class="dt">x =</span> logc, <span class="dt">y =</span> pred),
+          <span class="dt">size =</span> <span class="dv">2</span>,
+          <span class="dt">alpha =</span> <span class="fl">0.9</span>,
+          <span class="dt">color =</span> <span class="st">&quot;#377eb8&quot;</span>
+        )
+      }
+
+      <span class="co">#draw 3bmad cutoff line for cytotox and raiu respectively</span>
+      g &lt;-<span class="st"> </span>g <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_hline</span>(
+          <span class="dt">yintercept =</span> <span class="dv">100</span> <span class="op">-</span><span class="st"> </span>cutoff_toxi,
+          <span class="dt">alpha =</span> <span class="fl">0.5</span>,
+          <span class="dt">size =</span> <span class="fl">0.5</span>,
+          <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>,
+          <span class="dt">color =</span> <span class="st">&quot;#e02929&quot;</span>
+        )
+
+      g &lt;-<span class="st"> </span>g <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_hline</span>(
+          <span class="dt">yintercept =</span> <span class="dv">100</span> <span class="op">-</span><span class="st"> </span>cutoff_prim,
+          <span class="dt">alpha =</span> <span class="fl">0.5</span>,
+          <span class="dt">size =</span> <span class="fl">0.5</span>,
+          <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>,
+          <span class="dt">color =</span> <span class="st">&quot;#377eb8&quot;</span>
+        )
+
+      <span class="co">#plot data points</span>
+      <span class="co">#aesthetics fixes</span>
+      g &lt;-<span class="st"> </span>g <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_point</span>(
+          <span class="kw">aes</span>(<span class="dt">color =</span> assay),
+          <span class="dt">shape =</span> <span class="dv">21</span>,
+          <span class="dt">alpha =</span> <span class="fl">0.9</span>,
+          <span class="dt">size =</span> <span class="dv">3</span>
+        ) <span class="op">+</span>
+<span class="st">        </span><span class="kw">coord_fixed</span>(
+          <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">125</span>),
+          <span class="co">#xlim = c(-10, -4),</span>
+          <span class="dt">ratio =</span> <span class="dv">4</span> <span class="op">/</span><span class="st"> </span><span class="dv">120</span>   <span class="co">#used to be 2/70, when x axis was from -9 to -4.</span>
+        ) <span class="op">+</span>
+<span class="st">        </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(
+          <span class="dt">from =</span> <span class="dv">0</span>,
+          <span class="dt">to =</span> <span class="dv">120</span>,
+          <span class="dt">by =</span> <span class="dv">20</span>
+        )) <span class="op">+</span>
+<span class="st">        </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(
+          <span class="dt">from =</span> lb,
+          <span class="dt">to =</span> rb,
+          <span class="dt">by =</span> <span class="dv">1</span>
+        )) <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme_few</span>() <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">        </span><span class="kw">scale_color_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&quot;#e02929&quot;</span>, <span class="st">&quot;#377eb8&quot;</span>))<span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">plot.title=</span><span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>))
+
+      ##adding annotations
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(rank_table) <span class="op">&amp;</span><span class="st"> </span>notation <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>) {
+        <span class="co">#Get ec and ranking info</span>
+        ds &lt;-<span class="st"> </span>rank_table <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid<span class="op">==</span>.spid)
+        ds &lt;-<span class="st"> </span><span class="kw">round_df</span>(ds, <span class="dt">digits=</span><span class="dv">2</span>)
+
+        <span class="co">#annotate with text info</span>
+        <span class="cf">if</span> (<span class="kw">is.na</span>(ds<span class="op">$</span>ranking_score)) {
+          line1 &lt;-<span class="st"> &quot;&quot;</span>} <span class="cf">else</span> {
+          line1 &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Ranking_Score:&quot;</span>, ds<span class="op">$</span>ranking_score)
+        }
+
+        line2 &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;TAA:&quot;</span>, ds<span class="op">$</span>taa)
+        line3 &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Med_Diff:&quot;</span>, ds<span class="op">$</span>med_diff)
+        line4 &lt;-<span class="st"> </span><span class="kw">paste</span>(assay_info<span class="op">$</span>prim_assay, <span class="st">&quot;_AC50: &quot;</span>, ds<span class="op">$</span>AC50_prim, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+        line5 &lt;-<span class="st"> </span><span class="kw">paste</span>(assay_info<span class="op">$</span>prim_assay, <span class="st">&quot;_absEC50: &quot;</span>, ds<span class="op">$</span>absEC50_prim, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+        <span class="co">#line6 &lt;- paste(assay_info$prim_assay, &quot;_absEC80: &quot;, ds$absEC80_prim, sep = &quot;&quot;)</span>
+        g &lt;-<span class="st"> </span>g <span class="op">+</span>
+<span class="st">          </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span> lb <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span>, <span class="dt">y =</span> <span class="dv">30</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">label=</span>line1) <span class="op">+</span>
+<span class="st">          </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span> lb <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span>, <span class="dt">y =</span> <span class="dv">25</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">label=</span> line2) <span class="op">+</span>
+<span class="st">          </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span> lb <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span>, <span class="dt">y =</span> <span class="dv">20</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">label=</span> line3) <span class="op">+</span>
+<span class="st">          </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span> lb <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span>, <span class="dt">y =</span> <span class="dv">15</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">label=</span> line4) <span class="op">+</span>
+<span class="st">          </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span> lb <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span>, <span class="dt">y =</span> <span class="dv">10</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">label=</span> line5)
+          <span class="co">#annotate(&quot;text&quot;, x= lb + 0.8, y = 5, alpha = 0.8, hjust=0, label= line6)</span>
+
+      }
+
+      <span class="co">#collect all plots into a list</span>
+      plot_list[[i]] &lt;-<span class="st"> </span>g
+
+    }
+
+    <span class="kw">return</span>(plot_list)
+
+  }
+
+
+
+<span class="co">#&#39; Plot dose-resonse curves with minimal text annotation</span>
+<span class="co">#&#39; This funciton plots dose-response curve with minimal text annotation,</span>
+<span class="co">#&#39; no x and y axis label, 0 borders. Useful when need to present several plots</span>
+<span class="co">#&#39; together.</span>
+<span class="co">#&#39; @param tcpl_models the list object created by &#39;fit_curve_tcpl&#39; function</span>
+<span class="co">#&#39; @param rank_table the data.frame output from &#39;rank_tcpl&#39; function</span>
+<span class="co">#&#39; @param spid_chnm_table the spid, chnm, casn info table</span>
+<span class="co">#&#39; @param notation value can be TRUE or FALSE, determine whehter to show potency metrics on the plot</span>
+<span class="co">#&#39; @param cunit  the unit of concentration, on default is &quot;M&quot; (molar).</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @return list of ggplot2 objects, each corresponding to one spid.</span>
+<span class="co">#&#39; @import ggthemes ggplot2</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @examples</span>
+<span class="co">#&#39; ## produce plots without notations</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(mc_norm, assay_info =</span>
+<span class="co">#&#39; list(prim_assay = &quot;Primary&quot;, toxi_assay = &quot;Cytotox&quot;))</span>
+<span class="co">#&#39; plots_minimal &lt;- plot_tcpl_minimal(demo_md)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## start from raw data</span>
+<span class="co">#&#39; # define assay</span>
+<span class="co">#&#39; assay_info &lt;- list(prim_assay = &quot;Primary&quot;,toxi_assay = &quot;Cytotox&quot;)</span>
+<span class="co">#&#39; # data normalization</span>
+<span class="co">#&#39; demo_mc_norm &lt;- normalize_per_plate(demo_mc, nctrl = &quot;DMSO&quot;)</span>
+<span class="co">#&#39; # filter out test chemicals only</span>
+<span class="co">#&#39; demo_mc_norm &lt;- dplyr::filter(demo_mc_norm, wllt == &quot;t&quot;)</span>
+<span class="co">#&#39; # fit curve with default 20% threshold</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(demo_mc_norm, assay_info)</span>
+<span class="co">#&#39; # calculate TAA and Med_diff only</span>
+<span class="co">#&#39; demo_rank &lt;- rank_tcpl(demo_md, med_taa = NULL, med_med_diff = NULL)</span>
+<span class="co">#&#39; #produce plots with notations</span>
+<span class="co">#&#39; demo_plots &lt;- plot_tcpl_minimal(demo_md, demo_rank, notation = TRUE)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ##produce plots with notations, with changed concentration unit displayed on the plot</span>
+<span class="co">#&#39; demo_plots &lt;- plot_tcpl_minimal(demo_md, demo_rank, notation = TRUE, cunit = &quot;uM&quot;)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @export</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+plot_tcpl_minimal &lt;-
+<span class="st">  </span><span class="cf">function</span>(tcpl_models, <span class="dt">rank_table =</span> <span class="ot">NULL</span>, <span class="dt">spid_chnm_table =</span> <span class="ot">NULL</span>, <span class="dt">notation =</span> <span class="ot">FALSE</span>, <span class="dt">cunit =</span> <span class="st">&quot;M&quot;</span>) {
+
+    <span class="co"># claim variables for passing R CMD Check</span>
+    spid &lt;-<span class="st"> </span>nval_median &lt;-<span class="st"> </span>logc &lt;-<span class="st"> </span>resp &lt;-<span class="st"> </span>pred &lt;-<span class="st"> </span>assay &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+    <span class="co">#initiate empty output plot list</span>
+    plot_list &lt;-<span class="st"> </span><span class="kw">list</span>()
+
+    <span class="co">#reorder if rank is available</span>
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(rank_table)) {
+      tcpl_models &lt;-<span class="st"> </span>tcpl_models[rank_table<span class="op">$</span>index]
+    }
+
+    <span class="co">#loop through tcpl_models&#39;s unique spid.</span>
+    <span class="co">#note tcpl_models is the level 4 output from tcpl package, including all the modelling results</span>
+    <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_along</span>(tcpl_models)) {
+      <span class="co">#get chemical sample id and chemical name</span>
+      .spid &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>spid
+      <span class="co">#print(.spid)</span>
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(spid_chnm_table)) {
+        chnm &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid_chnm_table, spid <span class="op">==</span><span class="st"> </span>.spid)<span class="op">$</span>chnm
+        casn &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid_chnm_table, spid <span class="op">==</span><span class="st"> </span>.spid)<span class="op">$</span>casn
+      } <span class="cf">else</span> {
+        chnm &lt;-<span class="st"> </span><span class="ot">NA</span>
+        casn &lt;-<span class="st"> </span><span class="ot">NA</span>
+      }
+
+      <span class="co">#cutoff</span>
+      cutoff_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>cutoff_prim
+      cutoff_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>cutoff_toxi
+      <span class="co">#assay_info</span>
+      assay_info &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>assay_info
+
+      <span class="co">#get normalized resonse value (cytotox and raiu together)</span>
+      <span class="co">#and use 100 minus the response value (inverse the plot)</span>
+      d &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">bind_rows</span>(tcpl_models[[i]]<span class="op">$</span>data_prim, tcpl_models[[i]]<span class="op">$</span>data_toxi) <span class="op">%&gt;%</span>
+<span class="st">        </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">resp =</span> nval_median) <span class="co">#%&gt;%</span>
+      <span class="co">#mutate(assay = ifelse(aeid == 1, assay_info$toxi_assay, assay_info$prim_assay))</span>
+
+      <span class="co">#determine left and right x boundary of the plot</span>
+      <span class="cf">if</span> ( <span class="kw">round</span>(<span class="kw">max</span>(d<span class="op">$</span>logc)) <span class="op">&lt;</span><span class="st"> </span><span class="kw">max</span>(d<span class="op">$</span>logc) ) {
+        rb &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">max</span>(d<span class="op">$</span>logc)) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
+      } <span class="cf">else</span> { rb &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">max</span>(d<span class="op">$</span>logc))}
+
+      lb &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">min</span>(d<span class="op">$</span>logc))<span class="op">-</span><span class="dv">1</span>
+
+      <span class="co">#initiate basic plot with data points.</span>
+      g &lt;-<span class="st"> </span><span class="kw">ggplot</span>(d, <span class="kw">aes</span>(<span class="dt">x =</span> logc, <span class="dt">y =</span> resp))
+
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(spid_chnm_table)){
+        g &lt;-<span class="st"> </span>g <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(
+          <span class="dt">title =</span> <span class="kw">paste</span>(chnm, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>),
+          <span class="dt">x =</span> <span class="kw">paste</span>(<span class="st">&quot;Concentration (log&quot;</span>, cunit, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>),
+          <span class="dt">y =</span> <span class="st">&quot;% Control Activity&quot;</span>
+        )
+      } <span class="cf">else</span> {
+        g &lt;-<span class="st"> </span>g <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(
+          <span class="dt">title =</span> <span class="kw">paste</span>(i, <span class="st">&quot;. SPID:&quot;</span> , .spid),
+          <span class="dt">x =</span> <span class="kw">paste</span>(<span class="st">&quot;Concentration (log&quot;</span>, cunit, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>),
+          <span class="dt">y =</span> <span class="st">&quot;% Control Activity&quot;</span>
+        )
+      }
+
+      <span class="co"># labs(</span>
+      <span class="co">#   title = paste(i, &quot;\nSPID: &quot; , .spid, &quot;\nNAME: &quot;, chnm, &quot;\nCAS NO: &quot;, casn, sep = &quot;&quot;),</span>
+      <span class="co">#   x = &quot;Concentration (logM)&quot;,</span>
+      <span class="co">#   y = &quot;% Control Activity&quot;</span>
+      <span class="co"># )</span>
+
+      <span class="co">#extract modelling results</span>
+      m_toxi &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>model_toxi
+      m_prim &lt;-<span class="st"> </span>tcpl_models[[i]]<span class="op">$</span>model_prim
+
+      <span class="co">#create 100 concentrations</span>
+      s &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">logc =</span> <span class="kw">seq</span>(lb, rb, <span class="dt">length =</span> <span class="dv">130</span>))
+
+      <span class="co">#test and plot cytotox model</span>
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(m_toxi<span class="op">$</span>hill) <span class="op">&amp;</span><span class="st"> </span>m_toxi<span class="op">$</span>hill <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {
+        para_cyto &lt;-<span class="st"> </span><span class="kw">c</span>(m_toxi<span class="op">$</span>hill_tp, m_toxi<span class="op">$</span>hill_ga, m_toxi<span class="op">$</span>hill_gw)
+        p1 &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">-</span><span class="st"> </span><span class="kw">hill_model</span>(para_cyto, s)
+        p1 &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">bind_cols</span>(s, <span class="kw">data.frame</span>(p1))
+        <span class="kw">names</span>(p1) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;logc&quot;</span>, <span class="st">&quot;pred&quot;</span>)
+        g &lt;-<span class="st"> </span>g <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(
+          <span class="dt">data =</span> p1,
+          <span class="kw">aes</span>(<span class="dt">x =</span> logc, <span class="dt">y =</span> pred),
+          <span class="dt">size =</span> <span class="dv">2</span>,
+          <span class="dt">alpha =</span> <span class="fl">0.9</span>,
+          <span class="dt">color =</span> <span class="st">&quot;#e02929&quot;</span>
+        )
+        <span class="co">#plot the vertical line at 3bmad cutoff</span>
+        <span class="co">#g &lt;- g+ geom_vline(xintercept = log_abs_ec(para_cyto, 3*m_toxi$bmad) )</span>
+      }
+
+      <span class="co">#test and plot raiu model</span>
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.na</span>(m_prim<span class="op">$</span>hill) <span class="op">&amp;</span><span class="st"> </span>m_prim<span class="op">$</span>hill <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {
+        para_raiu &lt;-<span class="st"> </span><span class="kw">c</span>(m_prim<span class="op">$</span>hill_tp, m_prim<span class="op">$</span>hill_ga, m_prim<span class="op">$</span>hill_gw)
+
+        p2 &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">-</span><span class="st"> </span><span class="kw">hill_model</span>(para_raiu, s)
+        p2 &lt;-<span class="st"> </span><span class="kw">bind_cols</span>(s, <span class="kw">data.frame</span>(p2))
+        <span class="kw">names</span>(p2) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;logc&quot;</span>, <span class="st">&quot;pred&quot;</span>)
+        g &lt;-<span class="st"> </span>g <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(
+          <span class="dt">data =</span> p2,
+          <span class="kw">aes</span>(<span class="dt">x =</span> logc, <span class="dt">y =</span> pred),
+          <span class="dt">size =</span> <span class="dv">2</span>,
+          <span class="dt">alpha =</span> <span class="fl">0.9</span>,
+          <span class="dt">color =</span> <span class="st">&quot;#377eb8&quot;</span>
+        )
+      }
+
+      <span class="co">#draw 3bmad cutoff line for cytotox and raiu respectively</span>
+      g &lt;-<span class="st"> </span>g <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_hline</span>(
+          <span class="dt">yintercept =</span> <span class="dv">100</span> <span class="op">-</span><span class="st"> </span>cutoff_toxi,
+          <span class="dt">alpha =</span> <span class="fl">0.5</span>,
+          <span class="dt">size =</span> <span class="fl">0.5</span>,
+          <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>,
+          <span class="dt">color =</span> <span class="st">&quot;#e02929&quot;</span>
+        )
+
+      g &lt;-<span class="st"> </span>g <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_hline</span>(
+          <span class="dt">yintercept =</span> <span class="dv">100</span> <span class="op">-</span><span class="st"> </span>cutoff_prim,
+          <span class="dt">alpha =</span> <span class="fl">0.5</span>,
+          <span class="dt">size =</span> <span class="fl">0.5</span>,
+          <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>,
+          <span class="dt">color =</span> <span class="st">&quot;#377eb8&quot;</span>
+        )
+
+      <span class="co">#plot data points</span>
+      <span class="co">#aesthetics fixes</span>
+      g &lt;-<span class="st"> </span>g <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_point</span>(
+          <span class="kw">aes</span>(<span class="dt">color =</span> assay),
+          <span class="dt">shape =</span> <span class="dv">21</span>,
+          <span class="dt">alpha =</span> <span class="fl">0.9</span>,
+          <span class="dt">size =</span> <span class="dv">3</span>
+        ) <span class="op">+</span>
+<span class="st">        </span><span class="kw">coord_fixed</span>(
+          <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">125</span>),
+          <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">9</span>, <span class="op">-</span><span class="dv">4</span>),
+          <span class="dt">ratio =</span> <span class="dv">2</span> <span class="op">/</span><span class="st"> </span><span class="dv">70</span>   <span class="co">#used to be 2/70, when x axis was from -9 to -4.</span>
+        ) <span class="op">+</span>
+<span class="st">        </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(
+          <span class="dt">from =</span> <span class="dv">0</span>,
+          <span class="dt">to =</span> <span class="dv">120</span>,
+          <span class="dt">by =</span> <span class="dv">20</span>
+        )) <span class="op">+</span>
+<span class="st">        </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(
+          <span class="dt">from =</span> lb,
+          <span class="dt">to =</span> rb,
+          <span class="dt">by =</span> <span class="dv">1</span>
+        )) <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme_few</span>() <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>(),
+              <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.margin=</span><span class="kw">unit</span>(<span class="dv">0</span>, <span class="st">&quot;null&quot;</span>)) <span class="op">+</span>
+<span class="st">        </span><span class="kw">scale_color_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&quot;#e02929&quot;</span>, <span class="st">&quot;#377eb8&quot;</span>))<span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">plot.title=</span><span class="kw">element_text</span>(<span class="dt">hjust=</span><span class="fl">0.5</span>, <span class="dt">size =</span> <span class="dv">16</span>))
+
+      ##adding annotations
+      <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(rank_table) <span class="op">&amp;</span><span class="st"> </span>notation <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>) {
+        <span class="co">#Get ec and ranking info</span>
+        ds &lt;-<span class="st"> </span>rank_table <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(spid<span class="op">==</span>.spid)
+        ds &lt;-<span class="st"> </span><span class="kw">round_df</span>(ds, <span class="dt">digits=</span><span class="dv">2</span>)
+
+        <span class="co">#annotate with text info</span>
+        line1 &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Ranking_Score:&quot;</span>, ds<span class="op">$</span>ranking_score)
+        <span class="co"># line2 &lt;- paste(&quot;TAA:&quot;, ds$taa)</span>
+        <span class="co"># line3 &lt;- paste(&quot;Med_Diff:&quot;, ds$med_diff)</span>
+        line4 &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;AC50: &quot;</span>, ds<span class="op">$</span>AC50_prim, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+        line5 &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;absEC50: &quot;</span>, ds<span class="op">$</span>absEC50_prim, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+        <span class="co"># line6 &lt;- paste(assay_info$prim_assay, &quot;_absEC80: &quot;, ds$absEC80_prim, sep = &quot;&quot;)</span>
+        g &lt;-<span class="st"> </span>g <span class="op">+</span>
+<span class="st">          </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span> lb <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span>, <span class="dt">y =</span> <span class="dv">34</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">label=</span>line1) <span class="op">+</span>
+<span class="st">          </span><span class="co"># annotate(&quot;text&quot;, x= lb + 0.8, y = 25, alpha = 0.8, hjust=0, label= line2) +</span>
+<span class="st">          </span><span class="co"># annotate(&quot;text&quot;, x= lb + 0.8, y = 20, alpha = 0.8, hjust=0, label= line3) +</span>
+<span class="st">          </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span> lb <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span>, <span class="dt">y =</span> <span class="dv">22</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">label=</span> line4) <span class="op">+</span>
+<span class="st">          </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x=</span> lb <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span>, <span class="dt">y =</span> <span class="dv">10</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">label=</span> line5)
+          <span class="co"># annotate(&quot;text&quot;, x= lb + 0.8, y = 5, alpha = 0.8, hjust=0, label= line6)</span>
+
+      }
+
+      <span class="co">#collect all plots into a list</span>
+      plot_list[[i]] &lt;-<span class="st"> </span>g
+
+    }
+
+    <span class="kw">return</span>(plot_list)
+
+  }
+
+
+<span class="co">#&#39; save plots in pdf</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; save ggplot2 plots generated in a list to a pdf file</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param plot_list  the r list object contains all ggplot2 objects</span>
+<span class="co">#&#39; @param filename  the output file name, including the file directory</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @examples</span>
+<span class="co">#&#39; ## start from raw data</span>
+<span class="co">#&#39; # define assay</span>
+<span class="co">#&#39; assay_info &lt;- list(prim_assay = &quot;Primary&quot;,toxi_assay = &quot;Cytotox&quot;)</span>
+<span class="co">#&#39; # data normalization</span>
+<span class="co">#&#39; demo_mc_norm &lt;- normalize_per_plate(demo_mc, nctrl = &quot;DMSO&quot;)</span>
+<span class="co">#&#39; # filter out test chemicals only</span>
+<span class="co">#&#39; demo_mc_norm &lt;- dplyr::filter(demo_mc_norm, wllt == &quot;t&quot;)</span>
+<span class="co">#&#39; # fit curve with default 20% threshold</span>
+<span class="co">#&#39; demo_md &lt;- fit_curve_tcpl(demo_mc_norm, assay_info)</span>
+<span class="co">#&#39; # calculate TAA and Med_diff only</span>
+<span class="co">#&#39; demo_rank &lt;- rank_tcpl(demo_md, med_taa = NULL, med_med_diff = NULL)</span>
+<span class="co">#&#39; #produce plots with notations</span>
+<span class="co">#&#39; demo_plots &lt;- plot_tcpl_minimal(demo_md, demo_rank, notation = TRUE)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## save all the plots as pdf</span>
+<span class="co">#&#39; # save_plot_pdf(demo_plots, &quot;.\output plots\all_plots.pdf&quot;)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; ## save the 1st plot as pdf</span>
+<span class="co">#&#39; # save_plot_pdf(demo_plots[1], &quot;.\output plots\plot1.pdf&quot;)</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @export</span>
+<span class="co">#&#39;</span>
+
+save_plot_pdf &lt;-<span class="st"> </span><span class="cf">function</span>(plot_list, filename) {
+  <span class="co"># claim variables for passing R CMD Check</span>
+  assay &lt;-<span class="st"> </span>spid &lt;-<span class="st"> </span>apid &lt;-<span class="st"> </span>rval &lt;-<span class="st"> </span><span class="ot">NULL</span>
+
+  grDevices<span class="op">::</span><span class="kw">pdf</span>(filename)
+  <span class="kw">cat</span>(<span class="st">&quot;Preparing file...</span><span class="ch">\n</span><span class="st">&quot;</span>)
+  <span class="kw">invisible</span>(<span class="kw">lapply</span>(plot_list, print))
+  grDevices<span class="op">::</span><span class="kw">dev.off</span>()
+  <span class="kw">cat</span>(<span class="st">&quot;Finished!&quot;</span>)
+}
+
+
+
+<span class="co">#&#39; round digits of numbers</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; round numbers in a datafram to specified digits</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; @param df the dataframe input</span>
+<span class="co">#&#39; @param digits  the specified number of digits</span>
+<span class="co">#&#39; @return a dataframe</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39;</span>
+round_df &lt;-<span class="st"> </span><span class="cf">function</span>(df, digits) {
+  nums &lt;-<span class="st"> </span><span class="kw">vapply</span>(df, is.numeric, <span class="dt">FUN.VALUE =</span> <span class="kw">logical</span>(<span class="dv">1</span>))
+  df[,nums] &lt;-<span class="st"> </span><span class="kw">round</span>(df[,nums], <span class="dt">digits =</span> digits)
+  df
+}</code></pre></div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="export-dose-response-curve.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
